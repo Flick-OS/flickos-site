@@ -183,7 +183,7 @@ with `--verbose` to watch it live.
 **Exit 2: `could not find a live boot entry`**
 The ISO has no `/isolinux/live.cfg` or `/boot/grub/grub.cfg` in the expected
 format. Check `--bootloaders` in `auto/config`, and look inside the ISO with
-`xorriso -indev FlickOS-64bit-v2.0.iso -ls /isolinux/ /boot/grub/`.
+`xorriso -indev FlickOS-64bit-v2.1.iso -ls /isolinux/ /boot/grub/`.
 
 **Exit 3: timed out waiting for `login: `**
 Read the end of `serial.log`:
@@ -380,6 +380,28 @@ terminal to see the error (JSON syntax in `waybar.jsonc`, a missing `include` or
 palette file, or no `XDG_RUNTIME_DIR`). `flickos-layout doctor` lists user files
 that replace the panel (`~/.config/waybar/config`).
 
+**Tray, status icons or clock disappear while many windows are open**
+The window list pushed them off the bar. waybar 0.12 (trixie) doesn't ellipsize
+taskbar titles, so the window list asks for the full width of all its buttons,
+and GTK gives every module at least the width it asks for: what is packed after
+the window list ends up past the edge of the bar. Everything comes back as
+windows are closed. Redmond's window list therefore shows icons only: about 35
+windows fit its bar at 1080p (46 px each). A user who sets `"format": "{icon}
+{title}"` in `~/.config/waybar/` gets the pushing back; upstream waybar's
+`expand` and `truncate` options, which shrink the buttons instead, are newer
+than 0.12. Traditional's window list is sfwbar's, which shortens titles
+instead; when even "…" doesn't fit (about 23 windows at 1280 px, 35 at
+1920 px), its last buttons are cut off and the desktop switcher stays.
+
+**Traditional: the desktop switcher doesn't highlight the current desktop**
+sfwbar older than `1.0~beta17+git20260910+flickos4` never marks it (an
+upstream bug FlickOS patches, see `packages/sfwbar/debian/README.source`):
+`apt policy sfwbar`. Switching still works. If there are no desktop buttons
+at all, check that `$XDG_RUNTIME_DIR/flickos/xdg/labwc/rc.xml` has
+`<desktops number="4">` (`flickos-layout set traditional` regenerates it and
+reloads labwc) and that no `~/.config/labwc/rc.xml` replaces it
+(`flickos-layout doctor`).
+
 **Tray icons missing after switching layouts**
 waybar owns the tray (`StatusNotifierWatcher`). After a restart, applets must
 register again, which takes a few seconds. Check
@@ -464,6 +486,19 @@ Only one package can divert a file.
 **Firewall blocks something (e.g. SSH, KDE Connect, a game server)**
 `sudo ufw allow PORT/tcp` (or `/udp`), or temporarily `sudo ufw disable` to confirm
 the firewall is the cause. See [09 – Firewall](/docs/09-customizing/#firewall).
+
+**Brightness keys do nothing / no brightness slider in Quick Settings**
+brightnessctl (Debian's isn't built with logind) needs `brightness-udev`'s
+udev rule, which makes the backlight writable for the `video` group (a Depends
+of flickos-desktop since 1.24). Check:
+- `ls -l /sys/class/backlight/*/brightness` shows group `video` and `rw` for
+  it. If not: `dpkg -s brightness-udev`, then `sudo udevadm trigger -c add -s
+  backlight`.
+- `id` lists `video`. Accounts from the installer, *Settings → Users* and the
+  live user have it; for another one, `sudo adduser NAME video`, then log in
+  again.
+- Quick Settings also leaves the slider out while the laptop screen is off,
+  and on computers without `/sys/class/backlight` (most desktops).
 
 **Screen locks or suspends during testing**
 swayidle only runs on installed systems (not in the live session). In a test
@@ -555,6 +590,12 @@ tr '\0' '\n' < /proc/$(pgrep -x labwc)/environ | grep XDG_CONFIG_DIRS
   (`flickos-layout doctor` reports it), so the button is gone.
 - The icon comes from the icon theme (`view-dual-symbolic` and friends in
   `adwaita-icon-theme`). Without it the button is a blank but clickable gap.
+
+**Show Desktop does nothing**
+- The daemon does it: `flick-tiler show-desktop` prints `flick-tiler isn't
+  running` without one (see above). It needs flick-tiler >= 1.7.
+- A second click gives back only what the first one minimized, and only
+  while no window is shown; otherwise it minimizes the shown ones again.
 
 **The panel button doesn't follow what the keys do**
 flick-tiler tells waybar with `SIGRTMIN+8` (`PANEL_SIGNAL` in `flick-tiler`,
@@ -718,7 +759,10 @@ from a script, replace its `CHECKS` and let it take screenshots for you.
 
 - Windows open before tiling was turned on stay floating (Super+Shift+T).
 - No gaps (see above).
-- One arrangement for all outputs, and one for all workspaces.
+- One arrangement for all outputs, and none per desktop: in Traditional, which
+  has 4 desktops, tiling arranges the windows of all of them together (labwc
+  doesn't say which desktop a window is on), so a desktop has empty places
+  where another desktop's windows are.
 - Two windows opening in the same instant can land in the same tile; open one
   of them again, or press Super+Shift+T in it.
 - A window dragged out of its tile keeps counting until it is tiled again or

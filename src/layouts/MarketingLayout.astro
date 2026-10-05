@@ -9,12 +9,15 @@ interface Props {
 	title: string;
 	description?: string;
 	ogImage?: string;
+	/** Keep the page out of search engines. Used by pages that are built but not public yet. */
+	noindex?: boolean;
 }
 
 const {
 	title,
-	description = 'FlickOS 2.0 — a lightweight Debian 13 Wayland desktop with live ISO and Calamares installer.',
+	description = 'FlickOS 2.1 — a lightweight Debian 13 Wayland desktop with live ISO and Calamares installer.',
 	ogImage = 'https://flickos.net/og-image.png',
+	noindex = false,
 } = Astro.props;
 
 const fullTitle = title === 'FlickOS' ? title : `${title} · FlickOS`;
@@ -27,6 +30,7 @@ const fullTitle = title === 'FlickOS' ? title : `${title} · FlickOS`;
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />

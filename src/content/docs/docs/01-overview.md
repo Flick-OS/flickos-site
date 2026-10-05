@@ -8,19 +8,19 @@ sidebar:
 
 | Property | Value |
 |---|---|
-| Version | 2.0 (1.x was based on Ubuntu 20.04/LXLE; no in-place upgrade) |
+| Version | 2.1 (2.0 upgrades with apt; 1.x was based on Ubuntu 20.04/LXLE and has no in-place upgrade) |
 | Base | Debian 13 "trixie", `amd64` only |
-| Desktop | labwc (Wayland compositor, Openbox-style) + waybar, sfwbar (Cupertino's dock), mako, fuzzel, foot, pcmanfm. Three desktop layouts, switchable live from *Settings → Desktop Layout & Style*: **Redmond** (default, one bottom panel), **Cupertino** (top bar and auto-hiding dock), **Traditional** (top panel and window list) |
+| Desktop | labwc (Wayland compositor, Openbox-style) + waybar, sfwbar (Cupertino's dock, Traditional's bottom panel), mako, fuzzel, foot, Thunar. Three desktop layouts, switchable live from *Settings → Desktop Layout & Style*: **Redmond** (default, one bottom panel), **Cupertino** (top bar and auto-hiding dock), **Traditional** (top panel, and window list with 4 desktops) |
 | Look | **Arc-Dark** everywhere by default: GTK theme (arc-theme), Numix-Circle icons, and the same palette for panel, terminal, launcher, notifications, window borders, boot menus, boot splash and installer. A **Light** style (Arc, Numix-Circle-Light) recolors the desktop live; boot menus, splash and installer stay Arc-Dark. GTK details in *Settings → Appearance* (nwg-look). Translucent panel and terminal (no blur) |
 | Audio | PipeWire + WirePlumber |
 | Network | NetworkManager + nm-applet |
 | Apps | Firefox ESR (with uBlock Origin), LibreOffice, VLC, Mousepad, Ristretto, Evince, Xarchiver, GNOME PackageKit (software manager); Bluetooth, printing, Flatpak (Flathub) |
-| Updates | Automatic security updates (unattended-upgrades) |
+| Updates | Automatic updates (unattended-upgrades): Debian's security fixes and stable updates, and FlickOS's own packages |
 | Security | Firewall (ufw) on by default: incoming blocked, outgoing allowed |
 | Branding | FlickOS boot menu, boot splash (Plymouth), `os-release` variant and login banner; `ID=debian` kept |
 | Login | Graphical login screen on installed systems (greetd + gtkgreet, `flickos-greeter`), optional automatic login. The live session logs in automatically on tty1 |
 | Installer | Calamares with FlickOS branding (`flickos-installer`) |
-| Image | `FlickOS-64bit-v2.0.iso`: hybrid ISO, boots on BIOS (syslinux) and UEFI (GRUB); can be written to USB |
+| Image | `FlickOS-64bit-v2.1.iso`: hybrid ISO, boots on BIOS (syslinux) and UEFI (GRUB); can be written to USB |
 | Published at | ISOs: SourceForge Files. Apt repository: https://dvbondoy.github.io/flickos-apt/. Code: GitHub `dvbondoy/FlickOS` |
 
 ## The big picture
@@ -38,7 +38,7 @@ flowchart LR
     end
 
     P -- packages/build.sh --> D[.deb files<br/>config/packages.chroot/]
-    D -- lb build --> ISO[FlickOS-64bit-v2.0.iso]
+    D -- lb build --> ISO[FlickOS-64bit-v2.1.iso]
     C -- lb config + lb build --> ISO
     DEB[(deb.debian.org)] -- lb build downloads --> ISO
     ISO -- tools/upload-release.sh --> SFF[(SourceForge Files)]
@@ -87,11 +87,14 @@ flickos/
 │   ├── flickos-shortcuts/        Keyboard shortcut sheet while Super is held (daemon + GTK sheet)
 │   ├── flickos-control/          The Settings window (pages over flickos-layout, flick-tiler, flickos-shortcuts)
 │   ├── flickos-greeter/          Login screen of installed systems (greetd + gtkgreet)
+│   ├── flickos-countme/          Anonymous weekly count (version + install age; PRIVACY.md)
 │   ├── waypaper/                 Wallpaper picker (upstream waypaper, not in Debian trixie)
-│   ├── sfwbar/                   Auto-hide dock for Cupertino (upstream sfwbar, compiled; not in Debian trixie)
+│   ├── sfwbar/                   Cupertino's dock, Traditional's window list and desktops (upstream sfwbar, compiled; not in Debian trixie)
 │   ├── flickos-installer/        Calamares config + branding, live-session menu
 │   ├── flickos-branding/         Logo icons, boot splash theme, OS name, login banner, FlickOS version (flickos-release)
 │   └── flickos-archive-keyring/  Public key + apt source for the FlickOS apt repo
+│
+├── server/countme/               Cloudflare Worker that counts flickos-countme's requests (not packaged)
 │
 ├── tools/                        Developer scripts
 │   ├── build-iso.sh              Clean + build packages + build ISO
@@ -175,16 +178,22 @@ starts the same session.
 | Change keybindings, menu, startup programs, panel, theme, default wallpaper | `packages/flickos-settings/` | [09](/docs/09-customizing/) |
 | Add or change a desktop layout, or change the default layout | `packages/flickos-layouts/` | [09](/docs/09-customizing/#desktop-layouts) |
 | Change the Dark/Light styles, or add a style | `packages/flickos-layouts/usr/share/flickos/styles/`, labwc themes in `packages/flickos-settings/usr/share/themes/` | [09](/docs/09-customizing/#styles-darklight) |
-| Change a layout's wallpaper, or the Wallpaper app (waypaper) | `packages/flickos-layouts/usr/share/flickos/layouts/ID/wallpaper.jpg`, `packages/waypaper/` | [09](/docs/09-customizing/#wallpaper) |
+| Change the default wallpaper (one per style), or the Wallpaper app (waypaper) | `packages/flickos-layouts/usr/share/flickos/styles/ID/wallpaper.png`, `packages/waypaper/` | [09](/docs/09-customizing/#wallpaper) |
 | Change window tiling (arrangements, keys, apps that float) | `packages/flick-tiler/` (`MODES`, `KEYBINDS`, `etc/xdg/flickos/tiler.conf`), Super+T in `packages/flickos-settings/etc/xdg/labwc/rc.xml` | [09](/docs/09-customizing/#window-tiling) |
 | Change the hold-Super shortcut sheet (descriptions, hold time, look) | `packages/flickos-shortcuts/` (`COMMANDS`, `ACTIONS`, `HOLD_MS`, `usr/share/flickos/shortcuts/style.css`) | [09](/docs/09-customizing/#shortcut-sheet-hold-super) |
+| Put a program that isn't a FlickOS package on the desktop (keys, panel button), or try one out | an add-on folder read by `packages/flickos-layouts/` (`addons()`, `addon_fragments`, `use_addons`); experiments in `experimental/` (`experimental/trail/`) | [09](/docs/09-customizing/#add-ons) |
 | Change the Settings window (pages, tiles for other apps, mouse/touchpad/keyboard options) | `packages/flickos-control/usr/bin/flickos-control` (`PAGES`, `TILES`, `SETTINGS`); *All Settings* in both menus | [09](/docs/09-customizing/#settings-window) |
 | Change mouse, touchpad, keyboard or idle defaults for everyone | `packages/flickos-control/etc/xdg/flickos/input.conf`, `keyboard.conf`, `idle.conf` | [09](/docs/09-customizing/#settings-window) |
 | Change the start menu (pinned apps, sections, look, on or off for everyone) | `packages/flickos-menu/` (`etc/xdg/flickos/menu.conf`, `SECTIONS`, `style.css`), live pins in `packages/flickos-installer/etc/xdg/flickos-live/flickos/menu.conf`, `Launcher=` in flickos-layouts' `layouts.conf` | [09](/docs/09-customizing/#start-menu) |
+| Change Quick Settings (its switches and sliders, the programs they run, the icons that open it, on for everyone) | `packages/flickos-menu/usr/share/flickos/menu/quick.py` (`QUICK_TILES`, `QUICK_READS`, `change_command`), `.flickos-quick` in its `style.css`; the panel side in `packages/flickos-layouts/` (`use_quick_settings`, `QUICK_KEY`, `Quick=` in `layout.ini`, `QuickSettings=` in `layouts.conf`) | [09](/docs/09-customizing/#quick-settings) |
 | Change what a click on the desktop does | `flickos-layout` (`CLICKS`), `packages/flickos-settings/etc/xdg/labwc/rc.xml` (`<mouse>`) | [09](/docs/09-customizing/#desktop-clicks) |
 | Change the Desktop Layout & Style chooser or its previews | `packages/flickos-layouts/usr/bin/flickos-layout` (`pick`), `tools/make-layout-previews.sh` | [09](/docs/09-customizing/#the-chooser) |
-| Change the welcome window, or stop it at a new account's first login | `packages/flickos-welcome/` (`CARDS`, `etc/xdg/flickos/welcome.conf`, `etc/skel/.config/flickos/welcome`); the chooser on its own is flickos-layouts' `choose-layout` and `flickos-layout first-run` | [09](/docs/09-customizing/#first-login) |
+| Change the welcome window, or stop it at a new account's logins | `packages/flickos-welcome/` (`CARDS`, `etc/xdg/flickos/welcome.conf`, `etc/skel/.config/flickos/welcome`); the chooser on its own is flickos-layouts' `choose-layout` and `flickos-layout first-run` | [09](/docs/09-customizing/#first-login) |
+| Change the phone connection (what a phone may send, notifications, ports, on for everyone, Send to Phone in the file manager) | `packages/flickos-phone/` (`CAPABILITIES`, `on_share`, `menu_entries`, `etc/xdg/flickos/phone.conf`, `usr/share/file-manager/actions/`), its panel button in `packages/flickos-layouts/` (`custom/phone` in `common/modules.jsonc` and `base.css`, `use_phone`), its autostart line in `packages/flickos-settings/usr/libexec/flickos/autostart`, the *Phone* page in `packages/flickos-control/` (`PhonePage`) | [design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-phone.md) |
+| Change screen zoom (keys, whole screen or lens, zoom steps) | `<magnifier>` and the Zoom keys and Super+scroll in `packages/flickos-settings/etc/xdg/labwc/rc.xml`, their descriptions in `packages/flickos-shortcuts/` (`ACTIONS`, `BUSY_SIGNAL`), the user's settings in `packages/flickos-control/` (`zoom.*` in `SETTINGS`, `magnifier_options`, `AccessibilityPage`, conffile `etc/xdg/flickos/zoom.conf`) | [design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-zoom.md) |
+| Change screenshots and recordings (keys, the capture bar, the frozen screen, where they are saved, the recording's pipeline, the portal's screen chooser, the panel's recording button) | `packages/flickos-screenshot/` (`DELAYS`, `FOLDER`, `NOTICES`, `FrozenScreen`, `pipeline_description`, `Recorder`, `usr/libexec/flickos/screencast-chooser`), `custom/recording` in `packages/flickos-layouts/usr/share/flickos/layouts/common/modules.jsonc`, the keys in `packages/flickos-settings/etc/xdg/labwc/rc.xml` and their descriptions in `packages/flickos-shortcuts/` (`COMMANDS`) | [design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md) |
 | Change installer branding or behavior | `packages/flickos-installer/` | [09](/docs/09-customizing/#installer) |
+| Change the anonymous weekly count (what is sent, the server, the installer's notice) | `packages/flickos-countme/`, `server/countme/`, `PRIVACY.md`, the first slide of `branding/flickos/show.qml` in flickos-installer | [09](/docs/09-customizing/#weekly-count) |
 | Add a package only to the live ISO (not installed systems) | `config/package-lists/live.list.chroot` | [03](/docs/03-live-build-config/) |
 | Enable a systemd service in the image | `config/hooks/normal/0100-services.hook.chroot` | [03](/docs/03-live-build-config/) |
 | Change bootloader, kernel boot options | `auto/config` | [03](/docs/03-live-build-config/) |

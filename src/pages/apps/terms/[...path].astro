@@ -1,0 +1,215 @@
+---
+import MarketingLayout from '../../../layouts/MarketingLayout.astro';
+import { store, price } from '../../../config/store';
+import { apps, joinNames } from '../../../data/apps';
+
+// Only emit /apps/terms/ when the store is open or the maintainer is previewing it.
+export function getStaticPaths() {
+	return store.enabled ? [{ params: { path: undefined } }] : [];
+}
+
+const appList = joinNames(apps.map((app) => app.name));
+---
+
+<MarketingLayout
+	title="Terms and refunds"
+	description="Terms of sale and the refund policy for the apps sold on the FlickOS website."
+	noindex={store.unlisted}
+>
+	<section class="page">
+		<header class="page-head flick-anim-rise">
+			<h1 class="flick-display">Terms and refunds</h1>
+			<p>For the apps sold on the <a href={store.href}>FlickOS Apps</a> page.</p>
+		</header>
+
+		{
+			store.unlisted && (
+				<aside class="notice" role="note">
+					<strong>Draft.</strong>
+					Nothing is on sale, and this text has not been checked by anyone who knows licensing. It
+					has to be before the store opens, together with the review of what the sold apps link
+					against.
+				</aside>
+			)
+		}
+
+		<section class="block">
+			<h2 class="flick-display">Who you are buying from</h2>
+			<p>
+				{appList} are made and maintained by the FlickOS maintainer. The sale itself is handled by{' '}
+				<a href={store.provider.url} rel="noopener noreferrer">{store.provider.label}</a>, which
+				sells the app to you in its own name, collects any tax due in your country, issues the
+				receipt and handles refunds. Their terms cover the payment; this page covers the app.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">What you may do with the app</h2>
+			<ul class="plain">
+				<li>
+					Install it on <strong>every computer you use</strong>, for personal or for work. There is
+					no limit on the number of computers and no check inside the app.
+				</li>
+				<li>
+					Keep using it <strong>forever</strong>. It never expires and never stops working, whatever
+					happens to this website or to the store.
+				</li>
+				<li>
+					The app itself is <strong>not free software</strong>: you are buying a licence to use it,
+					not permission to sell it, publish it or pass it on. FlickOS the desktop is GPL-3.0 and is
+					untouched by this.
+				</li>
+				<li>
+					<strong>Don’t share your key.</strong> A key that turns up in public is switched off, the
+					same way a refunded one is.
+				</li>
+			</ul>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">Updates</h2>
+			<p>
+				Your key gives you every update to the app for as long as Debian 13 is supported. Updates
+				arrive through the FlickOS store’s apt repository, with your other updates.
+			</p>
+			<p>
+				When FlickOS moves to the next Debian release, that version will be a paid upgrade at a
+				reduced price for anyone who already holds a key. Your key records what you bought and when,
+				so nothing you have paid for is affected.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">Refunds</h2>
+			<p>
+				Ask within <strong>{store.refundDays} days</strong> and you get your money back, no reason
+				needed. Write to {store.provider.label} from your receipt, or to{' '}
+				<a href={`mailto:${store.supportEmail}`}>{store.supportEmail}</a>.
+			</p>
+			<p>
+				A refund switches your key off. The app you have installed keeps working — we don’t reach
+				into your computer — but it stops receiving updates, and <code>apt update</code> starts
+				reporting the store as an error until you run{' '}
+				<code>flickos-control purchases remove</code>.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">What we keep about you</h2>
+			<p>As little as possible. On the FlickOS side, one row for each key:</p>
+			<ul class="plain">
+				<li>a one-way hash of the key, so a copy of our database contains no working key,</li>
+				<li>which apps it paid for,</li>
+				<li>whether it is still valid,</li>
+				<li>the date of the order.</li>
+			</ul>
+			<p>
+				No name, no email, no address, and nothing at all about each download: no addresses, no
+				times, no logs. {store.provider.label} holds your name, email and payment details, because a
+				sale requires it; their privacy policy covers that. The apps themselves send nothing
+				anywhere.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">Prices and tax</h2>
+			<p>
+				Prices are in US dollars, from {price(Math.min(...apps.map((a) => a.price)))} per app, paid
+				once. {store.provider.label} adds any sales tax or VAT your country requires and shows it
+				before you pay.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">No warranty</h2>
+			<p>
+				These apps are sold as they are. They are made with care and used daily by the person who
+				writes them, but they come with no guarantee that they suit a particular purpose, and the
+				maintainer’s liability is limited to what you paid. Keep backups of your own files — the
+				apps store yours as plain files precisely so that you can.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">Questions</h2>
+			<p>
+				Write to <a href={`mailto:${store.supportEmail}`}>{store.supportEmail}</a>. Bugs in the free
+				parts of FlickOS belong on{' '}
+				<a href="https://github.com/dvbondoy/FlickOS">GitHub</a>.
+			</p>
+		</section>
+	</section>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.75rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 0.75rem 0 0;
+		color: var(--flick-muted);
+		line-height: 1.55;
+	}
+	.notice {
+		margin-top: 1.5rem;
+		padding: 0.85rem 1.1rem;
+		border-left: 3px solid var(--flick-warning);
+		background: color-mix(in srgb, var(--flick-warning) 10%, var(--flick-panel));
+		color: var(--flick-fg);
+		line-height: 1.5;
+	}
+	.notice strong {
+		color: var(--flick-title);
+		margin-right: 0.3rem;
+	}
+	.block {
+		margin-top: 2.5rem;
+	}
+	.block h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.3rem;
+		color: var(--flick-title);
+	}
+	.block p {
+		margin: 0 0 1rem;
+		line-height: 1.6;
+		color: var(--flick-fg);
+	}
+	.block p:last-child {
+		margin-bottom: 0;
+	}
+	/* Tailwind's reset drops list markers; this list needs them back. */
+	.plain {
+		margin: 0 0 1rem;
+		padding-left: 1.2rem;
+		list-style: disc;
+	}
+	.plain li {
+		line-height: 1.6;
+		color: var(--flick-fg);
+	}
+	.plain li + li {
+		margin-top: 0.5rem;
+	}
+	.plain strong {
+		color: var(--flick-title);
+	}
+	code {
+		font-family: ui-monospace, 'IBM Plex Mono', monospace;
+		font-size: 0.9em;
+		color: var(--flick-title);
+	}
+</style>

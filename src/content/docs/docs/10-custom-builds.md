@@ -77,6 +77,7 @@ to ship them in a variant package:
 | `/etc/xdg/flickos/input.conf` | `flickos-control` | mouse and touchpad |
 | `/etc/xdg/flickos/keyboard.conf` | `flickos-control` | keyboard options |
 | `/etc/xdg/flickos/idle.conf` | `flickos-control` | blank, lock and sleep times |
+| `/etc/xdg/flickos/zoom.conf` | `flickos-control` | screen zoom: whole screen or lens, step, smoothing |
 | `/etc/xdg/flickos/tiler.conf` | `flick-tiler` | tiling defaults |
 | `/etc/xdg/flickos/menu.conf` | `flickos-menu` | pinned apps and sections |
 
@@ -99,7 +100,7 @@ later layout change and `flickos-layout doctor` will report it as damage.
 **A variant package cannot ship those conffiles.** Those paths belong to
 FlickOS packages, and two packages cannot own one file: dpkg fails the install
 with *trying to overwrite ... which is also in package flickos-layouts*. Worse,
-`layouts.conf`, `tiler.conf`, `input.conf`, `keyboard.conf` and `idle.conf` are
+`layouts.conf`, `tiler.conf`, `input.conf`, `keyboard.conf`, `idle.conf` and `zoom.conf` are
 read from a **hardcoded** `/etc/xdg/flickos/` path, so no search order can
 override them either. Only two things in this layer work from a package today:
 
@@ -108,7 +109,7 @@ override them either. Only two things in this layer work from a package today:
 | `95_*.gschema.override` (glib merges by number) | **Yes** |
 | `/etc/skel` | **Yes**, until an upgrade restores a file you deleted |
 | `menu.conf`, `xdg-terminals.list`, `mimeapps.list` (searched in `XDG_CONFIG_DIRS`) | only with a site directory, which does not exist yet |
-| `layouts.conf`, `tiler.conf`, `input.conf`, `keyboard.conf`, `idle.conf` | **No** |
+| `layouts.conf`, `tiler.conf`, `input.conf`, `keyboard.conf`, `idle.conf`, `zoom.conf` | **No** |
 
 So for a single machine, edit the conffiles by hand. For a fleet, either divert
 them from the variant's maintainer scripts — messy on a conffile — or make the

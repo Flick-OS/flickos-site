@@ -1,0 +1,379 @@
+---
+import { Image } from 'astro:assets';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import { store, price } from '../../config/store';
+import { apps, joinNames, onSale } from '../../data/apps';
+
+// Only emit /apps/ when the store is open or the maintainer is previewing it; otherwise the route builds nothing.
+export function getStaticPaths() {
+	return store.enabled ? [{ params: { path: undefined } }] : [];
+}
+
+// The bundle is offered once two apps are on sale (store ADR-005).
+const bundle = onSale.length >= 2 && store.bundle.checkoutUrl ? store.bundle : null;
+const fullPrice = apps.reduce((sum, app) => sum + app.price, 0);
+---
+
+<MarketingLayout
+	title="FlickOS Apps"
+	description={`Apps made for FlickOS: ${joinNames(apps.map((app) => app.name))}. Bought once, installed and updated with apt like every other FlickOS package.`}
+	noindex={store.unlisted}
+>
+	<section class="page">
+		<header class="page-head flick-anim-rise">
+			<h1 class="flick-display">FlickOS Apps</h1>
+			<p>
+				These are the apps I made for FlickOS because I wanted them, and I use them every day.
+				You pay once, and they install and update with apt, the Software app and the automatic
+				updates, exactly like every other FlickOS package.
+			</p>
+		</header>
+
+		{
+			onSale.length === 0 && (
+				<aside class="notice" role="note">
+					<strong>The store isn’t open yet.</strong>
+					These apps are being finished. Nothing here can be bought today.
+				</aside>
+			)
+		}
+
+		<section class="block">
+			<ul class="apps">
+				{
+					apps.map((app) => (
+						<li class="app" id={app.id}>
+							<div class="app-head">
+								<h2 class="flick-display">{app.name}</h2>
+								<p class="price">
+									{price(app.price)} <span>once</span>
+								</p>
+							</div>
+							{
+								app.shot && (
+									<div class:list={['shot', { portrait: app.shot.height > app.shot.width * 1.4 }]}>
+										<Image
+											src={app.shot}
+											alt={app.shotAlt ?? app.name}
+											widths={app.shot.height > app.shot.width * 1.4 ? [280, 428] : [480, 800, 1200]}
+											sizes={
+												app.shot.height > app.shot.width * 1.4
+													? '18rem'
+													: '(max-width: 48rem) 100vw, 45rem'
+											}
+										/>
+									</div>
+								)
+							}
+							<p class="tagline">{app.tagline}</p>
+							<ul class="points">
+								{app.points.map((point) => (
+									<li>{point}</li>
+								))}
+							</ul>
+							{app.requires && <p class="requires">{app.requires}</p>}
+							<p class="app-cta">
+								{app.status === 'on-sale' && app.checkoutUrl ? (
+									<a class="flick-btn primary" href={app.checkoutUrl} rel="noopener noreferrer">
+										Buy {app.name} — {price(app.price)}
+									</a>
+								) : (
+									<span class="flick-btn ghost is-disabled" aria-disabled="true">
+										Not on sale yet
+									</span>
+								)}
+								<span class="pkg">
+									<code>{app.package}</code>
+								</span>
+							</p>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		{
+			bundle && (
+				<section class="block bundle">
+					<h2 class="flick-display">All of them</h2>
+					<p>
+						Every app above, one payment, one key. {price(bundle.price)} instead of{' '}
+						{price(fullPrice)}.
+					</p>
+					<p class="app-cta">
+						<a class="flick-btn primary" href={bundle.checkoutUrl} rel="noopener noreferrer">
+							Buy all of them — {price(bundle.price)}
+						</a>
+					</p>
+				</section>
+			)
+		}
+
+		<section class="block">
+			<h2 class="flick-display">How buying works</h2>
+			<ol class="steps">
+				<li>
+					You pay on {store.provider.label}’s page. Card details never pass through FlickOS. The
+					receipt and its email carry your key.
+				</li>
+				<li>
+					On FlickOS, run this once and paste the key when it asks:
+					<pre class="cmd"><code>{store.keyCommand}</code></pre>
+					Or open <strong>Settings → Updates → Purchased Apps</strong> and choose{' '}
+					<strong>Add Key…</strong> if you would rather not use a terminal. Either way you are asked
+					for the administrator password.
+				</li>
+				<li>
+					Install the app from the Software app, or with{' '}
+					<code>sudo apt install {apps[0].package}</code>.
+				</li>
+				<li>
+					New versions arrive with your other updates. There is nothing else to do and nothing to
+					renew.
+				</li>
+			</ol>
+			<p class="hint">
+				Buying a second app later works the same way: paste the new key, and it joins the one the
+				computer already has.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">What you are buying</h2>
+			<ul class="plain">
+				<li>
+					<strong>One payment, no subscription.</strong> Updates come for as long as Debian 13 is supported.
+				</li>
+				<li>
+					<strong>One key, any number of your computers.</strong> There is no account, no password and
+					no sign-up on our side — the key is the whole of it.
+				</li>
+				<li>
+					<strong>No check inside the app.</strong> These apps never phone home and never stop working.
+					A refund ends the updates, not the app you installed.
+				</li>
+				<li>
+					<strong>Your files stay yours.</strong> Notes and Write keep plain Markdown files in folders
+					you can see. Trail keeps one file in your home folder, and nothing leaves the computer.
+				</li>
+			</ul>
+			<p class="hint">
+				Refunds within {store.refundDays} days, handled by {store.provider.label}. See the{' '}
+				<a href={store.termsHref}>terms and refunds</a>.
+			</p>
+		</section>
+
+		<section class="block">
+			<h2 class="flick-display">Where the money goes</h2>
+			<p>
+				To the one person who maintains FlickOS: hosting, test hardware and the hours each release
+				takes. FlickOS itself stays free software, under the GPL. The desktop stays free of
+				advertising for these apps — no free FlickOS package names them or offers them to you, and
+				this page is the only place they are sold.
+			</p>
+			<p>
+				If you would rather give than buy, <a href="/donate/">donations</a> help just as much.
+			</p>
+		</section>
+	</section>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 48rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.75rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 0.75rem 0 0;
+		color: var(--flick-muted);
+		line-height: 1.55;
+	}
+	.notice {
+		margin-top: 1.5rem;
+		padding: 0.85rem 1.1rem;
+		border-left: 3px solid var(--flick-warning);
+		background: color-mix(in srgb, var(--flick-warning) 10%, var(--flick-panel));
+		color: var(--flick-fg);
+		line-height: 1.5;
+	}
+	.notice strong {
+		color: var(--flick-title);
+		margin-right: 0.3rem;
+	}
+	.block {
+		margin-top: 2.5rem;
+	}
+	.block > h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.4rem;
+		color: var(--flick-title);
+	}
+	.block > p {
+		margin: 0 0 1rem;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.hint {
+		color: var(--flick-muted) !important;
+		margin: 1rem 0 0 !important;
+	}
+	.apps {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 1.25rem;
+	}
+	.app {
+		padding: 1.25rem;
+		background: var(--flick-panel);
+		border: 1px solid var(--flick-border);
+		border-radius: 0.4rem;
+		scroll-margin-top: 5rem;
+	}
+	.app-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.35rem 1rem;
+	}
+	.app-head h2 {
+		margin: 0;
+		font-size: 1.35rem;
+		color: var(--flick-title);
+	}
+	.shot {
+		margin: 1rem 0 0;
+		border: 1px solid var(--flick-border);
+		border-radius: 0.3rem;
+		overflow: hidden;
+		line-height: 0;
+		background: var(--flick-base);
+	}
+	.shot.portrait {
+		max-width: 18rem;
+	}
+	.shot :global(picture) {
+		display: block;
+		width: 100%;
+	}
+	.shot :global(img) {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.price {
+		margin: 0;
+		font-size: 1.2rem;
+		font-weight: 600;
+		color: var(--flick-title);
+		font-variant-numeric: tabular-nums;
+	}
+	.price span {
+		font-size: 0.85rem;
+		font-weight: 400;
+		color: var(--flick-muted);
+	}
+	.tagline {
+		margin: 0.5rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	/* Tailwind's reset drops list markers; these lists need them back. */
+	.points {
+		margin: 0.9rem 0 0;
+		padding-left: 1.2rem;
+		list-style: disc;
+	}
+	.points li {
+		line-height: 1.5;
+		color: var(--flick-fg);
+		opacity: 0.9;
+	}
+	.points li + li {
+		margin-top: 0.4rem;
+	}
+	.requires {
+		margin: 0.9rem 0 0;
+		font-size: 0.9rem;
+		line-height: 1.5;
+		color: var(--flick-muted);
+	}
+	.app-cta {
+		margin: 1.25rem 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1rem;
+	}
+	.is-disabled {
+		opacity: 0.6;
+		cursor: default;
+	}
+	.pkg {
+		font-size: 0.85rem;
+		color: var(--flick-muted);
+	}
+	.bundle {
+		padding: 1.25rem;
+		border: 1px solid var(--flick-accent);
+		border-radius: 0.4rem;
+		background: color-mix(in srgb, var(--flick-accent) 8%, var(--flick-panel));
+	}
+	.steps {
+		margin: 0;
+		padding-left: 1.3rem;
+		list-style: decimal;
+	}
+	.steps li {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.steps li + li {
+		margin-top: 0.9rem;
+	}
+	.steps strong {
+		color: var(--flick-title);
+	}
+	.plain {
+		margin: 0;
+		padding-left: 1.2rem;
+		list-style: disc;
+	}
+	.plain li {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.plain li + li {
+		margin-top: 0.6rem;
+	}
+	.plain strong {
+		color: var(--flick-title);
+	}
+	.cmd {
+		margin: 0.6rem 0;
+		padding: 0.7rem 0.85rem;
+		overflow-x: auto;
+		background: var(--flick-base);
+		border: 1px solid var(--flick-border);
+		border-radius: 0.3rem;
+	}
+	code {
+		font-family: ui-monospace, 'IBM Plex Mono', monospace;
+		font-size: 0.9em;
+		color: var(--flick-title);
+	}
+</style>

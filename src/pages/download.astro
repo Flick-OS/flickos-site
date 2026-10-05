@@ -3,30 +3,29 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
 import { donate } from '../config/donate';
 import { fetchDownloadStats, formatCount } from '../data/downloads';
 
-const SHA256 = '20a96701d0734d55a06f53a0d09c9577ac3e609bd5f7559566aef8956c374c74';
-const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.0/';
+const SHA256 = '28ae7750f230b74b878952384fd4feeae06f2a0f40fe852013a26198b9e7fda1';
+const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.1/';
 const stats = await fetchDownloadStats();
 ---
 
 <MarketingLayout
 	title="Download"
-	description="Download FlickOS 2.0, verify the SHA256 checksum, write a USB stick, and install with Calamares."
+	description="Download FlickOS 2.1, verify the SHA256 checksum, write a USB stick, and install with Calamares."
 >
 	<section class="page">
 		<header class="page-head flick-anim-rise">
-			<h1 class="flick-display">Download FlickOS 2.0</h1>
+			<h1 class="flick-display">Download FlickOS 2.1</h1>
 			<p>
 				Hybrid live ISO for amd64 — boots on BIOS and UEFI. About 1.4&nbsp;GB.
 			</p>
 			<p>
-				Includes the Software manager and Firefox ESR with uBlock Origin. Run the first system update after installing to get what has shipped since: the All Settings hub (now with search, Displays and night light, Language &amp; Region, Startup Applications, Updates, Firewall, and Users), the History page with undo, the Memory page with a lighter Firefox, the hold-Super shortcut sheet, and the start menu, now the apps button’s default.
+				Debian 13 with a graphical login, the start menu, and a welcome window. Settings has search, and History can undo a change. This release also includes screenshots and screen recording, phone sharing, and an optional Quick Settings panel. Firefox ESR opens with vertical tabs, and Traditional has four desktops.
 			</p>
 			<p class="cta">
 				<a class="flick-btn primary" href={ISO_URL} rel="noopener noreferrer">Get the ISO on SourceForge</a>
 			</p>
-			<p class="downloads" id="download-stats" hidden={!stats}>
-				<strong data-stat="release">{stats ? formatCount(stats.release) : ''}</strong> downloads of 2.0
-				· <strong data-stat="total">{stats ? formatCount(stats.total) : ''}</strong> all-time
+			<p class="downloads" id="download-stats" hidden={stats == null}>
+				<strong data-stat="total">{stats != null ? formatCount(stats) : ''}</strong> all-time downloads
 			</p>
 		</header>
 
@@ -40,15 +39,21 @@ const stats = await fetchDownloadStats();
 		}
 
 		<aside class="warn" role="note">
+			<strong>Coming from 2.0?</strong>
+			You don’t need to reinstall. Run <code>sudo apt update && sudo apt upgrade</code>, then restart.
+			Use <code>apt upgrade</code>, not <code>apt-get upgrade</code>.
+		</aside>
+
+		<aside class="warn" role="note">
 			<strong>Coming from 1.x?</strong>
-			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.0.
+			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.1.
 			Back up your files and install fresh.
 		</aside>
 
 		<section class="block">
 			<h2 class="flick-display">Verify the download</h2>
 			<p>
-				After downloading <code>FlickOS-64bit-v2.0.iso</code>, check the SHA-256:
+				After downloading <code>FlickOS-64bit-v2.1.iso</code>, check the SHA-256:
 			</p>
 			<div class="hash-row">
 				<code id="sha256">{SHA256}</code>
@@ -56,7 +61,7 @@ const stats = await fetchDownloadStats();
 					Copy
 				</button>
 			</div>
-			<pre class="cmd"><code>echo "{SHA256}  FlickOS-64bit-v2.0.iso" | sha256sum -c</code></pre>
+			<pre class="cmd"><code>echo "{SHA256}  FlickOS-64bit-v2.1.iso" | sha256sum -c</code></pre>
 			<p class="hint">Or download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.</p>
 		</section>
 
@@ -66,7 +71,7 @@ const stats = await fetchDownloadStats();
 				<li>Use <a href="https://etcher.balena.io/" rel="noopener noreferrer">Balena Etcher</a>, Rufus (DD mode), or another hybrid-ISO writer.</li>
 				<li>
 					Or with <code>dd</code> (replace the device path):
-					<pre class="cmd"><code>sudo dd if=FlickOS-64bit-v2.0.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+					<pre class="cmd"><code>sudo dd if=FlickOS-64bit-v2.1.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
 				</li>
 				<li>Boot from the USB stick (disable Secure Boot if your machine requires it for unsigned media).</li>
 			</ol>
@@ -108,13 +113,11 @@ const stats = await fetchDownloadStats();
 	import { fetchDownloadStats, formatCount } from '../data/downloads';
 
 	// Refresh the build-time counts so they stay current between deploys.
-	fetchDownloadStats().then((stats) => {
+	fetchDownloadStats().then((total) => {
 		const el = document.getElementById('download-stats');
-		if (!stats || !el) return;
-		for (const key of ['release', 'total'] as const) {
-			const node = el.querySelector(`[data-stat="${key}"]`);
-			if (node) node.textContent = formatCount(stats[key]);
-		}
+		const node = el?.querySelector('[data-stat="total"]');
+		if (total == null || !el || !node) return;
+		node.textContent = formatCount(total);
 		el.hidden = false;
 	});
 

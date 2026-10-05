@@ -27,7 +27,7 @@ const layouts = [
 	},
 	{
 		name: 'Traditional',
-		blurb: 'Top panel with a window list.',
+		blurb: 'Top panel, a window list, and four desktops.',
 		image: traditional,
 	},
 ];
@@ -41,6 +41,8 @@ const keys = [
 	{ key: 'Super+B', action: 'Web browser' },
 	{ key: 'Super+V', action: 'Clipboard history' },
 	{ key: 'Super+Q', action: 'Close window' },
+	{ key: 'Super+Shift+D', action: 'Show desktop' },
+	{ key: 'Super+Esc', action: 'Task manager' },
 	{ key: 'Super+L', action: 'Lock screen' },
 	{ key: 'Super+Shift+E', action: 'Log out' },
 	{ key: 'Super+T', action: 'Tiling on/off' },
@@ -49,18 +51,18 @@ const keys = [
 
 <MarketingLayout
 	title="FlickOS"
-	description="FlickOS 2.0 is a lightweight Debian 13 Wayland desktop. Live ISO, Calamares installer, Arc look, three layouts."
+	description="FlickOS 2.1 is a lightweight Debian 13 Wayland desktop. Live ISO, Calamares installer, Arc look, three layouts."
 >
 	<section class="hero" aria-label="FlickOS">
 		<div class="hero-copy flick-anim-rise">
 			<p class="brand flick-display">FlickOS</p>
 			<a class="pill" href="#undo"><span class="pill-tag">New</span> An Undo button for every change</a>
-			<h1 class="flick-display">A light Debian desktop that feels finished.</h1>
+			<h1 class="flick-display">Familiar, hard to break, and it continues on your phone.</h1>
 			<p class="lede">
-				Version 2.0 on Debian 13 with a labwc Wayland session, Arc theming, and a live ISO you can install when you are ready.
+				Version 2.1 on Debian 13 with a labwc Wayland session, Arc theming, and a live ISO you can install when you are ready.
 			</p>
 			<div class="cta">
-				<a class="flick-btn primary" href="/download/">Download 2.0</a>
+				<a class="flick-btn primary" href="/download/">Download 2.1</a>
 				<a class="flick-btn ghost" href="/docs/01-overview/">Read the docs</a>
 			</div>
 		</div>
@@ -93,7 +95,7 @@ const keys = [
 	<section class="section features">
 		<div class="section-head">
 			<h2 class="flick-display">Built for everyday use</h2>
-			<p>What ships in FlickOS 2.0 — the same stack the ISO boots.</p>
+			<p>What ships in FlickOS 2.1 — the same stack the ISO boots.</p>
 		</div>
 		<ul class="feature-list">
 			{

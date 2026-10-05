@@ -21,10 +21,12 @@ the FlickOS desktop. Everything is in `packages/flickos-desktop/debian/control`.
   PipeWire, portals, polkit, NetworkManager, `flickos-settings`,
   `flickos-archive-keyring`, …). Also `systemd-timesyncd`: systemd only
   *recommends* a time daemon, so without it installed systems never set their
-  clock from the network; and `xdg-terminal-exec`, which Super+Enter and the
-  menu run.
+  clock from the network; `xdg-terminal-exec`, which Super+Enter and the
+  menu run; and `brightness-udev`, brightnessctl's udev rule (the `video`
+  group may set the backlight), without which the brightness keys and Quick
+  Settings' slider do nothing.
 - **`Recommends:`** apps and tools users may reasonably remove (foot, fuzzel,
-  pcmanfm, htop, nano, …).
+  Thunar, lxtask, nano, …).
 
 Why the split matters: if a user removes a package listed in **Depends**, apt
 also removes `flickos-desktop`. After that, `apt autoremove` would delete every
@@ -53,14 +55,18 @@ Default desktop configuration:
 
 | File in package | Installed to | Purpose |
 |---|---|---|
-| `usr/bin/flickos-session` | `/usr/bin/` | Starts the session: config directories, input settings (`flickos-control prepare`), desktop layout overlay (`flickos-layout prepare`), keyboard layout, `exec labwc`. Run by the login screen and by the tty1 script |
+| `usr/bin/flickos-session` | `/usr/bin/` | Starts the session: config directories, input settings (`flickos-control prepare`), desktop layout overlay (`flickos-layout prepare`), `$XDG_RUNTIME_DIR/flickos/bin` last on `PATH` (flickos-phone's `flickos-phone-on`, for the file manager's *Send to Phone*), keyboard layout, `exec labwc`. Run by the login screen and by the tty1 script |
 | `etc/profile.d/95-flickos-session.sh` | `/etc/profile.d/` | On tty1 login (live autologin, text login) runs `flickos-session` |
 | `usr/share/wayland-sessions/flickos.desktop` | same | The session for other display managers |
 | `etc/xdg/labwc/rc.xml`, `menu.xml`, `environment` | `/etc/xdg/labwc/` | Keybindings, root menu, cursor |
 | `etc/xdg/labwc/autostart` | `/etc/xdg/labwc/` | Calls `/usr/libexec/flickos/autostart` |
-| `usr/libexec/flickos/autostart` | `/usr/libexec/flickos/` | Starts kept screen arrangements (`flickos-control displays start`: kanshi, only while one is kept), wallpaper (`flickos-layout wallpaper`), panel (`flickos-layout panel`), notifications (and Do Not Disturb again: `flickos-control notifications`), applets, night light (`flickos-control night-light`, else the script), idle lock (`flickos-control idle`, else a fixed swayidle), and last the startup applications (`flickos-control startup run`) |
-| `usr/libexec/flickos/open-default` | `/usr/libexec/flickos/` | `browser` or `files`: starts the user's default app (`xdg-mime query default`, then `gio launch`), else `x-www-browser` or `pcmanfm`. Super+B, Super+E and the menu |
-| `etc/xdg/flickos/` | `/etc/xdg/flickos/` | foot, fuzzel and default-app config: `mimeapps.list`, and `xdg-terminals.list` (foot, for `xdg-terminal-exec`); `autostart/` hides the XDG autostart entries of what autostart starts itself (nm-applet, blueman, the polkit agent, xdg-user-dirs) and keeps the print queue applet off |
+| `usr/libexec/flickos/autostart` | `/usr/libexec/flickos/` | Starts kept screen arrangements (`flickos-control displays start`: kanshi, only while one is kept), wallpaper (`flickos-layout wallpaper`), panel (`flickos-layout panel`), notifications (and Do Not Disturb again: `flickos-control notifications`), applets, night light (`flickos-control night-light`, else the script), idle lock (`flickos-control idle`, else a fixed swayidle), the phone connection (`flickos-phone daemon`, which exits at once while off; not in the live session), and last the startup applications (`flickos-control startup run`) |
+| `usr/libexec/flickos/open-default` | `/usr/libexec/flickos/` | `browser` or `files`: starts the user's default app (`xdg-mime query default`, then `gio launch`), else `x-www-browser`, or Thunar (pcmanfm where Thunar is missing: systems installed before it replaced pcmanfm). Super+B, Super+E and the menu |
+| `etc/xdg/flickos/` | `/etc/xdg/flickos/` | foot, fuzzel and default-app config: `mimeapps.list` (folders: Thunar, else pcmanfm), and `xdg-terminals.list` (foot, for `xdg-terminal-exec`); `Thunar/uca.xml`, Thunar's right-click actions (Open Terminal Here with `xdg-terminal-exec`, Send to Phone); `autostart/` hides the XDG autostart entries of what autostart starts itself (nm-applet, blueman, the polkit agent, xdg-user-dirs) and keeps the print queue applet off |
+| `etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar.xml` | same | Thunar's defaults (xfconf): the path as buttons, a larger window. xfconfd is started by D-Bus without the session's `XDG_CONFIG_DIRS`, so it can't live in `/etc/xdg/flickos` |
+| `usr/lib/systemd/user/thunar.service.d/flickos.conf` | same | `XDG_CONFIG_DIRS`/`XDG_DATA_DIRS` with FlickOS's folders for a Thunar started by D-Bus (another program's *Show in Folder*), which otherwise reads Debian's `uca.xml` and saves a copy in `~/.config/Thunar/` that hides FlickOS's actions |
+| `etc/firefox-esr/flickos.js` | `/etc/firefox-esr/` | Firefox default prefs (Debian's firefox-esr reads every `.js` there; a user's own choice wins): vertical tabs |
+| `usr/lib/firefox-esr/distribution/distribution.ini` | same | Firefox's distribution customization: a FlickOS bookmark on the bookmarks toolbar, added once per profile (a deleted one stays deleted); id `flickos`, shown in Help → About |
 | `usr/libexec/flickos/lock` | `/usr/libexec/flickos/` | Locks the screen (Super+L, the menus): `flickos-control lock` (the background chosen in Settings), else `swaylock -f -c 383c4a` |
 | `usr/libexec/flickos/night-light` | `/usr/libexec/flickos/` | Starts wlsunset timed for the time zone's city (`zone1970.tab`), passing its own options on (`flickos-control night-light` gives `-t`) |
 | `usr/share/flickos/` | `/usr/share/flickos/` | waybar and mako config (the mako config has the `do-not-disturb` mode) |
@@ -96,12 +102,13 @@ the chosen layout and style at login and live (see
 
 | File in package | Installed to | Purpose |
 |---|---|---|
-| `usr/bin/flickos-layout` | `/usr/bin/` | Python 3 tool: `list`, `current`, `set`, `style list/current/set`, `clicks list/current/set`, `launcher list/current/set`, `menu-style list/current/set`, `clock list/current/set`, `state` (all of them and doctor's warnings as JSON, for the Settings window), `prepare`, `panel`, `supervise`, `wallpaper`, `doctor`, `pick` (chooser), `first-run`. Every `set` also takes `default` (removes the user's choice), and every change that shows is recorded for *Settings → History* |
-| `usr/share/flickos/layouts/ID/` | same | One folder per layout (`redmond`, `cupertino`, `traditional`): `layout.ini`, `waybar.jsonc`, `style.css`, `preview.png`, `wallpaper.jpg` |
-| `debian/links` | `/usr/share/backgrounds/flickos/ID.jpg` | Links to the layouts' wallpapers, for waypaper |
-| `usr/share/flickos/layouts/common/` | same | `modules.jsonc` and `base.css`, shared by every layout |
-| `usr/share/flickos/styles/ID/` | same | One folder per style (`dark`, `light`): `style.ini` (GTK, icon and labwc theme names) and the palettes `waybar-colors.css`, `foot.ini`, `fuzzel.ini`, `mako.conf` |
-| `etc/xdg/flickos/layouts.conf` | same | Default layout, style, desktop clicks, apps button, start menu style and clock (conffile) |
+| `usr/bin/flickos-layout` | `/usr/bin/` | Python 3 tool: `list`, `current`, `set`, `style list/current/set`, `clicks list/current/set`, `launcher list/current/set`, `menu-style list/current/set`, `clock list/current/set`, `state` (all of them and doctor's warnings as JSON, for the Settings window), `prepare`, `panel`, `reload-panel` (generate the panel again and restart it: flickos-phone, when its button comes or goes), `supervise`, `wallpaper`, `doctor`, `pick` (chooser), `first-run`. Every `set` also takes `default` (removes the user's choice), and every change that shows is recorded for *Settings → History* |
+| `usr/share/flickos/layouts/ID/` | same | One folder per layout (`redmond`, `cupertino`, `traditional`): `layout.ini`, `waybar.jsonc`, `style.css`, `preview.png` |
+| `usr/share/backgrounds/flickos/ID.jpg` | same | The layouts' photos (their wallpapers until 1.37), now only choices in waypaper |
+| `debian/links` | `/usr/share/backgrounds/flickos/flickos-ID.png` | Links to the styles' wallpapers, for waypaper |
+| `usr/share/flickos/layouts/common/` | same | `modules.jsonc` and `base.css`, shared by every layout. `custom/phone` (flickos-phone's button) is defined there, and the generated panel has it just before `custom/tiler` only while `flickos-phone get enabled` says yes (never in the live session) |
+| `usr/share/flickos/styles/ID/` | same | One folder per style (`dark`, `light`): `style.ini` (GTK, icon and labwc theme names), the palettes `waybar-colors.css`, `foot.ini`, `fuzzel.ini`, `mako.conf`, and `wallpaper.png` (shown with every layout) |
+| `etc/xdg/flickos/layouts.conf` | same | Default layout, style, desktop clicks, apps button, start menu style, clock and Quick Settings (conffile) |
 | `usr/share/applications/flickos-layout.desktop` | same | *Desktop Layout & Style* in the app launcher (`flickos-layout pick`) |
 | `etc/skel/.config/flickos/choose-layout` | same | First-login marker: new accounts see the chooser once (`flickos-layout first-run`). Conffile |
 | `debian/flickos-layouts.lintian-overrides` | `/usr/share/lintian/overrides/` | Allows the marker in `/etc/skel` (see below) |
@@ -129,8 +136,14 @@ the chosen layout and style at login and live (see
 - **It depends on `libglib2.0-bin`** for `gsettings` (the icon theme, to find
   icons for pinned apps in a bar; GTK settings when switching styles) and
   `gio launch` (clicks on those icons).
-- **It depends on `sfwbar`** (`+flickos3` or later, which has the `running`
-  class and `sensor_maximized`) for the Cupertino dock.
+- **It depends on `sfwbar`** (`+flickos4` or later: `+flickos3` has the
+  `running` class and `sensor_maximized`, `+flickos4` highlights the current
+  desktop) for the Cupertino dock and Traditional's bottom panel (window list
+  and desktop switcher).
+- **It gives a layout labwc desktops** (`Desktops=`, only Traditional: 4)
+  through the rc.xml overlay: `<desktops>` named `1` to `4` and the keys
+  Super+Ctrl+←/→ and Super+1 to Super+4 (with Shift to take the window
+  along).
 - **It merges other programs' labwc fragments** into the rc.xml overlay
   (`FRAGMENTS`, in this order): flickos-control's `control/labwc.xml`
   (`<libinput>` device categories, appended after the system rc.xml's, and
@@ -138,6 +151,18 @@ the chosen layout and style at login and live (see
   flickos-control's `control/environment` (the keyboard layout) it writes an
   overlay `labwc/environment`: the system one's lines (and its `environment.d/`),
   then the fragment's, since labwc reads only the first environment file it finds.
+- **It plugs in add-ons** (`addons()`): programs that aren't FlickOS packages
+  (yet), each a folder `~/.config/flickos/addons/NAME/` or
+  `/usr/share/flickos/addons/NAME/` (the user's wins; an empty one turns off
+  the system's). Its `labwc.xml` gives keybinds and window rules only, merged
+  after `FRAGMENTS`; a key the desktop already binds is left out, and a
+  keybind's `description="…"` (FlickOS's, labwc logs unknown attributes) is
+  taken out and written to `$XDG_RUNTIME_DIR/flickos/shortcuts/addons.json`
+  for flickos-shortcuts. Its `waybar.jsonc` (`custom/` modules the layout doesn't have) goes
+  before the tiling button (`MODULE_BEFORE`, after the phone's), and its
+  `style.css` is imported after the layout's. `flickos-layout addons` lists
+  them; `reconfigure` and `reload-panel` apply a change. Nothing is generated
+  without one. See [09](/docs/09-customizing/#add-ons).
 - **It owns the panel clock's hours** (`clock`: `24h`, the default and the
   layouts' own formats, or `12h`): generating the panel gives each bar with a
   clock its formats with `%I:%M %p` for `%H:%M` (the bar's own, else the
@@ -150,6 +175,16 @@ the chosen layout and style at login and live (see
   generated `custom/launcher` and the desktop clicks at the menu, and runs
   `flickos-menu daemon` with the panel. While it is off, none of that exists.
   It doesn't depend on flickos-menu. See [flickos-menu](#flickos-menu).
+- **It owns the Quick Settings choice** (`quick-settings`: `off`, the
+  default, or `on`, offered while flickos-menu is installed). While it is on,
+  it writes the corner (`Quick=` in `layout.ini`) to `menu/quick`, groups the
+  generated panel's `wireplumber` and `battery` into `group/quick` (one hover,
+  `#quick:hover` in base.css) and points their clicks at it (`QUICK_TOGGLE`;
+  the volume icon's right click opens pavucontrol), binds Super+A in the
+  rc.xml overlay (replacing labwc's default maximize), makes desktop clicks
+  close it, and runs `flickos-menu daemon` with the panel; the daemon runs
+  while the start menu or Quick Settings is on. It Breaks flickos-menu before
+  1.6, which has no `quick`.
 - **It depends on `python3-gi` and `gir1.2-gtk-3.0`** for the chooser window.
   GTK 3 follows the Arc theme. zenity (GTK 4/libadwaita) was rejected because
   libadwaita ignores Arc and would add about 12 MB. Both packages were already in
@@ -184,9 +219,13 @@ python3-platformdirs) are all in Debian.
 ### `sfwbar`
 
 [sfwbar](https://github.com/LBCrion/sfwbar), a GTK 3 layer-shell panel for
-stacking Wayland compositors, meant as the Cupertino layout's dock: a taskbar
-with pinned apps that hides and slides back up when the pointer touches the
-bottom edge (`sensor`), without reserving screen space (`exclusive_zone = "0"`).
+stacking Wayland compositors. FlickOS uses it where waybar falls short: the
+Cupertino layout's dock (a taskbar with pinned apps that hides and slides back
+up when the pointer touches the bottom edge, `sensor`, without reserving
+screen space, `exclusive_zone = "0"`) and the Traditional layout's bottom
+panel (a window list whose titles get shorter as windows open, and a pager for
+labwc's desktops, which it reads over `ext-workspace-v1`; waybar 0.12 has
+neither).
 Debian packaged it up to 1.0~beta13, then removed it, so FlickOS packages
 upstream's source.
 
@@ -204,10 +243,12 @@ upstream's source.
   beta17 and before `1.0~beta18+flickos1`.
 - **FlickOS changes** (listed in `debian/README.source`, marked `FlickOS:` in
   the code): an app's dock button gets the CSS class `running` while the app has
-  a window (the open-app line), and a bar property `sensor_maximized`: the dock
-  hides only while the active window is maximized or fullscreen on its monitor.
-- **Used by `flickos-layouts`** (a Depends): `flickos-layout` generates the dock
-  config in the layout overlay and runs `sfwbar -f FILE`
+  a window (the open-app line), a bar property `sensor_maximized`: the dock
+  hides only while the active window is maximized or fullscreen on its monitor,
+  and a fix so the pager marks the current desktop `focused` (upstream never
+  did once another state flag was set).
+- **Used by `flickos-layouts`** (a Depends): `flickos-layout` generates the
+  layout's sfwbar config (`Dock=`) in the layout overlay and runs `sfwbar -f FILE`
   ([The generated panel](/docs/09-customizing/#the-generated-panel)).
 - **License:** GPL-3 (version 3 only), protocol files MIT/HPND, weather icons
   MIT (`debian/copyright`).
@@ -233,6 +274,12 @@ it needs no bindings.
   the user's file, since it replaces the system one), `flick-tiler gap N` the
   gap, and `status` also gives the main window width (`ratio`) and `gap`.
   `mode`, `ratio` and `gap` take `default` (removes the user's value).
+- **Show Desktop:** `flick-tiler show-desktop` (the panel's Show Desktop
+  button, `custom/desktop`: a slim strip at the right end of the panel in
+  every layout)
+  minimizes every shown window, and when none is shown gives back the ones it
+  minimized, the focused one last. labwc 0.8 has no `ToggleShowDesktop`, and
+  the daemon already follows the windows, tiling on or off.
 - **History:** every change of these settings (Super+T and the panel
   included) is recorded for *Settings → History*, like flickos-layout's (see
   flickos-control).
@@ -263,16 +310,218 @@ go. Also *Settings → Keyboard Shortcuts* and the app launcher
   overlay with flick-tiler's keys while tiling is on, or flickos-settings'),
   plus labwc's built-in ones (`DEFAULT_KEYBINDS`) with `<default />`. Read
   again every time it is shown. Descriptions come from `COMMANDS` and
-  `ACTIONS`; media, volume and brightness keys are left out.
+  `ACTIONS`, and for add-ons' keys from flickos-layouts'
+  `$XDG_RUNTIME_DIR/flickos/shortcuts/addons.json` (under *Other*); media,
+  volume and brightness keys are left out.
 - **Started by** flickos-settings' autostart (`flickos-shortcuts daemon`, one
   per session: `$XDG_RUNTIME_DIR/flickos/shortcuts.lock`).
 - **A Depends of `flickos-desktop`** and in the sanity hook's `REQUIRED`.
 - **Unit tests** in `tests/` (rc.xml reading, descriptions, the hold timing,
   the Wayland client against a fake compositor), run at package build.
 
+### `flickos-phone`
+
+Pages, files and text between an Android phone with the **KDE Connect app**
+and the computer: *Share → KDE Connect → this computer* on the phone arrives
+here as a notification (a click opens the page or file; files go into
+Downloads), and `flickos-phone send FILE|URL`, `--text`, `--clipboard` go the
+other way. One Python 3 file, `usr/bin/flickos-phone`, standard library only
+(no GTK, except the file chooser of `send --choose`), plus the conffile `etc/xdg/flickos/phone.conf`. Design, decisions
+and the phase 0 measurements with a real phone:
+[design/flickos-phone.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-phone.md).
+
+- **Off by default** (`flickos-phone set enabled yes|no|default`); while off
+  nothing runs. Never in the live session. Settings in `[Phone]` of
+  `phone.conf`, then `~/.config/flickos/phone` (`Enabled`, `Name`,
+  `Networks`); every change is recorded for *Settings → History*.
+- **The protocol:** only the part of KDE Connect's (version 8) that moving
+  things needs: pairing, `kdeconnect.share.request`, `kdeconnect.clipboard`,
+  `kdeconnect.ping`, plus the phone's battery (in) and
+  `kdeconnect.findmyphone.request` (out, to ring it). The phone's app hides everything else (remote input,
+  commands). In KDE Connect the device that opens the TCP connection is the
+  TLS *server*; the daemon never opens one to a phone (it broadcasts, and
+  answers a phone's broadcast with a UDP packet so the phone connects), so it
+  is always the TLS client and Python's `ssl` can check an unknown phone's
+  certificate. A paired phone's certificate is pinned.
+- **Pairing:** `flickos-phone pair` waits for the phone to ask, shows the
+  verification key both screens show, and asks (`--json`: events as JSON
+  lines and the answer on stdin, for *Settings → Phone*'s *Add Phone…*).
+  Pair requests at any other time are refused, and the window closes as soon
+  as `pair` goes away. `devices`, `forget ID`, and `state` (everything the
+  Settings page shows, one JSON object, with each connected phone's
+  address). `ping [--to ID] [TEXT]` shows TEXT as a notification on the
+  phone (for add-ons such as flickos-phone-screen's reminder).
+- **Where it listens:** only on the NetworkManager connections in `Networks`
+  (the one a phone was paired on is added; `flickos-phone network
+  list|add|remove`, `set networks`), or while `pair` runs. FlickOS's firewall
+  drops incoming connections: with ufw on, phones need TCP 1716 and 1739–1764
+  allowed (*Settings → Phone → Let phones through the firewall*).
+- **Panel button** (`custom/phone`, only while it's on; flickos-layouts puts
+  it before the tiling button): `status --panel` gives waybar the phone icon,
+  dimmed while no phone is connected, and a tooltip; the daemon sends waybar
+  `SIGRTMIN+9` (`PANEL_SIGNAL`) when a phone connects or goes. A click opens
+  `flickos-phone menu` (fuzzel): *Send Files to Phone…* (`send --choose`,
+  GTK's file chooser), *Send Text to Phone…* (`send --type-text`, typed into
+  fuzzel), *Send Clipboard to Phone* (a web address
+  goes as a page, anything else onto the phone's clipboard), *Send
+  Screenshot to Phone* (`send --screenshot`, with grim), *Ring My Phone*
+  (`ring`), *Show Phone Screen* (only while a program called
+  `flickos-phone-screen` is installed: the sold phone screen add-on, see
+  `docs/design/flickos-phone-screen.md`), the newest received items (*Open*, *Show … in Folder*, *Copy*),
+  *Phone Settings*. The tooltip shows the phone's battery.
+  `set enabled` runs `flickos-layout reload-panel`, so the button comes and
+  goes at once.
+- **Send to Phone** in Thunar's menu for files: a custom action in
+  flickos-settings' `/etc/xdg/flickos/Thunar/uca.xml` runs
+  `flickos-phone send --notify %F` (the result as a notification). Thunar
+  can't hide a custom action, so the item is always there; while the phone
+  connection is off the notification says to turn it on in *Settings →
+  Phone* (`not_running_reason`). A `~/.config/Thunar/uca.xml` of the
+  user's hides it (Thunar reads only the first `uca.xml`); *Settings →
+  Phone* warns about one without it. The daemon keeps a link `flickos-phone-on`
+  in `$XDG_RUNTIME_DIR/flickos/bin`, which flickos-settings'
+  `flickos-session` puts last on `PATH`, while the phone connection runs:
+  flickos-screenshot offers *Send to Phone* only while it finds it.
+- **Files:** identity and paired phones in `$XDG_DATA_HOME/flickos/phone/`
+  (0700), what came from a phone (the last 20, a week) in
+  `$XDG_STATE_HOME/flickos/phone/received.jsonl` (`flickos-phone received`),
+  the daemon's lock and control socket in `$XDG_RUNTIME_DIR/flickos/phone/`.
+- **Started by** flickos-settings' autostart (`flickos-phone daemon`, which
+  exits at once while off; one per session), and by `set enabled yes`.
+- **A Depends of `flickos-desktop`** and in the sanity hook's `REQUIRED`.
+- **Unit tests** in `tests/` (certificates and the verification key against
+  `openssl`, file names, settings, and a pretend phone on 127.0.0.1 that
+  pairs, shares and fetches), run at package build.
+
+### `flickos-screenshot`
+
+Screenshots and screen recordings, modeled on the Windows Snipping Tool. One
+Python 3 file, `usr/bin/flickos-screenshot` (GTK 3 and gtk-layer-shell only
+for the bar, the frozen screen and a recording's outline; GStreamer only in
+the recorder), plus its desktop file *Screenshot*, FlickOS's portal-wlr
+config and screen chooser. Design, measurements and the phases still to come
+(markup, settings): [design/flickos-screenshot.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md).
+
+- **Keys** (flickos-settings' rc.xml): Print = `shot region`, Shift+Print =
+  `shot screen` (every screen), Ctrl+Print = `shot region --copy-only`,
+  Super+Shift+S = the capture bar (Photo or Video, Area, Full Screen, a delay
+  of 3, 5 or 10 seconds, and a video's sound; delay and sound are remembered
+  in `$XDG_STATE_HOME/flickos/screenshot/last`), Super+Shift+R = the bar
+  with Video chosen, or stop the recording (`bar --video`). *Screenshot* is
+  also in both root menus.
+- **An area** is chosen on a frozen screen: `grim -t ppm` grabs every screen
+  before GTK is imported, one layer-shell surface per screen shows its part
+  dimmed, and the area is cut out of that grab (`to_pixels`: layout
+  coordinates to the picture's pixels, whatever the layout's origin and the
+  screens' scale). Drag, or click for the whole screen; arrow keys, Space,
+  Enter, Tab and Escape do the same from the keyboard. With a delay the area
+  is chosen first and cut out of a second grab taken when the delay is over.
+- **Every screenshot** is saved as `~/Pictures/Screenshots/Screenshot
+  YYYY-MM-DD HH-MM-SS.png` (never overwritten: ` (2)`), copied with `wl-copy`,
+  and announced by a notification whose click opens it in the markup window.
+  A copy-only picture is kept as `$XDG_RUNTIME_DIR/flickos/screenshot/last.png`
+  for that click.
+  The sound theme's shutter sound plays and what was taken flashes white,
+  from the `feedback` child, started before the grab and told on its stdin;
+  off with the desktop's event sounds or animations (GSettings), and Do Not
+  Disturb silences the sound. The next grab waits for `flash.lock`.
+- **The markup window** (`edit FILE`, a plain GTK window titled
+  *Screenshot*): pen, highlighter, arrow, box, text, *Hide* (a solid box,
+  never a blur that could be read back) and crop, in five Arc colors and three
+  widths; undo and redo; zoom (Ctrl+plus/minus, Ctrl+0 fits); *Copy*,
+  *Save* (into the screenshot's own file; a copy-only one asks where) and
+  *Save As…*; *Send to Phone* while flickos-phone runs (`flickos-phone
+  send`); *New Screenshot* hides it and runs the bar with only Photo
+  (`bar --photo`). Closing, or a new picture over unsaved markup, asks first,
+  unless it was copied. One window per session: a second `edit` hands its
+  picture over (`edit-request`, SIGUSR1 to the PID in `screenshot/edit.lock`).
+- **Recording** (`record region|screen [--delay N] [--sound
+  none|computer|microphone|both]`, `stop`, `status [--panel]`): the recorder
+  asks xdg-desktop-portal's ScreenCast for one screen and encodes it with
+  GStreamer in the same process, which loads no GTK: H.264 (x264 ultrafast)
+  and Opus in a fragmented MP4, written straight into `~/Videos/Screen
+  Recordings/Screen Recording YYYY-MM-DD HH-MM-SS.mp4`, so a crash keeps all
+  but the last second. An area is recorded by cropping its screen
+  (`recording_crop`, positions and scale from `wlr-randr --json`), with a line
+  drawn just outside it (the `outline` child). It counts down (3 s by
+  default) before anything is kept; meanwhile a stream with no frame is
+  restarted (portal-wlr's stuck first frame, `Recorder`). The panel's
+  `custom/recording` (flickos-layouts, next to the clock) shows the countdown
+  and then the time from `$XDG_RUNTIME_DIR/flickos/screenshot/panel.json`,
+  which the recorder rewrites and signals (SIGRTMIN+10 to the user's
+  waybars) once a second; a click runs `stop`, which signals only the PID in
+  `recording.lock`. It also stops when the portal ends the session or less
+  than 200 MB are free.
+- **The portal's screen chooser**: the conffile
+  `/etc/xdg/xdg-desktop-portal-wlr/labwc` runs
+  `/usr/libexec/flickos/screencast-chooser`, which answers the screen named
+  in `$XDG_RUNTIME_DIR/flickos/screenshot/screencast-request` if that file is
+  at most 2 s old, and asks as before for everyone else (slurp, else
+  fuzzel). portal-wlr reads it only when it starts: after the install, from
+  the next login. A user's own `~/.config/xdg-desktop-portal-wlr/` file wins.
+- **Runs nothing in the background** and nothing at login: each command ends
+  when the picture is saved (the notification's child waits up to 30 s for a
+  click), a recording when it is stopped, and the markup window when it is
+  closed. One capture at a time
+  (`$XDG_RUNTIME_DIR/flickos/screenshot.lock`), one recording
+  (`screenshot/recording.lock`).
+- **A Depends of `flickos-desktop`** and of `flickos-settings` (its keys run
+  it), and in the sanity hook's `REQUIRED`.
+- **Unit tests** in `tests/` (the crop math, file names, saving, copying,
+  notifications, the recording's crop and pipelines, the recorder's
+  countdown, gates and restart with a fake pipeline, the panel's signal with a
+  fake `/proc`, the chooser script, the markup's undo, crop and zoom math,
+  what it draws (with python3-cairo where installed) and the hand-over
+  between two `edit`s), with stub programs on `PATH`, run at package build.
+
+### `flickos-countme`
+
+The anonymous weekly count: how many computers run which FlickOS version,
+without knowing which ones (Fedora's "countme" idea). What is sent and kept:
+[PRIVACY.md](https://github.com/dvbondoy/FlickOS/blob/main/PRIVACY.md). One Python 3 file, `usr/bin/flickos-countme`
+(stdlib only), plus `usr/libexec/flickos/countme-helper` (root, through
+pkexec).
+
+- **The request:** `GET URL?version=2.1&age=N`, at most once per ISO week
+  (UTC). `version` is `FLICKOS_VERSION` from flickos-branding's
+  `/usr/lib/flickos-release`; `age` is 1 (first request of a computer installed
+  in the last week, so each install is counted once), 2 (a month), 3 (half a
+  year) or 4 (`AGE_BUCKETS`). Nothing else: no id, no hardware.
+- **When:** `flickos-countme.timer` (daily, random delay up to 6 h,
+  `Persistent=true`) starts `flickos-countme.service` (oneshot, user
+  `_flickos-countme` from `debian/flickos-countme.sysusers`, sandboxed). A run
+  that already counted this week exits at once. Nothing is sent with
+  `boot=live`, while `Enabled=no`, or while `URL` is empty (it is
+  `https://flickos-countme.dvbondoy.workers.dev/v1/countme`, `server/countme/`). A failed request
+  is retried the next day. Installing or upgrading the package starts nothing
+  (`dh_installsystemd --no-start`).
+- **Settings:** `/etc/flickos/countme` (not a conffile): `Enabled=` (default
+  yes), `Installed=` (written only by installers up to
+  flickos-installer 1.24, which asked; else the first
+  run's date in `/var/lib/flickos-countme/first-run`), `Url=` (testing).
+  `flickos-countme enable|disable` run `pkexec countme-helper on|off` (polkit
+  `org.flickos.countme.policy`; turning it off needs no password).
+  `status` (JSON) and `show` print the state and the exact request.
+- **Installer:** asks nothing (it did up to flickos-installer 1.24); the
+  first slide of its install slideshow (`branding/flickos/show.qml`) says the
+  count is on and where to turn it off.
+- **Settings window:** the *Privacy* page of flickos-control, shown while
+  flickos-countme is installed.
+- **A Depends of `flickos-desktop`** (since 1.26) and in `REQUIRED`: systems
+  installed before it get it with an upgrade and, never asked, are counted
+  until they turn it off (opt-out). Removing the package removes the desktop,
+  so turning it off is the way out.
+- **The server:** `server/countme/` (Cloudflare Worker + D1, deploy steps in
+  its README). While `URL` in `usr/bin/flickos-countme` is empty, nothing is
+  sent.
+- **Unit tests** in `tests/` (age buckets, weeks, config, live session, retry
+  after a failure, the helper), run at package build. The boot test checks
+  that the timer is enabled and that the live session sends nothing.
+
 ### `flickos-menu`
 
-The start menu for the panel's apps button (the default), in the style of the
+The start menu for the panel's apps button (the default) and Quick Settings
+(off by default), in the style of the
 desktop layout (`MenuStyle=`): Redmond's is classic (Windows 7: pinned apps,
 *All Apps* by category and search on the left; the user, their folders,
 Settings, Software and the power buttons on the right), Traditional's is
@@ -282,10 +531,19 @@ categories (GNOME 2/Whisker), Cupertino's a full-screen grid of app icons
 (`flickos-layout launcher set fuzzel`). Design and measurements:
 [design/flickos-menu.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-menu.md).
 
+**Quick Settings** is the daemon's second window, opened by the panel's volume
+and battery icons and Super+A while the user turns it on under *Quick
+Settings* in *Settings → Desktop Layout & Style* (`flickos-layout
+quick-settings set on`): switches for Wi-Fi, Do Not Disturb, night light,
+tiling and the phone, sliders for volume and brightness, the battery,
+Settings and Lock Screen. Design, measurements and what is left (Bluetooth):
+[design/flickos-quick-settings.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-quick-settings.md).
+
 | File in package | Installed to | Purpose |
 |---|---|---|
-| `usr/bin/flickos-menu` | `/usr/bin/` | One Python 3 file: `daemon`, `toggle`, `show`, `hide`, `super`, `list`, `pinned`, `pin`, `unpin`, `bench` |
-| `usr/share/flickos/menu/style.css` | same | The look, in GTK theme colors only, so both styles recolor it (in `tools/check-palette.py`) |
+| `usr/bin/flickos-menu` | `/usr/bin/` | One Python 3 file: `daemon`, `toggle`, `show`, `hide`, `super`, `quick`, `list`, `pinned`, `pin`, `unpin`, `bench` |
+| `usr/share/flickos/menu/quick.py` | same | Quick Settings' code, which the daemon loads only while it is on (`load_quick`) |
+| `usr/share/flickos/menu/style.css` | same | The look of both windows, in GTK theme colors only, so both styles recolor it (in `tools/check-palette.py`) |
 | `etc/xdg/flickos/menu.conf` | same | Default pinned apps (conffile). The live session uses flickos-installer's `/etc/xdg/flickos-live/flickos/menu.conf` |
 | `tests/` | not installed | Unit tests |
 
@@ -301,7 +559,16 @@ categories (GNOME 2/Whisker), Cupertino's a full-screen grid of app icons
 - **A tap of Super** is labwc's `onRelease` keybind; the daemon ignores it
   unless Super was pressed alone and let go within `TAP_MS` (600 ms), so a hold
   still shows flickos-shortcuts' sheet.
-- **Costs while on:** about 30 MB of private memory and no CPU while idle.
+- **Costs while on:** about 35 MB of private memory and no CPU while idle.
+  Quick Settings adds about 2 MB, and about 31 MB when the start menu is off.
+- **Quick Settings owns no setting.** Each control runs the program that owns
+  it (`nmcli`, `flickos-control set`, `flick-tiler on|off`, `flickos-phone
+  set enabled`, `wpctl`, `brightnessctl`) and reads it again at every show, in
+  threads; the battery and backlight come from `/sys`. A control whose
+  program or hardware is missing is left out. While hidden nothing runs;
+  while shown, volume, Wi-Fi and battery are read every 2 seconds. Its code is
+  a second file because this script, in `/usr/bin`, has no `.pyc`: compiling
+  it would cost every start menu session about 2 MB.
 - **Pinned apps:** `Pinned=` in the first `flickos/menu.conf` in
   `XDG_CONFIG_DIRS`, until the user pins or unpins one (right-click an app, or the Menu key);
   then `~/.config/flickos/menu`.
@@ -316,14 +583,15 @@ categories (GNOME 2/Whisker), Cupertino's a full-screen grid of app icons
 ### `flickos-control`
 
 The Settings window (*Settings → All Settings*, or `flickos-control` in the
-app launcher): one window with a sidebar of pages, and the owner of the mouse,
+app launcher): one window with a sidebar of pages grouped under *Desktop*,
+*Devices*, *Apps*, *System* and *Accounts and security*, and the owner of the mouse,
 touchpad, keyboard and idle settings. One Python 3 file,
 `usr/bin/flickos-control`, GTK 3 through python3-gi with no CSS of its own, so
 it follows the Dark or Light style. Design and decisions:
 [design/flickos-control.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-control.md).
 
 - **Pages:** *Desktop Layout & Style* (layout with previews, style, desktop
-  clicks), *Displays* (the screens now, *Arrange Screens…* starts wdisplays,
+  clicks), *Displays* (the screens now, *Arrange Screens…* starts wdisplays through `displays arrange`, which moves a screen it turns on over another beside them,
   *Keep This Arrangement*, the kept arrangements; night light on or off and
   its warmth; shown while kanshi and wlr-randr are installed), *Mouse & Touchpad*, *Keyboard* (layout and
   variant, repeat, Num Lock, and the system layout), *Language & Region*
@@ -349,10 +617,20 @@ it follows the Dark or Light style. Design and decisions:
   administrator or not, set a password; installed systems only), *Firewall*
   (ufw on or off; shown while ufw is installed), *Tiling* (on/off, arrangement, main window width, gap, apps that
   always float), *Keyboard Shortcuts* (the list, and a button for the sheet),
+  *Phone* (flickos-phone on or off, the name phones see, *Add Phone…* with the
+  verification key through `flickos-phone pair --json`, the paired phones and
+  networks with *Forget*, what came from a phone with *Open*/*Copy*, and *Let
+  phones through the firewall*, the system setting `firewall.phones`: the
+  helper's `firewall-phones on|off` writes a ufw app profile,
+  `/etc/ufw/applications.d/flickos-phones`, and allows it from private
+  addresses only; the profile is the readable state. Read with one
+  `flickos-phone state`, again every 3 s while shown; installed systems with
+  flickos-phone only),
   *History* (recent changes with *Undo*; see below) and
   *More Settings* (tiles that start Wallpaper, Appearance, Displays, Network,
   Sound, Bluetooth, Printers and Software Updates; a tile is hidden when its app
-  isn't installed) and *About* (FlickOS version from `/usr/lib/flickos-release`,
+  isn't installed), *Privacy* (the weekly count through `flickos-countme`, only
+  while it is installed) and *About* (FlickOS version from `/usr/lib/flickos-release`,
   Debian, Linux, computer, processor, memory, graphics via `lspci`, disk,
   desktop; *Copy System Info* puts the same text plus the FlickOS packages'
   versions on the clipboard with `wl-copy`, and *Report a Problem* opens the
@@ -405,6 +683,13 @@ it follows the Dark or Light style. Design and decisions:
   `-t` and `FLICKOS_NIGHT_LIGHT=1`, or nothing while it is off. A change or a
   new time zone restarts only FlickOS's wlsunset (the mark, or the script's
   own `-l -L`/`-S -s` options).
+- **Screen zoom** (*Accessibility*; `zoom.area` screen or lens,
+  `zoom.lens-size`, `zoom.step`, `zoom.smooth`; `~/.config/flickos/zoom`,
+  conffile `zoom.conf`) is labwc's `<magnifier>` in `control/labwc.xml`: the
+  area becomes `width` and `height` (-1 for the whole screen), the step
+  `increment`, smoothing `useFilter`. flickos-layout sets these over
+  flickos-settings' rc.xml values (flickos-layouts >= 1.37); labwc applies
+  them at once, even while zoomed. The keys are flickos-settings'.
 - **Do Not Disturb** (`notifications.do-not-disturb`,
   `~/.config/flickos/notifications`, conffile `notifications.conf`) is
   mako's `do-not-disturb` mode (flickos-settings' mako config: all but
@@ -426,7 +711,10 @@ it follows the Dark or Light style. Design and decisions:
   (`flickos-control updates` prints them): on or off
   (`APT::Periodic::Unattended-Upgrade`), the scope (the
   `Unattended-Upgrade::Origins-Pattern` list: `security`, `debian` =
-  Debian's own, `all` = also `trixie-updates` and FlickOS, else `custom`),
+  Debian's own plus FlickOS's repo (the default, from flickos-archive-keyring's
+  `51flickos-origins`), `all` = also `trixie-updates`, `debian-only` =
+  Debian's own alone (an older helper's `debian`; shown, never offered), else
+  `custom`),
   restarting (`no`, `idle` = when nobody is logged in, `always`), and the last
   run (the stamp file's time).
 - **Kept screen arrangements** (`flickos-control displays
@@ -606,6 +894,14 @@ Installs the FlickOS apt repository's public key to
 `packages/flickos-archive-keyring/keyrings/flickos-archive-keyring.asc`,
 created by `repo/new-key.sh` (see [05 – Apt repository](/docs/05-apt-repository/)).
 It must be committed to git. It's the *public* key and safe to publish.
+
+Also ships the repository itself (`/etc/apt/sources.list.d/flickos.sources`),
+so a new version of this package can move it, and
+`/etc/apt/apt.conf.d/51flickos-origins`, which adds the repository
+(`origin=FlickOS,…,label=FlickOS`, its `Origin` and `Label`) to the origins
+automatic updates install: Debian's `50unattended-upgrades` list plus this is
+the Updates page's default scope. A choice on that page replaces the whole
+list (`60flickos-updates`), and *Security fixes only* leaves FlickOS out.
 
 ## Anatomy of a package
 

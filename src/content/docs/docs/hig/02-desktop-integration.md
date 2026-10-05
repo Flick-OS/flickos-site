@@ -68,8 +68,8 @@ Super for desktop actions. Leave Ctrl and Alt combinations to apps.
 ### INT-6 Must: It works in all three layouts and both styles
 
 Test a change in Redmond (bottom panel), Cupertino (top bar and a dock that
-auto-hides over windows) and Traditional (top panel and window list), in the
-Dark and the Light style. Things that break:
+auto-hides over windows) and Traditional (top panel, and window list with 4
+desktops), in the Dark and the Light style. Things that break:
 
 - A layer-shell surface (menu, sheet) anchored to the wrong edge, or covering
   the panel. Read the corner from the layout (`Menu=`, the `menu/anchor` file),
@@ -132,6 +132,27 @@ menu is the one case so far: since flickos-layouts 1.23 the apps button opens
 it unless the user chose the app launcher, for about 35 MB of private memory
 and no CPU while idle
 ([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-menu.md#adr-010-on-by-default)).
+
+**A tool that runs only when asked.** A program that runs no process until
+the user presses its key or opens it, generates nothing in the overlay, and
+ends when its job is done may be installed for everyone with its keys bound,
+like any app in the menu. What it costs while unused is its disk space and
+its keys: an ADR in its design document names both, and the keys must not
+take one an app or labwc already uses
+([INT-5](#int-5-must-a-new-keybinding-shows-on-the-shortcut-sheet)). Anything
+it adds that runs or shows without being asked (a panel module, a daemon)
+still needs its own decision. Screenshots are the one case so far: the Print
+keys, which existed already, Super+Shift+S and Super+Shift+R run
+`flickos-screenshot`, and nothing of it runs in between
+([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md#adr-002-on-by-default-as-the-print-keys-already-are)).
+Its panel button is such a decision: `custom/recording` is in every layout's
+panel, empty and hidden while nothing records, because adding it only when a
+recording starts would restart the panel into the video
+([ADR-007](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md#adr-007-while-recording-the-panel-shows-it-and-stops-it)).
+It costs one `cat` of a missing file when the panel starts. Screen zoom is
+the second case: labwc's own magnifier, so no program at all, with
+Super+=, Super+-, Super+0 and Super+scroll bound for everyone
+([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-zoom.md#adr-002-on-by-default-keys-named-here)).
 
 ### INT-10 Must: Login programs start from FlickOS's autostart and stay single
 

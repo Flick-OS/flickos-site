@@ -104,6 +104,7 @@ notifications, docs.
 | style (*Dark*, *Light*) | theme, mode. *Theme* is GTK's, in *Appearance* |
 | panel | bar, taskbar, waybar |
 | dock | sfwbar |
+| desktop (Traditional's 1 to 4) | workspace, virtual desktop |
 | apps button, start menu | launcher, fuzzel |
 | window buttons | title bar buttons, decorations |
 | wallpaper | background |
@@ -115,6 +116,8 @@ notifications, docs.
 | administrator | root, sudo, admin |
 | turn on, turn off | enable, disable, activate |
 | Do Not Disturb | DND |
+| phone (the phone connection's page and messages; tablets pair the same way) | device, mobile, handset |
+| pair, forget (a phone) | link, connect, trust (for pairing); unpair, remove, delete (for forgetting) |
 
 Add a word here when a new feature brings one.
 

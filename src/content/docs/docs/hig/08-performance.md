@@ -88,12 +88,14 @@ Before a new program, daemon, dependency or feature is merged, its costs are
 measured and written in its design doc (or the commit message for a small
 change):
 
-- **memory:** private or PSS of each new process (`smem`, or `Private_*` in
-  `/proc/PID/smaps_rollup`), with and without its window shown,
-- **disk:** installed size including every new dependency
-  (`apt install --simulate` on trixie, `Installed-Size`),
+- **memory:** private or PSS of each new process (`tools/measure.py PID`,
+  which reads `/proc/PID/smaps_rollup`), with and without its window shown,
+- **disk:** installed size including every new dependency, compared with the
+  image rather than the build host (`tools/package-cost.py PKG`, an
+  `apt install --simulate` without Recommends),
 - **time:** its effect on the PERF-1 budgets and on login,
-- **CPU while idle:** zero, or why not.
+- **CPU while idle:** zero, or why not (`tools/measure.py` also counts
+  wakeups a minute).
 
 ### PERF-8 Must: No heavy dependencies
 

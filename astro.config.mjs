@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import mermaid from 'astro-mermaid';
 import tailwindcss from '@tailwindcss/vite';
+import { store } from './src/config/store';
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,7 +18,7 @@ export default defineConfig({
 		starlight({
 			title: 'FlickOS',
 			description:
-				'FlickOS 2.0 — a lightweight Debian 13 Wayland desktop with live ISO and Calamares installer.',
+				'FlickOS 2.1 — a lightweight Debian 13 Wayland desktop with live ISO and Calamares installer.',
 			favicon: '/favicon.svg',
 			disable404Route: true,
 			logo: {
@@ -84,6 +85,16 @@ export default defineConfig({
 						{ label: 'Audit', slug: 'docs/hig/audit' },
 					],
 				},
+				{
+					label: 'Learn',
+					items: [
+						{ label: 'From idea to release', slug: 'learn' },
+						{ label: 'Building a .deb', slug: 'learn/deb' },
+						{ label: 'Writing a program', slug: 'learn/code' },
+						{ label: 'Shipping a package', slug: 'learn/ship' },
+						{ label: 'Into the repository', slug: 'learn/repo' },
+					],
+				},
 			],
 			components: {
 				SiteTitle: './src/components/starlight/SiteTitle.astro',
@@ -91,7 +102,10 @@ export default defineConfig({
 				ThemeSelect: './src/components/starlight/ThemeSelect.astro',
 			},
 		}),
-		sitemap(),
+		// The store's pages stay out of the sitemap until it opens (see src/config/store.ts).
+		sitemap({
+			filter: (page) => store.open || !new URL(page).pathname.startsWith('/apps'),
+		}),
 	],
 	vite: {
 		plugins: [tailwindcss()],

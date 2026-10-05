@@ -9,7 +9,7 @@ export interface Feature {
 export const highlights: Feature[] = [
 	{
 		title: 'Three live layouts',
-		body: 'Redmond, Cupertino, and Traditional — switch from Settings without logging out.',
+		body: 'Redmond, Cupertino, and Traditional — switch from Settings without logging out. Traditional has four desktops.',
 	},
 	{
 		title: 'Optional tiling',
@@ -29,11 +29,23 @@ export const highlights: Feature[] = [
 export const features: Feature[] = [
 	{
 		title: 'One Settings window',
-		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, login, user accounts, firewall, tiling, shortcuts, and history. Type to search any setting.',
+		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, privacy, login, user accounts, firewall, tiling, shortcuts, and history. Type to search any setting.',
 	},
 	{
 		title: 'Start menu',
 		body: 'Tap Super or click the apps button: a classic menu in Redmond, categories in Traditional, a full-screen app grid in Cupertino. Prefer the plain app launcher? Switch back in Settings → Desktop Layout & Style.',
+	},
+	{
+		title: 'Screenshots and recording',
+		body: 'Print captures an area on a frozen screen. Super+Shift+S opens a bar for a photo or a video, with a delay if you want one. Super+Shift+R starts or stops a recording. Draw on a screenshot from its notification.',
+	},
+	{
+		title: 'Phone',
+		body: 'Off by default. Pair an Android phone with the KDE Connect app in Settings → Phone to send pages, text, files, and the clipboard both ways. The file manager gets Send to Phone.',
+	},
+	{
+		title: 'Quick Settings',
+		body: 'Off by default. Turn it on in Settings → Desktop Layout & Style, then click the volume or battery icon for Wi-Fi, Do Not Disturb, night light, tiling, the phone, volume, and brightness.',
 	},
 	{
 		title: 'Hold Super for shortcuts',
@@ -49,7 +61,7 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Ready to use',
-		body: 'Firefox ESR with uBlock Origin, LibreOffice, VLC, Software manager (PackageKit), PipeWire, NetworkManager, Flatpak, firewall on by default.',
+		body: 'Firefox ESR with uBlock Origin and vertical tabs, Thunar, LibreOffice, VLC, Software manager (PackageKit), PipeWire, NetworkManager, Flatpak, firewall on by default.',
 	},
 	{
 		title: 'Updates that stick',

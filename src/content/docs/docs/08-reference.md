@@ -27,6 +27,13 @@ lintian config/packages.chroot/NAME_*_all.deb           # check quality
 dpkg-parsechangelog -l packages/NAME/debian/changelog -S Version
 ```
 
+### Measuring (HIG PERF-7)
+
+```sh
+tools/package-cost.py PKG...        # what PKG adds to the image (--host: to this computer)
+tools/measure.py PID                # CPU, memory, wakeups   (--tree, -- COMMAND, --for S)
+```
+
 ### Apt repository
 
 ```sh
@@ -53,7 +60,7 @@ sudo lb clean --purge            # clean everything including cache
 ```sh
 grep FLICKOS_VERSION packages/flickos-branding/usr/lib/flickos-release   # current version
 tools/upload-release.sh                       # ISO + SHA256SUMS → SourceForge files/vX.Y/
-git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
+git tag -a v2.1 -m "FlickOS 2.1" && git push origin v2.1
 ```
 
 ### Links
@@ -95,6 +102,8 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 | `tools/make-layout-previews.sh` | when a layout changes | Regenerates the chooser's `preview.png` per layout (schematic, or from boot-test screenshots) |
 | `tools/check-menus.py` | no | Checks the live menu equals the installed menu plus *Install FlickOS*; run by `build-iso.sh` |
 | `tools/check-palette.py` | ✏️ when adding a color | Checks all color-bearing files use the Arc-Dark palette and the labwc theme uses valid keys; run by `build-iso.sh` |
+| `tools/package-cost.py` | no | Packages and KB a package would add to the image (compares with the last build's `flickos-amd64.packages`) |
+| `tools/measure.py` | no | CPU, PSS/Private memory and wakeups of a process (and its children) while it runs |
 | `packages/flickos-branding/` | ✏️ `usr/lib/flickos-release` each release | FlickOS version, boot splash, OS name, login banner |
 | `config/bootloaders/` | ✏️ | ISO boot menu (syslinux + GRUB) |
 | `config/hooks/normal/0200-firewall.hook.chroot` | rarely | Turns on ufw |

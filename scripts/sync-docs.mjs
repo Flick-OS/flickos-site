@@ -241,7 +241,7 @@ sidebar:
 
 Welcome to the FlickOS documentation. Start with [Overview](/docs/01-overview/) if you are new to the repository.
 
-Adding or changing a FlickOS program? Follow the [Human Interface Guidelines](/docs/hig/).
+Adding or changing a FlickOS program? The [Human Interface Guidelines](/docs/hig/) are the rules. [From idea to release](/learn/) is the same work done once, as a tutorial.
 `;
 	fs.writeFileSync(path.join(DEST, 'index.mdx'), index);
 	console.log(

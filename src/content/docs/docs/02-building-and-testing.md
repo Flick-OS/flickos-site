@@ -15,7 +15,7 @@ sidebar:
 Install the tools once:
 
 ```sh
-sudo apt install live-build debhelper dpkg-dev devscripts reprepro wget \
+sudo apt install live-build build-essential debhelper dpkg-dev devscripts reprepro rsync wget \
                  qemu-system-x86 qemu-utils ovmf xorriso \
                  meson pkgconf gettext libgtk-3-dev \
                  libgtk-layer-shell-dev libjson-c-dev libwayland-dev wayland-protocols
@@ -63,7 +63,7 @@ Output in the repository root:
 
 | File | What it is |
 |---|---|
-| `FlickOS-64bit-v2.0.iso` | The bootable image |
+| `FlickOS-64bit-v2.1.iso` | The bootable image |
 | `SHA256SUMS` | Checksum of the ISO |
 | `build.log` | Full output of the package build, `lb config` and `lb build`. Check it when something fails |
 | `flickos-amd64.packages` | Every package and version in the image |
@@ -220,7 +220,7 @@ you choose restart, the VM boots from the installed disk.
 - [ ] FlickOS boot menu appears (logo, *Start FlickOS*), boots by itself after 10 s
 - [ ] FlickOS boot splash (logo + spinner) instead of text, then labwc automatically
 - [ ] waybar is visible, nm-applet shows, network works (`curl -I https://deb.debian.org`)
-- [ ] `Super+Return` opens foot, `Super+D` opens fuzzel, `Super+E` opens pcmanfm
+- [ ] `Super+Return` opens foot, `Super+D` opens fuzzel, `Super+E` opens Thunar, with the path as buttons
 - [ ] Right-click desktop shows the root menu
 - [ ] Audio: `wpctl status` lists a sink
 - [ ] `apt update` succeeds, which means the FlickOS repo is reachable and correctly signed
@@ -246,7 +246,7 @@ you choose restart, the VM boots from the installed disk.
 - [ ] Right-click menu has **no** *Install FlickOS* entry
 - [ ] The keyboard layout chosen in the installer works in foot
 - [ ] Leaving the VM idle for 5 minutes locks the screen
-- [ ] Boot shows the FlickOS splash; tty2 (Ctrl+Alt+F2) shows `FlickOS 2.0 (Debian 13)` above the login prompt
+- [ ] Boot shows the FlickOS splash; tty2 (Ctrl+Alt+F2) shows `FlickOS 2.1 (Debian 13)` above the login prompt
 - [ ] `sudo ufw status` shows `Status: active`
 
 ### Without the script
@@ -256,7 +256,7 @@ The equivalent raw QEMU commands, if you ever need to tweak something:
 ```sh
 # BIOS
 qemu-system-x86_64 -enable-kvm -cpu host -m 4G -smp 2 -device virtio-vga \
-    -cdrom FlickOS-64bit-v2.0.iso
+    -cdrom FlickOS-64bit-v2.1.iso
 
 # UEFI with persistent variables and a test disk
 qemu-img create -f qcow2 disk.qcow2 20G
@@ -265,14 +265,39 @@ qemu-system-x86_64 -enable-kvm -cpu host -m 4G -smp 2 -device virtio-vga \
     -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
     -drive if=pflash,format=raw,file=vars.fd \
     -drive file=disk.qcow2,if=virtio \
-    -cdrom FlickOS-64bit-v2.0.iso -boot once=d
+    -cdrom FlickOS-64bit-v2.1.iso -boot once=d
 ```
+
+## Measuring what a change costs
+
+HIG PERF-7 asks every new program, daemon, dependency or feature to state its
+cost. Two scripts give the numbers:
+
+```sh
+tools/package-cost.py swappy                  # packages and KB a package would add to the image
+tools/package-cost.py config/packages.chroot/flickos-foo_1.0_all.deb
+tools/measure.py PID                          # CPU, PSS/Private memory and wakeups until it exits
+tools/measure.py --tree -- flickos-control    # start a program, count the processes it starts too
+```
+
+`package-cost.py` asks apt to simulate the install without Recommends, the way
+the image installs packages. It compares with the **image**, not with the build
+host: the last build's package list, `flickos-amd64.packages`, becomes a
+pretend dpkg status file. So a library the host happens to have (GTK 4 from an
+editor) still counts when the image lacks it. Without that list (after
+`lb clean`, before the next build) or with `--host`, it compares with the host
+and says so. No sudo either way.
+
+`measure.py` only reads `/proc`, so it can watch the developer's own session.
+Wakeups are voluntary context switches a minute: an idle daemon should have
+almost none. Stop what you started by PID, never with `pkill NAME`, which on a
+FlickOS desktop also hits the session's own copies.
 
 ## Writing to a USB stick
 
 ```sh
 lsblk                                  # find the USB device, e.g. /dev/sdX
-sudo dd if=FlickOS-64bit-v2.0.iso of=/dev/sdX bs=4M status=progress oflag=sync
+sudo dd if=FlickOS-64bit-v2.1.iso of=/dev/sdX bs=4M status=progress oflag=sync
 ```
 
 `dd` overwrites the target without asking. Check the device name twice.

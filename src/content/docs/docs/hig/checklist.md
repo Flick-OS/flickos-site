@@ -17,7 +17,7 @@ Should rules aren't listed. Read the pages for those.
 - [ ] **INT-6** Tested in Redmond, Cupertino and Traditional, in Dark and Light.
 - [ ] **INT-7** Hidden in the live session if it only makes sense installed, and the reverse.
 - [ ] **INT-8** Nothing new opens at first login besides `flickos-welcome`.
-- [ ] **INT-9** A new feature is opt-in and runs, generates and binds nothing while off. Only a record that runs nothing (History) may be on by default, with a switch that also deletes it; a shipped feature becomes the default only through an ADR that states its cost (the start menu).
+- [ ] **INT-9** A new feature is opt-in and runs, generates and binds nothing while off. Only a record that runs nothing (History) may be on by default, with a switch that also deletes it; a shipped feature becomes the default only through an ADR that states its cost (the start menu); a tool that runs only when asked may bind its keys by default, through an ADR that names them (Screenshot), and anything of it that shows unasked needs its own ADR (the hidden recording button).
 - [ ] **INT-10** A login program starts from FlickOS's autostart, runs once per session and doesn't hold up the others.
 
 ## Settings and files ([03](/docs/hig/03-settings-and-files/))
