@@ -26,6 +26,8 @@ export FLICKOS="$HOME/FlickOS"
 4. [Shipping a package](/learn/ship/)
 5. [Into the repository](/learn/repo/)
 
+**Your own app.** An app you keep in your own repository doesn't go into FlickOS: it goes into the community repository, and Software shows it on every FlickOS computer. [Publish your app for FlickOS](/learn/publish/) is that path, after [Building a .deb](/learn/deb/).
+
 **Shipping order.** When the feature is a real one, do the stages below. The repository guide is split: the design doc is early, and wiring the package in is late. Releasing an ISO is explained in the shipping guide and not practised there.
 
 ## Think

@@ -93,6 +93,7 @@ export default defineConfig({
 						{ label: 'Writing a program', slug: 'learn/code' },
 						{ label: 'Shipping a package', slug: 'learn/ship' },
 						{ label: 'Into the repository', slug: 'learn/repo' },
+						{ label: 'Publish your app', slug: 'learn/publish' },
 					],
 				},
 			],
