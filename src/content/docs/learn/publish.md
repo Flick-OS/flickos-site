@@ -59,8 +59,8 @@ maintainer reads it, and only then is it signed and published.
 - **A review of every version.** The maintainer reads your first version
   whole and every later one by what changed. It can take days.
 - **The rules in step 3**, checked by a script on every build.
-- **Removal** if a version turns bad: it is taken out of the repository and
-  off the shelf.
+- **Withdrawal** if a version turns bad: FlickOS replaces it with an empty
+  package on every computer that has it, through the automatic updates.
 
 Paid apps will be possible later: you sell a key on your own checkout and
 Software shows the price with a **Buy…** button. The terms will be on this
@@ -98,7 +98,19 @@ your app.
 | Nothing setuid or setgid, no device files | | they run as root, or reach hardware |
 | No link that leaves those paths | a link to `/etc` would let a file land anywhere | |
 | A metainfo file without errors | `/usr/share/metainfo/ID.metainfo.xml`, `appstreamcli validate` | it is what makes the package an app in Software (step 5) |
+| Its own names | desktop files, icons and the metainfo file are named after the package or its metainfo ID (`NAME`, `NAME-…`, `ID`, `ID-…`) | it can't pass for another app in the menu or the icon theme |
+| Desktop files run your program | `Exec` and `TryExec` name one of your own programs; no `DBusActivatable` | a menu entry can't start something else |
+| No claims on sensitive types | `MimeType` doesn't name `x-scheme-handler/http(s)`, `mailto`, `file`, `inode/directory`, `text/html`, scripts or programs, or a wildcard like `image/*` | your app isn't offered as the browser, mail program or file manager |
 | lintian without errors | Debian's own package checker | |
+
+And for your source, before anything is built:
+
+| Rule | What it means | Why |
+|---|---|---|
+| Everything is in your repository | no git submodules | the reviewer reads what is built |
+| Everything is readable | no binary files except pictures and fonts: no `.so`, `.pyc`, `.jar` or archives | compiled code is built from source in CI |
+| No links out of the tree | no symbolic link to `/etc/…` or `../..` | |
+| The build is offline | your `debian/rules` runs without network | it can't download code nobody reviewed |
 
 **Your own paths** (NAME is your package's name):
 
@@ -142,6 +154,8 @@ Keywords=count;counter;clicker;
 - **Icon:** a name from the icon theme (`accessories-calculator` is in every
   theme FlickOS ships), or your own icon installed as
   `/usr/share/icons/hicolor/scalable/apps/ID.svg` with `Icon=ID`.
+- **Name it after your app:** `NAME.desktop` or `ID.desktop`, and `Exec`
+  runs your own program (`tally`, or `/usr/lib/NAME/…`), not `sh -c`.
 - **Categories:** one of freedesktop's main ones decides Software's category:
   `AudioVideo`, `Development`, `Education`, `Game`, `Graphics`, `Network`,
   `Office`, `Science`, `System`, `Utility`.
@@ -308,8 +322,9 @@ doesn't count against it here: it tells the reviewer what to look for.
 ## 9. The review
 
 On the pull request, CI (*Community apps*) clones your repository, checks
-that the tag points at the commit, builds it in a clean Debian 13 container,
-runs the checks and writes the result on the run's summary page:
+that the tag points at the commit and that the source is readable, builds it
+without network in a clean Debian 13 container, runs the checks and writes
+the result on the run's summary page:
 
 ```
 ## tally
@@ -324,6 +339,13 @@ A new app: review all of it.
 A red run says why: a failed rule, a build error, a version that doesn't
 match. Fix it, tag a new version, and change the file in the same pull
 request.
+
+The page also lists **things to look at**: what your menu entries say, and
+lines that reach the network, run commands, decode data, write files that
+start programs, use `sudo` or read other programs' files such as `~/.ssh` or
+a browser profile. That isn't a failure. Many apps do some of it for good
+reasons; say in the pull request what each one is for, and the review goes
+faster.
 
 Then the maintainer reads your source, all of it the first time, and tries
 the package CI built. Questions come as comments on the pull request. When it
@@ -385,6 +407,13 @@ Many apps can start here and go to Flathub later.
 
 - **A moved tag.** Never move or delete a tag that is in a pull request or
   published. Make a new one.
+- **Downloading during the build.** `pip install`, `npm install` or `curl`
+  in `debian/rules` fails: the build has no network. Use Debian's packages as
+  `Build-Depends`, or put the code in your repository.
+- **Prebuilt files in the repository.** A `.so`, `.pyc`, `.jar` or a zip
+  stops the build: everything that runs is built from source. Pictures and
+  fonts are fine. Minified code isn't refused, but the reviewer can't read
+  it and will ask for the source it came from.
 - **A dependency from elsewhere.** A package only your PPA or a vendor's
   repository has fails the dependency rule. Bundle it in `/usr/lib/NAME/`, if
   its license allows, or ask for it in Debian.
