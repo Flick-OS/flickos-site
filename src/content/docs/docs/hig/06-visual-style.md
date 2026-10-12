@@ -72,10 +72,18 @@ When CSS is needed (a layer-shell surface has no window frame to inherit):
 
 ### VIS-5 Should: Keep it flat and still
 
-FlickOS draws translucency without blur (panel, terminal) and no shadows,
-animations or transitions of its own beyond GTK's. They cost frames on old
-graphics hardware and add nothing to finding things. Stack transitions are
-`NONE`.
+FlickOS draws translucency without blur (panel, terminal) and no shadows.
+Its pop-ups (start menu, Quick Settings, phone popup, shortcut sheet) may
+fade in and out, at most 100 ms, never full screen, and only while
+GSettings' `enable-animations` is on; nothing else animates beyond GTK's own
+transitions. Input never waits for a fade. Stack transitions are `NONE`,
+except a crossfade of at most 100 ms between a pop-up's pages (the classic
+start menu's Home and All Apps).
+
+Motion costs frames on old graphics hardware and adds nothing to finding
+things; a short fade of a small window costs about 55 ms of CPU and nothing
+between fades
+([design/flickos-fades.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-fades.md)).
 
 ## Icons
 

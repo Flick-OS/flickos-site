@@ -21,7 +21,9 @@ decision first.
 | Package | Rule | Level | Finding | Suggested fix |
 |---|---|---|---|---|
 | All GTK windows | [A11Y-6](/docs/hig/07-accessibility/#a11y-6-must-text-is-readable-in-both-styles-and-color-is-never-the-only-signal) | decide | arc-theme draws dimmed text (`dim-label`: row subtitles, descriptions, hints) at 55% opacity, which is below 4.5:1 in both styles: 3.3–3.6:1 in Arc-Dark, 2.3–2.4:1 in Arc. White on the selection blue is 3.1:1. Normal text passes (5.7–7.8:1) | Dimmed text would need at least 74% opacity in Dark and 89% in Light. Options: FlickOS programs load a small CSS that raises `.dim-label` (one value, 0.9, passes both styles but hardly dims in Dark); or use dimming only where the text isn't needed to use the control; or accept arc-theme's values and write that down in A11Y-6. The selection color is arc-theme's own and can only change with a theme of FlickOS's own |
-| flickos-control | [WIN-2](/docs/hig/04-windows/#win-2-must-one-window-per-program-and-session) | check | A second start prints "Settings is already open." and exits, but the open window doesn't come forward, so from the menu nothing seems to happen. flickos-welcome and the chooser do the same | Find out whether labwc 0.8.3 lets the second process activate the first window (an xdg-activation token passed to it over a socket). If it can't, record the limit in `docs/design/flickos-control.md` |
+| flickos-control | [WIN-2](/docs/hig/04-windows/#win-2-must-one-window-per-program-and-session) | check | A second start prints "Settings is already open." and exits, but the open window doesn't come forward, so from the menu nothing seems to happen. flickos-welcome, the chooser and Software do the same | Find out whether labwc 0.8.3 lets the second process activate the first window (an xdg-activation token passed to it over a socket). If it can't, record the limit in `docs/design/flickos-control.md` |
+| flickos-control, flickos-phone, flickos-software | [CODE-1](/docs/hig/10-code/#code-1-must-one-program-one-python-file-standard-library), [PERF-1](/docs/hig/08-performance/#perf-1-must-meet-the-time-budgets) | decide | A script in `/usr/bin` gets no `.pyc`, so Python compiles it at every start: flickos-control's 7,200 lines take about 170 ms of its 0.88 s to the first frame (and of every `get`, which Quick Settings runs at each show), flickos-phone's 4,000 lines run again at every `status --panel`, flickos-software's 2,600 lines take about 160 ms of its `list` (about 300 ms in all, against PERF-1's 200 ms) and of the `plan` child each app page starts | An exception to CODE-1: the program stays one file, moved to a module (`/usr/share/flickos/NAME/NAME.py`, byte-compiled by `dh_python3` or `py3compile` in the package), with a two-line launcher in `/usr/bin`. Or accept the cost and write it into PERF-1 |
+| flickos-control | [PERF-3](/docs/hig/08-performance/#perf-3-must-build-first-read-later) | | Constructors still read: every settings page reads all 18 settings files (`load_values`), *Keyboard* the XKB rules (40 ms), *More Settings* asks the icon theme (110 ms, its first load). Since 1.32 they run after the first frame, one page per idle call, but each still holds the main loop that long | Read in `shown()`: the settings pages already read again there (`reload`), so the constructor can set the controls from the defaults; *Keyboard* fills its lists when shown |
 | All GTK windows | [A11Y-7](/docs/hig/07-accessibility/#a11y-7-must-layouts-survive-larger-text-and-scaling) | check | Tried at text scale 1.5 in the headless harness (Settings, Welcome, the chooser, the classic and categories menus), all usable. Screen scale 2 and the grid menu aren't tried yet | Try screen scale 2 on a large output, and the Cupertino grid menu at text scale 1.5 |
 
 ## Fixed on 2026-09-26
@@ -47,6 +49,41 @@ For the record, so the same thing isn't reported again:
   has a mnemonic, the cards have accessible names, and the app id is set.
 - **flickos-settings 1.24, flickos-installer 1.18:** the Session menu says
   *Sleep* and *Restart*.
+
+## Checked on 2026-10-05
+
+flickos-phone's phases 7–11 (notifications, calls, *Browse Phone*, media
+control, named commands; flickos-phone 1.9–1.14, flickos-control
+1.27–1.31) against the checklist, and Settings' opening time. Fixed in
+flickos-phone 1.15 and flickos-control 1.32:
+
+- **PERF-5:** media control read the players with `playerctl` every 2
+  seconds while a phone was connected: 21 s of CPU in 38 minutes, ten times
+  the daemon's own. One `playerctl --follow` now wakes the daemon only when
+  a player changes. VLC, which owns two MPRIS names, showed twice on the
+  phone.
+- **PERF-1:** Settings took 1.3 s to its first frame. It now builds only the
+  page it opens on before the first frame (0.88 s).
+- **CODE-2:** flickos-phone's docstring listed no commands.
+- **Beyond the checklist:** a phone notification's text was read as
+  markup, so a chat message could restyle itself into a fake alert; shown
+  notifications (a waiting `notify-send` each) and cached icons had no
+  limit; the tests wrote icons into the build host's `~/.cache`.
+- **TXT-6:** *Browse Phone*'s errors for an incomplete answer from the phone
+  said nothing about what to do.
+- **PKG-3, PKG-9:** flickos-control's `Breaks` didn't cover the commands
+  list (flickos-phone 1.14). The boot test didn't check that media control
+  is off in the live session, or that `ssh-keyscan` is installed.
+
+In line: every new feature is off until turned on and announces its packets
+only then (INT-9, PERF-4; commands only while the list has one); each has a
+`set … default` and History labels with Undo (SET-8); the conffile documents
+the new keys (SET-4); nothing acts on the phone's word while the screen is
+locked; the *Add Command* dialog has *Cancel* and a suggested *Add* that
+stays off until both fields are filled (WIN-14), with unique mnemonics
+(A11Y-3); the browse password goes on stdin and a named command starts in
+its own session with no input (CODE-7); new dependencies are commented
+(PKG-4) and every phase came with unit tests (PKG-8).
 
 ## Checked and passing
 

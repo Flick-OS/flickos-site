@@ -29,7 +29,7 @@ export const highlights: Feature[] = [
 export const features: Feature[] = [
 	{
 		title: 'One Settings window',
-		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, privacy, login, user accounts, firewall, tiling, shortcuts, and history. Type to search any setting.',
+		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, privacy, login, user accounts, firewall, tiling, shortcuts, animations, and history. Type to search any setting.',
 	},
 	{
 		title: 'Start menu',
@@ -37,11 +37,11 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Screenshots and recording',
-		body: 'Print captures an area on a frozen screen. Super+Shift+S opens a bar for a photo or a video, with a delay if you want one. Super+Shift+R starts or stops a recording. Draw on a screenshot from its notification.',
+		body: 'Print captures an area on a frozen screen. Super+Shift+S opens a bar for a photo or a video, with a delay if you want one. The same bar can copy the text on screen when tesseract is installed. Super+Shift+R starts or stops a recording. Draw on a screenshot from its notification.',
 	},
 	{
 		title: 'Phone',
-		body: 'Off by default. Pair an Android phone with the KDE Connect app in Settings → Phone to send pages, text, files, and the clipboard both ways. The file manager gets Send to Phone.',
+		body: 'Off by default. Pair an Android phone with the KDE Connect app in Settings → Phone to send pages, text, files, and the clipboard both ways. The file manager gets Send to Phone, and Browse Phone opens the folders the phone offers. Calls, what the phone plays, control of media on this computer, and named commands stay off until you turn each one on.',
 	},
 	{
 		title: 'Quick Settings',

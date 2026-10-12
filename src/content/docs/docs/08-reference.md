@@ -60,7 +60,7 @@ sudo lb clean --purge            # clean everything including cache
 ```sh
 grep FLICKOS_VERSION packages/flickos-branding/usr/lib/flickos-release   # current version
 tools/upload-release.sh                       # ISO + SHA256SUMS → SourceForge files/vX.Y/
-git tag -a v2.1 -m "FlickOS 2.1" && git push origin v2.1
+git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 ```
 
 ### Links

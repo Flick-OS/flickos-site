@@ -1,0 +1,161 @@
+---
+import { Image } from 'astro:assets';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import notesShot from '../../assets/screenshots/notes.png';
+import writeShot from '../../assets/apps/write.png';
+import phoneScreenShot from '../../assets/screenshots/phone-screen.png';
+
+const apps = [
+	{
+		id: 'notes',
+		name: 'Notes',
+		shot: notesShot,
+		shotAlt: 'Notes open on a Saturday checklist, with bread and coffee ticked and the tags #hello and #home.',
+		body: 'Notes and checklists. Tag a note with #words in its text and find any note by its words or tags. Every note is a plain Markdown file in Documents/Notes, so any editor, backup or sync tool can use it. Typing is saved as you go.',
+		command: 'sudo apt install flickos-notes',
+	},
+	{
+		id: 'write',
+		name: 'Write',
+		shot: writeShot,
+		shotAlt: 'Write open on the chapter The light in the kitchen, 484 words.',
+		body: 'A quiet place to write books, stories and letters. A folder is a project and its Markdown files are the chapters. A writing session fills the screen and holds back notifications, and a daily goal counts the words you wrote today.',
+		command: 'sudo apt install flickos-write',
+	},
+	{
+		id: 'phone-screen',
+		name: 'Phone Screen',
+		shot: phoneScreenShot,
+		shotAlt: 'Second Screen set for a Lenovo Tab M11 at 1920 by 1200, with touch and keys on.',
+		body: 'A tablet can become a second screen for your computer through the AVNC app. It needs Phone turned on in Settings.',
+		command: 'sudo apt install flickos-phone-screen',
+	},
+];
+---
+
+<MarketingLayout
+	title="Three new apps"
+	description="Notes, Write and Phone Screen are in the FlickOS apt repository, free of charge for now. An update does not install them."
+>
+	<article class="page">
+		<header class="page-head flick-anim-rise">
+			<p class="date">
+				<time datetime="2026-10-07">7 October 2026</time>
+			</p>
+			<h1 class="flick-display">Three new apps for FlickOS, free for now</h1>
+			<p>
+				Three apps made for FlickOS are now in the FlickOS apt repository. They are <strong>free of charge for now</strong>. They aren’t installed by updates, so you choose which ones you want.
+			</p>
+		</header>
+
+		{
+			apps.map((app) => (
+				<section class="app" id={app.id}>
+					<h2 class="flick-display">{app.name}</h2>
+					{app.shot && (
+						<figure class:list={['shot', { portrait: app.shot.height > app.shot.width * 1.4 }]}>
+							<Image
+								src={app.shot}
+								alt={app.shotAlt ?? app.name}
+								widths={app.shot.height > app.shot.width * 1.4 ? [280, 428] : [480, 800, 1200]}
+								sizes={
+									app.shot.height > app.shot.width * 1.4
+										? '18rem'
+										: '(max-width: 48rem) 100vw, 40rem'
+								}
+							/>
+						</figure>
+					)}
+					<p>{app.body}</p>
+					<pre class="cmd"><code>{app.command}</code></pre>
+				</section>
+			))
+		}
+
+		<section class="closing">
+			<p>You can also find all three in the Software app. Once installed, they update with the rest of FlickOS.</p>
+			<p>
+				<strong>Free for now, and yours to keep.</strong> These apps are not open source, and some may be sold later to help pay for FlickOS. Any version you install free of charge keeps working for good, with no key and no time limit. The FlickOS desktop itself stays free and open source.
+			</p>
+			<p>
+				They are new, so please <a href="https://github.com/dvbondoy/FlickOS/issues">report anything that goes wrong</a>.
+			</p>
+		</section>
+	</article>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.date {
+		margin: 0 0 0.6rem;
+		color: var(--flick-muted);
+		font-size: 0.95rem;
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.6rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 1rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.app {
+		margin-top: 2.75rem;
+	}
+	.app h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.45rem;
+		color: var(--flick-title);
+	}
+	.app p,
+	.closing p {
+		margin: 0.85rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.shot {
+		margin: 0 0 0.25rem;
+		border: 1px solid var(--flick-border);
+		border-radius: 0.4rem;
+		overflow: hidden;
+		background: var(--flick-panel);
+		line-height: 0;
+	}
+	.shot.portrait {
+		max-width: 18rem;
+	}
+	.shot :global(img) {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.cmd {
+		margin: 0.85rem 0 0;
+		padding: 0.75rem 0.9rem;
+		overflow-x: auto;
+		border-radius: 0.35rem;
+		background: var(--flick-panel);
+		border: 1px solid var(--flick-border);
+		font-size: 0.92rem;
+		line-height: 1.45;
+	}
+	.cmd code {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	}
+	.closing {
+		margin-top: 2.75rem;
+		padding-top: 0.25rem;
+	}
+</style>

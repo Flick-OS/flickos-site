@@ -183,7 +183,7 @@ with `--verbose` to watch it live.
 **Exit 2: `could not find a live boot entry`**
 The ISO has no `/isolinux/live.cfg` or `/boot/grub/grub.cfg` in the expected
 format. Check `--bootloaders` in `auto/config`, and look inside the ISO with
-`xorriso -indev FlickOS-64bit-v2.1.iso -ls /isolinux/ /boot/grub/`.
+`xorriso -indev FlickOS-64bit-v2.0.iso -ls /isolinux/ /boot/grub/`.
 
 **Exit 3: timed out waiting for `login: `**
 Read the end of `serial.log`:
@@ -415,6 +415,15 @@ theme chosen in *Settings → Appearance* (nwg-look) is kept. `flickos-layout do
 names it. Pick Arc or Arc-Dark in Appearance (or
 `gsettings set org.gnome.desktop.interface gtk-theme Arc-Dark`), then choose the
 style again. Already open GTK apps usually update live; restart one that doesn't.
+
+**Window title bars show labwc's icon instead of the app's**
+labwc takes window icons from `<theme><icon>` in rc.xml; unset, it looks for an
+icon theme named like the window theme and shows only hicolor's icons. Check
+`grep '<icon>' $XDG_RUNTIME_DIR/flickos/xdg/labwc/rc.xml` (or the system rc.xml):
+it should name the GTK icon theme (`gsettings get org.gnome.desktop.interface icon-theme`).
+A `~/.config/labwc/rc.xml` replaces FlickOS's and needs its own `<icon>`. If the
+window's app id has no desktop file (`lswt` lists app ids), labwc and the panel
+have no icon for it either.
 
 **Some apps stay light (or dark) whatever the style: they look like Adwaita**
 Those are libadwaita (GTK 4) apps, e.g. GNOME apps. libadwaita ignores GTK

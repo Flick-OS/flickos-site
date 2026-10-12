@@ -929,6 +929,15 @@ warning.
 `Numix-Circle`/`Numix-Circle-Light`). A theme chosen in *Settings → Appearance*
 (nwg-look), e.g. Adwaita or Papirus, is kept, and `doctor` says so.
 
+labwc's **window icons** (the title bar's `icon` button) use the same icon
+theme: the overlay rc.xml's `<theme><icon>` is the current `icon-theme`.
+flickos-settings' rc.xml has `Numix-Circle`; without it labwc looks for an icon
+theme named like the window theme, finds none and shows only hicolor's icons
+(FlickOS's own windows get labwc's). An `<icon>` in the system rc.xml that isn't
+one of the styles' icon themes is kept. labwc reads it when it reconfigures, so
+icons picked in nwg-look reach the title bars at the next style or layout change
+or login.
+
 A layout change touches only `button-layout` (`org.gnome.desktop.wm.preferences`):
 the buttons of windows that draw their own title bar, like Firefox without
 *Title Bar* or GTK header bars. `set` translates the layout's `TitlebarLayout`
@@ -1186,7 +1195,7 @@ Current defaults (all in `Recommends:`):
 | Sound settings | `pavucontrol` | `org.pulseaudio.pavucontrol.desktop` |
 | Bluetooth | `blueman` | `blueman-manager.desktop` |
 | Printers | `cups`, `system-config-printer` | `system-config-printer.desktop` |
-| Software manager and updates | `gnome-packagekit`, `gnome-package-updater` | `org.gnome.Packages.desktop`, `org.gnome.PackageUpdater.desktop` |
+| Software and updates | `flickos-software` (FlickOS's own *Software*, a Depends; see [04](/docs/04-packages/#flickos-software)), `gnome-package-updater` | `flickos-software.desktop`, `org.gnome.PackageUpdater.desktop` |
 | CPU microcode (no app) | `intel-microcode`, `amd64-microcode` | – |
 
 **Check the cost before adding an app.** A small app can pull in large
@@ -1426,8 +1435,11 @@ Problems (a broken file, a key already in use) are warnings in
 hand. Starting the program is not the add-on's job: use an XDG autostart entry
 (*Settings → Startup Applications*).
 
-`experimental/` in the repo holds add-ons that are tried out on a developer's
-own desktop before anything goes into a package. `experimental/trail/` is one.
+A package that ships its add-on in `/usr/share/flickos/addons/NAME/` can hide
+it for one user without touching the system folder: an empty folder of the
+same name in `~/.config/flickos/addons/` wins and has no files, so no keys,
+no panel button and no style (checked 2026-10-04). Delete that folder to get
+the system add-on back.
 
 ---
 
@@ -1759,6 +1771,16 @@ list and can't show icons.
 - **Keys:** only those listed in `man labwc-theme`. A misspelled key is silently
   ignored by labwc, so `tools/check-palette.py` checks every key against the list
   for labwc 0.8.3. When labwc gains keys in a newer version, add them there.
+- **Title bar buttons** look like arc-theme's GTK header bar buttons. Close is
+  Arc's 14 px red circle, with the X cut out on Arc-Dark's title bars and white on
+  Arc's. The other buttons are arc-openbox's 8×8 glyphs (`.xbm`), which labwc
+  colors with `window.*.button.unpressed.image.color`. Their `_hover` SVGs put the
+  glyph on a 14 px circle, as Arc does, so labwc draws no hover box of its own.
+  labwc picks a `.png` before an `.svg` before an `.xbm` of the same name, and
+  draws PNG and SVG buttons in their own colors. All SVGs are generated: change a
+  color or circle size in `tools/make-titlebuttons.py`, run it, and bump
+  flickos-settings. The glyphs live in FlickOS-Arc-Dark's folder; the script copies
+  them to FlickOS-Arc's. `tools/check-palette.py` checks the SVGs' colors.
 - **labwc looks for themes** in `/usr/share/themes/<name>/labwc/` (and `openbox-3/`),
   plus the users' `~/.local/share/themes` and `~/.themes`.
 - **Test in a VM:** edit `/usr/share/themes/FlickOS-Arc-Dark/labwc/themerc`, then
@@ -1963,9 +1985,9 @@ pretending not to be Debian**:
 
 | File | Content | Seen in |
 |---|---|---|
-| `/etc/os-release` (→ `/usr/lib/os-release`) | Debian's file with `PRETTY_NAME="FlickOS 2.1 (based on Debian GNU/Linux 13 (trixie))"`, `VARIANT="FlickOS 2.1"`, `VARIANT_ID=flickos` added. **`ID=debian`, `NAME`, `VERSION_ID` etc. unchanged** | `hostnamectl`, system info tools (e.g. fastfetch), "About" dialogs that read `os-release` |
-| `/etc/issue` | `FlickOS 2.1 (Debian 13) \n \l` | Text console login prompt |
-| `/etc/issue.net` | `FlickOS 2.1 (Debian 13)` | Network login banners |
+| `/etc/os-release` (→ `/usr/lib/os-release`) | Debian's file with `PRETTY_NAME="FlickOS 2.0 (based on Debian GNU/Linux 13 (trixie))"`, `VARIANT="FlickOS 2.0"`, `VARIANT_ID=flickos` added. **`ID=debian`, `NAME`, `VERSION_ID` etc. unchanged** | `hostnamectl`, system info tools (e.g. fastfetch), "About" dialogs that read `os-release` |
+| `/etc/issue` | `FlickOS 2.0 (Debian 13) \n \l` | Text console login prompt |
+| `/etc/issue.net` | `FlickOS 2.0 (Debian 13)` | Network login banners |
 
 `ID=debian` stays because installers, package managers and many scripts check it
 to decide how to behave. Changing it breaks them.
@@ -2098,7 +2120,6 @@ after changing the logo or the palette):
 | **Real artwork** | Needs a designer | Replace the files listed under [Artwork](#artwork) |
 | **Firewall GUI** | `gufw` pulls in a large Python/GTK stack | `gufw` in `flickos-desktop` Recommends, plus a *Settings → Firewall* menu entry |
 | **Welcome app on first login** | Needs to be written | A small script or app in `flickos-settings`, started once from `/usr/libexec/flickos/autostart` (check for a marker file in `~/.config/flickos/`) |
-| **Automatic app updates for Flatpak** | Policy decision (bandwidth, surprise updates) | A systemd user timer running `flatpak update --noninteractive` in `flickos-settings` |
 | **Exact night light location** | Would need network geolocation (privacy) | `geoclue-2.0` + a location-aware tool instead of the time-zone lookup |
 
 For each one you adopt: packages go in `flickos-desktop`

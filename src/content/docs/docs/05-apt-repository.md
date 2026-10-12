@@ -1,11 +1,12 @@
 ---
 title: Apt repository
-description: "The FlickOS apt repository is how installed systems receive updates to flickos-* packages. It's a folder of static files (dists/, pool/), signed with a GPG…"
+description: "The FlickOS apt repository is how installed systems receive updates to flickos-* packages, and where other developers' apps are published (distribution…"
 sidebar:
   order: 5
 ---
 The FlickOS apt repository is how installed systems receive updates to
-`flickos-*` packages. It's a folder of static files (`dists/`, `pool/`),
+`flickos-*` packages, and where other developers' apps are published
+(distribution `trixie-community`, [below](#community-apps-trixie-community)). It's a folder of static files (`dists/`, `pool/`),
 signed with a GPG key. No server software is needed. FlickOS hosts it on
 **GitHub Pages**, from the `gh-pages` branch of the dedicated
 [`dvbondoy/flickos-apt`](https://github.com/dvbondoy/flickos-apt) repository, at
@@ -35,7 +36,9 @@ ISOs ([06](/docs/06-ci-and-releases/)).
 
 | Path | In git? | What |
 |---|---|---|
-| `repo/conf/distributions` | yes | Repo definition: codename `trixie`, component `main`, arch `amd64`, and the `SignWith:` key fingerprint |
+| `repo/conf/distributions` | yes | Repo definition: two distributions, `trixie` (FlickOS's packages, label *FlickOS*) and `trixie-community` (other developers' apps, label *FlickOS Community*), component `main`, arch `amd64`, the `SignWith:` key fingerprint, and the DEP-11 hook |
+| `repo/conf/dep11.py` | yes | reprepro `DebIndices` hook: writes `main/dep11/Components-amd64.yml(.gz)` (AppStream data for Software) from the metainfo files in the packages; needs `gir1.2-appstream-1.0` |
+| `repo/community/` | yes | The community apps' list (`apps/NAME`), checks, build and publish scripts ([its README](https://github.com/dvbondoy/FlickOS/blob/main/repo/community/README.md)) |
 | `repo/conf/options` | yes | Tells reprepro to write output to `repo/public/` and its database to `repo/db/` |
 | `repo/new-key.sh` | yes | One-time key setup |
 | `repo/publish.sh` | yes | Build all packages and add them to the repo |
@@ -129,11 +132,14 @@ repo/upload.sh       # upload to https://dvbondoy.github.io/flickos-apt/
 
 1. checks a signing key is configured,
 2. runs `packages/build.sh`,
-3. adds each `.deb` to the `trixie` distribution with `reprepro includedeb`,
+3. builds the apps in `EXTRAS` (Notes, Write, Phone Screen) from their
+   own repositories next to this one, in copies under `repo/.extras-build/`
+   (see below),
+4. adds each `.deb` to the `trixie` distribution with `reprepro includedeb`,
    signing the index (gpg asks for your passphrase),
-4. copies the public key to `repo/public/flickos-archive-keyring.asc` for people
+5. copies the public key to `repo/public/flickos-archive-keyring.asc` for people
    who want to add the repo by hand,
-5. prints what the repo now contains.
+6. prints what the repo now contains.
 
 If a package's version didn't change and its file is identical, reprepro skips it.
 If the version didn't change but the file **did**, reprepro stops with
@@ -155,12 +161,82 @@ Every upload is a commit, so the branch keeps old `.deb` files in its history.
 If the repository grows past GitHub's ~1 GB guidance, squash the history:
 `git -C repo/.gh-pages checkout --orphan tmp && git -C repo/.gh-pages commit -m "Squash" && git -C repo/.gh-pages branch -M tmp gh-pages && git -C repo/.gh-pages push -f origin gh-pages`.
 
+### Apps from other repositories (`EXTRAS`)
+
+Notes, Write and Phone Screen are proprietary and free of charge until
+the store opens ([store ADR-008](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-store.md#adr-008-free-of-charge-until-the-store-opens)).
+Trail is proprietary too but private for now (2026-10-08): it is not in
+`EXTRAS`, so newer versions aren't published. Its 0.6, published on
+2026-10-07, stays in the repo.
+Their source is in their own repositories, not under `packages/`, so they are
+never in the ISO. `publish.sh` expects them next to this checkout
+(`../flickos-notes` and so on) and stops if one is missing:
+
+```sh
+EXTRAS_DIR=~/src repo/publish.sh                   # they are somewhere else
+EXTRAS="flickos-notes" repo/publish.sh             # only some of them
+EXTRAS= repo/publish.sh                            # none of them
+```
+
+It builds what is in each folder, committed or not, and warns about
+uncommitted changes. Bump an app's version (`dch -i -D trixie`) before
+publishing a change, as for FlickOS's own packages. When an app goes on sale,
+take it out of `EXTRAS` and leave its last free version in the repo.
+Taking an app out of `EXTRAS` only stops new versions; reprepro keeps the
+last one published until it is removed by hand (`reprepro -b repo remove
+trixie NAME`), which ADR-008 says not to do for a free version.
+
+### AppStream data (DEP-11)
+
+Both distributions run `repo/conf/dep11.py` whenever their `Packages` index
+changes. It reads the metainfo files (`usr/share/metainfo/*.metainfo.xml`)
+in the packages, converts them with libappstream and writes
+`main/dep11/Components-amd64.yml` and `.yml.gz` with origin
+`flickos-DISTRIBUTION-main`, which go into the signed `Release`. apt's
+`appstream` hook fetches them like Debian's, and Software shows the
+packages as apps of the source FlickOS or FlickOS Community (design:
+[Software, ADR-002](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-software.md#adr-002-one-catalog-from-appstream-three-sources)).
+A package without metainfo (the desktop's own parts) is no app there. The
+icon and categories come from the launchable's desktop file when the
+metainfo has none. The publishing computer needs `gir1.2-appstream-1.0`
+(flickos-software depends on it).
+
+## Community apps (`trixie-community`)
+
+Other developers' apps, built by CI from their public source, checked and
+reviewed, then signed here like FlickOS's own (Software design,
+[ADR-004](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-software.md#adr-004-other-developers-publish-debs-in-a-flickos-community-repository)).
+Everything about the list, the rules and the review is in
+[`repo/community/README.md`](https://github.com/dvbondoy/FlickOS/blob/main/repo/community/README.md); the developers'
+guide is *Publish your app for FlickOS* on the website.
+
+```sh
+repo/community/publish.sh      # what CI built on main for each listed app → trixie-community
+repo/upload.sh                 # the same upload as for FlickOS's packages
+```
+
+`publish.sh` downloads the artifact `community-NAME-COMMIT` of a CI run on
+`main` (never a pull request's) with `gh` (`sudo apt install gh`,
+`gh auth login`), checks it again with `check.py`, and adds it with
+`reprepro includedeb trixie-community`; apps whose file was removed leave the
+distribution. It also exports the distribution's indices, which must exist
+online **before** flickos-archive-keyring 1.6 (which turns the suite on) is
+published or an ISO is built: apt fails `update` on a suite whose `Release`
+is missing. So the first time, run `repo/community/publish.sh` (with no apps
+it exports an empty distribution), then `repo/publish.sh`, then
+`repo/upload.sh`.
+
+Automatic updates install community apps (`label=FlickOS Community` in
+flickos-archive-keyring's `51flickos-origins` and flickos-control's
+`UPDATE_SCOPES`, design Q10).
+
 ### Verifying the published repo
 
 From any machine:
 
 ```sh
 curl -fsSL https://dvbondoy.github.io/flickos-apt/dists/trixie/InRelease | head -20
+curl -fsSL https://dvbondoy.github.io/flickos-apt/dists/trixie-community/InRelease | grep dep11
 ```
 
 It should start with `-----BEGIN PGP SIGNED MESSAGE-----` and list `Packages`
@@ -177,7 +253,10 @@ sudo apt upgrade
 `repo/db/` and `repo/public/` are not in git. They exist only on the machine
 where you publish. If you lose them, run `repo/publish.sh` again. It rebuilds
 the repo with the **current** version of each package, which is all apt needs.
-Only older versions are lost.
+Only older versions are lost. The community apps come back with
+`repo/community/publish.sh`, as long as CI's artifacts of their builds are
+younger than 90 days (otherwise re-run the *Community apps* workflow on
+`main`).
 
 ## Managing repo contents
 
