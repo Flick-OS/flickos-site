@@ -479,10 +479,16 @@ Show your desktop in **#showcase** on
   others can import it;
 - which layout and themes you used.
 
-Every month one post is picked and shown here. A style can also become one
-of FlickOS's own, installed from *Software → Styles* like Seven. That
-needs your agreement and a license that allows it (GPL-3.0-or-later, or
-one compatible with it). FlickOS credits you in the package.
+Every month one post is picked and shown here.
+
+### In Software
+
+To put your style in *Software → Styles*, where anyone can install it, try
+it and get your updates, publish it as a package:
+[A style instead of an app](/learn/publish/#12-a-style-instead-of-an-app).
+It takes a public git repository and a few files around your style. Your
+style must pass `check` with no warning at all, since people install it
+without seeing it first.
 
 ---
 
