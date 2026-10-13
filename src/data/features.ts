@@ -28,12 +28,28 @@ export const highlights: Feature[] = [
 /** Everything else, on the Features page. */
 export const features: Feature[] = [
 	{
+		title: 'Restore points',
+		body: 'Before every software change, FlickOS saves the system as a restore point. Put one back from Settings → Restore Points or from the boot menu, and if the computer fails to start twice after an update, it goes back to the last one that worked by itself. On new installs of 2.2 (btrfs, the installer\'s default).',
+		href: '/#restore',
+		linkLabel: 'How restore points work',
+	},
+	{
+		title: 'Software',
+		body: 'Find, install and remove apps, not packages: icons, descriptions, screenshots, and the space an app needs before you install it. Apps come from Debian (the default), FlickOS, the FlickOS community repository and Flathub, and the front page has a Made for FlickOS shelf. Removing anything the desktop needs is refused, and apps from Flathub update with the automatic updates.',
+	},
+	{
+		title: 'Community repository',
+		body: 'Other developers can publish apps for FlickOS. Each one is built from its public source code, checked and reviewed before it is published, and its page in Software says so. Automatic updates install community apps\' updates too.',
+		href: '/learn/publish/',
+		linkLabel: 'Publish your app for FlickOS',
+	},
+	{
 		title: 'One Settings window',
 		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, privacy, login, user accounts, firewall, tiling, shortcuts, animations, and history. Type to search any setting.',
 	},
 	{
 		title: 'Start menu',
-		body: 'Tap Super or click the apps button: a classic menu in Redmond, categories in Traditional, a full-screen app grid in Cupertino. Prefer the plain app launcher? Switch back in Settings → Desktop Layout & Style.',
+		body: 'Tap Super or click the apps button: a classic menu in Redmond, categories in Traditional, a full-screen app grid in Cupertino. In the grid, clicking an app that is already open brings its window forward. Log Out, Restart and Shut Down take a second click, so a stray one does nothing. Prefer the plain app launcher? Switch back in Settings → Desktop Layout & Style.',
 	},
 	{
 		title: 'Screenshots and recording',
@@ -45,15 +61,15 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Quick Settings',
-		body: 'Off by default. Turn it on in Settings → Desktop Layout & Style, then click the volume or battery icon for Wi-Fi, Do Not Disturb, night light, tiling, the phone, volume, and brightness.',
+		body: 'Off by default. Turn it on in Settings → Desktop Layout & Style, then click the volume or battery icon for Wi-Fi, Do Not Disturb, night light, tiling, the phone, volume, brightness, and the power buttons.',
 	},
 	{
 		title: 'Hold Super for shortcuts',
 		body: 'Press and hold Super for about 0.7s to see the shortcut sheet; let go to close. Also under Settings → Keyboard Shortcuts.',
 	},
 	{
-		title: 'Arc look everywhere',
-		body: 'GTK, panel, terminal, launcher, notifications, boot menu, splash, and installer share the Arc palette. Light style available.',
+		title: 'Arc look, FlickOS logo',
+		body: 'GTK, panel, terminal, launcher and notifications share the Arc palette, with a Light style too. The boot menus, splash screen, installer and wallpapers carry FlickOS\'s amber halo logo, and installed systems get a FlickOS boot menu theme. On the desktop only the start button\'s logo is amber.',
 	},
 	{
 		title: 'Firefox on less memory',
@@ -61,7 +77,7 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Ready to use',
-		body: 'Firefox ESR with uBlock Origin and vertical tabs, Thunar, LibreOffice, VLC, Software manager (PackageKit), PipeWire, NetworkManager, Flatpak, firewall on by default.',
+		body: 'Firefox ESR with uBlock Origin and vertical tabs, Thunar, LibreOffice, VLC, Software, PipeWire, NetworkManager, Flatpak, firewall on by default.',
 	},
 	{
 		title: 'Updates that stick',
@@ -69,6 +85,6 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Install when ready',
-		body: 'Boot the live session, explore, then install with Calamares from the desktop menu. At first login a welcome window points you to layouts, Settings, Wi-Fi, and shortcuts.',
+		body: 'Boot the live session, explore, then install with Calamares from the desktop menu. It uses btrfs by default, for restore points, and a 10 GB disk is enough. At first login a welcome window points you to layouts, Settings, Wi-Fi, and shortcuts.',
 	},
 ];

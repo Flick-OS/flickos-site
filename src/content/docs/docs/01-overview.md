@@ -17,7 +17,7 @@ sidebar:
 | Apps | Firefox ESR (with uBlock Origin), LibreOffice, VLC, Mousepad, Ristretto, Evince, Xarchiver, GNOME PackageKit (software manager); Bluetooth, printing, Flatpak (Flathub) |
 | Updates | Automatic updates (unattended-upgrades): Debian's security fixes and stable updates, and FlickOS's own packages |
 | Security | Firewall (ufw) on by default: incoming blocked, outgoing allowed |
-| Branding | FlickOS boot menu, boot splash (Plymouth), `os-release` variant and login banner; `ID=debian` kept |
+| Branding | The halo logo and the brand amber (boot menus, boot splash, installer, artwork; the desktop keeps Arc's blue), FlickOS boot menu on the ISO and on installed systems (GRUB theme), boot splash (Plymouth), `os-release` variant and login banner; `ID=debian` kept |
 | Login | Graphical login screen on installed systems (greetd + gtkgreet, `flickos-greeter`), optional automatic login. The live session logs in automatically on tty1 |
 | Installer | Calamares with FlickOS branding (`flickos-installer`) |
 | Image | `FlickOS-64bit-v2.0.iso`: hybrid ISO, boots on BIOS (syslinux) and UEFI (GRUB); can be written to USB |
@@ -89,10 +89,11 @@ flickos/
 │   ├── flickos-software/         Software: install and remove Debian, FlickOS, community and Flathub apps (window + Flatpak update timer)
 │   ├── flickos-greeter/          Login screen of installed systems (greetd + gtkgreet)
 │   ├── flickos-countme/          Anonymous weekly count (version + install age; PRIVACY.md)
+│   ├── flickos-recovery/         Restore points: a btrfs snapshot before every software change, putting one back
 │   ├── waypaper/                 Wallpaper picker (upstream waypaper, not in Debian trixie)
 │   ├── sfwbar/                   Cupertino's dock, Traditional's window list and desktops (upstream sfwbar, compiled; not in Debian trixie)
 │   ├── flickos-installer/        Calamares config + branding, live-session menu
-│   ├── flickos-branding/         Logo icons, boot splash theme, OS name, login banner, FlickOS version (flickos-release)
+│   ├── flickos-branding/         Logo icons, boot splash theme, installed GRUB theme, OS name, login banner, FlickOS version (flickos-release)
 │   └── flickos-archive-keyring/  Public key + apt source for the FlickOS apt repo
 │
 ├── server/countme/               Cloudflare Worker that counts flickos-countme's requests (not packaged)
@@ -106,7 +107,7 @@ flickos/
 │   ├── check-palette.py          Checks every config file uses the Arc-Dark palette
 │   ├── check-menus.py            Checks the installed and live root menus are in sync
 │   ├── make-layout-previews.sh   Generates the desktop layout chooser previews
-│   └── make-placeholder-art.sh   Generates placeholder wallpaper/logo images
+│   └── make-placeholder-art.sh   Generates the installer, boot menu and boot splash images
 │
 ├── repo/                         apt repository tooling
 │   ├── conf/                     reprepro configuration (trixie, trixie-community) + DEP-11 hook (dep11.py)
@@ -203,12 +204,13 @@ starts the same session.
 | Change screen zoom (keys, whole screen or lens, zoom steps) | `<magnifier>` and the Zoom keys and Super+scroll in `packages/flickos-settings/etc/xdg/labwc/rc.xml`, their descriptions in `packages/flickos-shortcuts/` (`ACTIONS`, `BUSY_SIGNAL`), the user's settings in `packages/flickos-control/` (`zoom.*` in `SETTINGS`, `magnifier_options`, `AccessibilityPage`, conffile `etc/xdg/flickos/zoom.conf`) | [design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-zoom.md) |
 | Change screenshots and recordings (keys, the capture bar, the frozen screen, where they are saved, the recording's pipeline, the portal's screen chooser, the panel's recording button, the settings) | `packages/flickos-screenshot/` (`DELAYS`, `FOLDER`, `NOTICES`, `FrozenScreen`, `pipeline_description`, `Recorder`, `get`/`set`, `etc/xdg/flickos/screenshot.conf`, `usr/libexec/flickos/screencast-chooser`), the *Screenshots* page in `packages/flickos-control/` (`ScreenshotsPage`), `custom/recording` in `packages/flickos-layouts/usr/share/flickos/layouts/common/modules.jsonc`, the keys in `packages/flickos-settings/etc/xdg/labwc/rc.xml` and their descriptions in `packages/flickos-shortcuts/` (`COMMANDS`) | [design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md) |
 | Change installer branding or behavior | `packages/flickos-installer/` | [09](/docs/09-customizing/#installer) |
+| Change restore points (when one is taken, how many are kept, putting one back, the apt hook, the boot menu, recovering after failed starts, the login notification, the Settings page, the installer's btrfs layout) | `packages/flickos-recovery/` (`KEEP`, `MIN_FREE`, `create`, `restore`, `LIMIT`, `GOOD_SECONDS`, `etc/apt/apt.conf.d/80flickos-recovery`, `etc/grub.d/42_flickos-recovery`, `usr/share/initramfs-tools/`, the `flickos-recovery-*.service` units, `usr/libexec/flickos/recovery-helper`), the `notify` line in `packages/flickos-settings/usr/libexec/flickos/autostart`, the *Restore Points* page in `packages/flickos-control/` (`RestorePointsPage`, `recovery_available`), the layout in `packages/flickos-installer/etc/calamares/modules/mount.conf` and `partition.conf` | [design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-recovery.md) |
 | Change the anonymous weekly count (what is sent, the server, the installer's notice) | `packages/flickos-countme/`, `server/countme/`, `PRIVACY.md`, the first slide of `branding/flickos/show.qml` in flickos-installer | [09](/docs/09-customizing/#weekly-count) |
 | Add a package only to the live ISO (not installed systems) | `config/package-lists/live.list.chroot` | [03](/docs/03-live-build-config/) |
 | Enable a systemd service in the image | `config/hooks/normal/0100-services.hook.chroot` | [03](/docs/03-live-build-config/) |
 | Change bootloader, kernel boot options | `auto/config` | [03](/docs/03-live-build-config/) |
 | Change the FlickOS version (ISO name, os-release, …) | `packages/flickos-branding/usr/lib/flickos-release` + installer `branding.desc` | [06](/docs/06-ci-and-releases/#the-version-number) |
-| Change the boot menu, boot splash, OS name, firewall | `config/bootloaders/`, `packages/flickos-branding/`, `config/hooks/normal/0200-firewall.hook.chroot` | [09](/docs/09-customizing/#boot-menu) |
+| Change the boot menu (ISO and installed), boot splash, logo, OS name, firewall | `config/bootloaders/`, `packages/flickos-branding/`, `config/hooks/normal/0200-firewall.hook.chroot` | [09](/docs/09-customizing/#boot-menu) |
 | Change the apt repo URL (e.g. to flickos.net) | `packages/flickos-archive-keyring/etc/apt/sources.list.d/flickos.sources` | [05](/docs/05-apt-repository/#moving-the-repository-eg-to-flickosnet) |
 | Ship an update to installed systems | bump version, `repo/publish.sh`, `repo/upload.sh` | [05](/docs/05-apt-repository/) |
 | Make a release | tag `vX.Y` | [06](/docs/06-ci-and-releases/) |

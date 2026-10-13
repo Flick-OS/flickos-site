@@ -124,6 +124,17 @@ page is the one case so far: the owners append a line to
 `~/.local/state/flickos/history.jsonl` when a setting changes, and nothing
 else runs ([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-history.md#adr-007-on-by-default-with-a-switch-to-turn-it-off)).
 
+**A safety net.** A feature whose only job is to undo damage may be on by
+default when, like a record, it would be useless if turned on only after the
+damage. It runs no waiting daemon. It may run inside an operation that
+already runs (an apt hook), and briefly at start. An ADR in its design
+document states what it costs per event and the disk it holds. It keeps a
+switch in Settings, which says what it holds and offers to delete it.
+Restore points are the one case so far (planned): a snapshot in apt's hook
+before each software change, and a start counter that runs for a few seconds
+at each start
+([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-recovery.md#adr-002-a-restore-point-before-every-software-change-nothing-in-between-accepted)).
+
 **Making a shipped feature the default.** A feature that has shipped opt-in
 may later become the default, as a decision of its own: an ADR in its design
 document that states what it then costs every session. It keeps its switch in

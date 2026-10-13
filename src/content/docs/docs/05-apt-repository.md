@@ -226,6 +226,11 @@ is missing. So the first time, run `repo/community/publish.sh` (with no apps
 it exports an empty distribution), then `repo/publish.sh`, then
 `repo/upload.sh`.
 
+To take a bad app back from every computer, write `repo/community/withdrawn/NAME`
+(the reason) and delete `apps/NAME`: `publish.sh` then publishes an empty
+`VERSION+withdrawn1` package, which the automatic updates install over it
+(details in the community README).
+
 Automatic updates install community apps (`label=FlickOS Community` in
 flickos-archive-keyring's `51flickos-origins` and flickos-control's
 `UPDATE_SCOPES`, design Q10).

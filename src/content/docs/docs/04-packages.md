@@ -286,6 +286,10 @@ it needs no bindings.
   minimizes every shown window, and when none is shown gives back the ones it
   minimized, the focused one last. labwc 0.8 has no `ToggleShowDesktop`, and
   the daemon already follows the windows, tiling on or off.
+- **Bring an app forward:** `flick-tiler focus-app APP-ID…` activates (and
+  restores) the main window of that app that had the focus last, exit status
+  1 if none is open. flickos-menu's grid sends it over the control socket
+  before starting an app.
 - **History:** every change of these settings (Super+T and the panel
   included) is recorded for *Settings → History*, like flickos-layout's (see
   flickos-control).
@@ -590,6 +594,113 @@ pkexec).
   after a failure, the helper), run at package build. The boot test checks
   that the timer is enabled and that the live session sends nothing.
 
+### `flickos-recovery`
+
+Restore points of the whole system: a read-only btrfs snapshot before every
+software change, putting one back, the boot menu's *Restore points*, and
+recovering by itself after starts that failed. Design, decisions and
+measurements:
+[flickos-recovery.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-recovery.md). One Python 3 file,
+`usr/bin/flickos-recovery` (stdlib only), plus `usr/libexec/flickos/recovery-helper`
+(root, through pkexec).
+
+- **Only on FlickOS's btrfs layout** (ADR-001): `/` the `@` subvolume and
+  `/.snapshots` the `@snapshots` one, which the installer makes when btrfs
+  is chosen (the default since flickos-installer 1.28). On ext4, on a user's
+  own btrfs layout and in the live session every command says so and does
+  nothing.
+- **The apt hook:** `etc/apt/apt.conf.d/80flickos-recovery` runs
+  `flickos-recovery apt-hook` in `DPkg::Pre-Install-Pkgs` (version 3 list on
+  stdin), whichever program runs apt.
+  - One change gets one restore point, `/.snapshots/NAME` (the time) plus
+    `NAME.json` (why, which program, the packages).
+  - The newest `KEEP` (5) are kept, and none is made with less than 2 GiB or
+    10 % of the disk free.
+  - On ext4 the hook reads `/proc/self/mountinfo` and leaves before
+    importing anything else: 34 ms per apt run on a 2014 laptop.
+  - It never stops apt, except right after putting back (exit status 100,
+    which the apt line turns into a failure). If the program is gone,
+    `|| cat` reads apt's list so apt goes on.
+- **Commands:**
+  - `list`, `state` (JSON for the Settings page), `plan NAME` (apt's history
+    since then).
+  - `create [REASON]`, `delete NAME|--all`, `restore NAME`,
+    `get`/`set enabled|auto-recover yes|no|default`
+    (`/.snapshots/.flickos-recovery.conf`: in `@snapshots`, so neither putting
+    back nor a start from a restore point loses a change).
+  - The changing ones need root. Run by a user they `exec` pkexec and the
+    helper (polkit `org.flickos.recovery.policy`, one action per verb).
+  - Only snapshots with a `NAME.json` are restore points: a user's own are
+    never touched.
+- **Putting back** (ADR-003):
+  - The running `@` moves into `@snapshots` as a "before putting back"
+    restore point, and a writable snapshot of NAME becomes the new `@`.
+  - GRUB is installed again from the restored system (chroot,
+    `--no-nvram`). If that fails, the swap is undone.
+  - Until the restart apt is refused. The marker
+    `/.snapshots/.flickos-recovery-pending` holds the boot id.
+  - At the next start `flickos-recovery-settle.service` (only while the
+    marker exists) makes the old system read-only. The next change made as
+    root does it too, for a restored system without that service.
+- **The boot menu** (ADR-004):
+  - `etc/grub.d/42_flickos-recovery` adds a *Restore points* submenu that
+    `source`s `/boot/grub/flickos-recovery.cfg`, and nothing at all off the
+    btrfs layout.
+  - The tool writes that file after every change, one entry per restore
+    point with its own kernel and initramfs (disk access from
+    grub-mkconfig_lib), and commits it: GRUB reads only the last btrfs
+    commit.
+  - The postinst runs `update-grub` and `flickos-recovery grub` on the
+    layout only. Purging takes the submenu out.
+- **Starting a restore point:**
+  - `usr/share/initramfs-tools/hooks/flickos-recovery` adds the overlay
+    module.
+  - `scripts/local-bottom/flickos-recovery` puts a tmpfs layer over a
+    snapshot named by `rootflags=subvol=@snapshots/NAME`, drops fstab's
+    `/` line, and writes `/run/flickos/restore-point-boot`.
+  - Nothing changed then is kept, and no restore point is made. `restore`
+    of that one is *Keep*.
+- **The start counter** (ADR-005):
+  - `flickos-recovery-start.service` (oneshot, before greetd) runs
+    `start begin`.
+  - `flickos-recovery-good.service` runs `start good-watch`: once
+    `gtkgreet` or `labwc` has been up `GOOD_SECONDS` (5), the count is 0
+    and the start counts as good.
+  - Both need `/.snapshots` to be a mount point.
+  - The counter is `/.snapshots/.flickos-start.json`, and `.flickos-start.cfg`
+    in GRUB's words, which the stub sources. At `LIMIT` (2) failed starts,
+    or while recovering, the `.cfg` also holds the newest good restore
+    point's own menu entry (`--id flickos-recover`, built from
+    `.flickos-grub.json`, which `write_grub` saves).
+  - GRUB then starts it (`auto-recover` yes, Option B) or waits with it
+    highlighted (no, Option A), and waits if starts from it fail too.
+  - A restore point is `good` when it was taken in a start that had already
+    worked.
+  - `start keep|try-again|status`; the helper has `keep`, `try-again` and
+    `auto-recover`.
+- **At login**, started from a restore point: flickos-settings' autostart
+  runs `flickos-recovery notify`. It waits until FlickOS's mako owns the
+  notification service, then sends a critical notification whose click
+  opens Settings' *Restore Points* page.
+- **The log:** `/var/log/flickos-recovery.log` (in `@log`, fsynced,
+  `etc/logrotate.d/flickos-recovery`).
+- **Settings window:** flickos-control's *Restore Points* page (System
+  group, only on the btrfs layout: the list, *Put Back…*, the switches
+  `restore-points` and `restore-points.auto`, and a banner with *Keep…* and
+  *Try Again* while running from a restore point), and restore points in
+  *History*.
+- **A Depends of `flickos-desktop`** (since 1.30) and in `REQUIRED`:
+  existing ext4 installs get it and nothing of it runs. They get restore
+  points only by installing again.
+- **Unit tests** in `tests/`:
+  - a fake `/proc`, `/.snapshots` and btrfs;
+  - the apt line run through `sh` with a stand-in program;
+  - the GRUB stub with a stand-in `findmnt`;
+  - the counter's states;
+  - the helper's argument checks.
+
+  The boot test checks that the live session has none of it.
+
 ### `flickos-menu`
 
 The start menu for the panel's apps button (the default) and Quick Settings
@@ -598,7 +709,9 @@ desktop layout (`MenuStyle=`): Redmond's is classic (Windows 7: pinned apps,
 *All Apps* by category and search on the left; the user, their folders,
 Settings, Software and the power buttons on the right), Traditional's is
 categories (GNOME 2/Whisker), Cupertino's a full-screen grid of app icons
-(Launchpad). **On by default** (since flickos-layouts 1.23): a user who wants fuzzel back picks
+(Launchpad), with the power buttons top right while Quick Settings is off.
+Log Out, Restart and Shut Down run on a second click: the first turns the
+button red and says to click again. **On by default** (since flickos-layouts 1.23): a user who wants fuzzel back picks
 *App launcher* under *Apps button* in *Settings → Desktop Layout & Style*
 (`flickos-layout launcher set fuzzel`). Design and measurements:
 [design/flickos-menu.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-menu.md).
@@ -608,7 +721,7 @@ and battery icons and Super+A while the user turns it on under *Quick
 Settings* in *Settings → Desktop Layout & Style* (`flickos-layout
 quick-settings set on`): switches for Wi-Fi, Do Not Disturb, night light,
 tiling and the phone, sliders for volume and brightness, the battery,
-Settings and Lock Screen. Design, measurements and what is left (Bluetooth):
+Settings and the power buttons. Design, measurements and what is left (Bluetooth):
 [design/flickos-quick-settings.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-quick-settings.md).
 
 | File in package | Installed to | Purpose |
@@ -710,8 +823,13 @@ it follows the Dark or Light style. Design and decisions:
   *History* (recent changes with *Undo*; see below) and
   *More Settings* (tiles that start Wallpaper, Appearance, Displays, Network,
   Sound, Bluetooth, Printers and Software Updates; a tile is hidden when its app
-  isn't installed), *Privacy* (the weekly count through `flickos-countme`, only
-  while it is installed) and *About* (FlickOS version from `/usr/lib/flickos-release`,
+  isn't installed), *Restore Points* (flickos-recovery's restore points with
+  *Put Back…*, which shows `flickos-recovery plan` before the password; the
+  switches are the system settings `restore-points` and `restore-points.auto`;
+  a banner with *Keep…* and *Try Again* while running from a restore point;
+  only on the btrfs layout, `recovery_available()` reads
+  `/proc/self/mountinfo`), *Privacy* (the weekly
+  count through `flickos-countme`, only while it is installed) and *About* (FlickOS version from `/usr/lib/flickos-release`,
   Debian, Linux, computer, processor, memory, graphics via `lspci`, disk,
   desktop; *Copy System Info* puts the same text plus the FlickOS packages'
   versions on the clipboard with `wl-copy`, and *Report a Problem* opens the
@@ -1025,8 +1143,12 @@ installed systems. See [09 – Installer](/docs/09-customizing/#installer).
 
 ### `flickos-branding`
 
-The Plymouth boot splash theme (`usr/share/plymouth/themes/flickos/`), and the
-FlickOS name in `/etc/os-release`, `/etc/issue` and `/etc/issue.net`. Those three
+The logo (`usr/share/icons/hicolor/`: `flickos.svg`, `flickos-symbolic.svg`), the
+Plymouth boot splash theme (`usr/share/plymouth/themes/flickos/`), the installed
+system's GRUB theme (`usr/share/flickos/grub/`, applied by the conffile
+`/etc/default/grub.d/flickos-theme.cfg`; the postinst and postrm run
+`update-grub` where `/boot/grub/grub.cfg` exists; see
+[09 – Boot menu](/docs/09-customizing/#installed-systems)), and the FlickOS name in `/etc/os-release`, `/etc/issue` and `/etc/issue.net`. Those three
 files belong to Debian's `base-files`, so the package **diverts** Debian's
 versions (`dpkg-divert`) and generates FlickOS versions from them in
 `debian/flickos-branding.postinst`. File triggers regenerate them whenever

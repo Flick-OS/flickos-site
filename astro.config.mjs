@@ -18,7 +18,7 @@ export default defineConfig({
 		starlight({
 			title: 'FlickOS',
 			description:
-				'FlickOS 2.1 — a lightweight Debian 13 Wayland desktop with live ISO and Calamares installer.',
+				'FlickOS 2.2 — a lightweight Debian 13 Wayland desktop with live ISO and Calamares installer.',
 			favicon: '/favicon.svg',
 			disable404Route: true,
 			logo: {

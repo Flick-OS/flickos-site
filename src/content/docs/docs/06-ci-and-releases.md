@@ -147,10 +147,14 @@ flickos-archive-keyring or the workflow, and by hand.
    previous commit; by hand: every app).
 2. **build**, one job per app (a matrix): adds FlickOS's two distributions
    from flickos-archive-keyring (the checks ask apt where a dependency comes
-   from), then `build.py --install-build-deps --base BASE NAME`: clone, refuse a
-   tag that doesn't point at the listed commit, build that commit, run
+   from), creates the user `builder` and blocks its network with iptables
+   (the job's container has `NET_ADMIN` for that, in its own network
+   namespace only), then `build.py --install-build-deps --build-user builder
+   --base BASE NAME`: clone, refuse a tag that doesn't point at the listed
+   commit and source that can't be reviewed, install the build dependencies,
+   build that commit as `builder` (offline; `build.py` stops if it isn't), run
    `check.py` (lintian included), write the source diff since the published
-   commit. The summary goes on the run's page; the folder (`.deb`,
+   commit and `review.txt`, the lines to look at. The summary goes on the run's page; the folder (`.deb`,
    `check.txt`, `source.diff`, `summary.md`) becomes the artifact
    `community-NAME-COMMIT` (90 days), or `failed-NAME` when it failed.
 

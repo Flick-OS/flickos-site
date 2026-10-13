@@ -1,0 +1,251 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+
+const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.2/';
+
+const fixes = [
+	{
+		title: 'Sending files to the phone',
+		body: 'no longer fails every first or second time. A file now counts as sent only once the phone has all of it, and is tried up to three times.',
+	},
+	{
+		title: 'Cupertino’s app grid',
+		body: 'no longer stops starting apps after a click on its background.',
+	},
+	{
+		title: 'Settings and the Phone window',
+		body: 'no longer use the processor while they sit open: a hidden Loading… spinner kept redrawing 60 times a second.',
+	},
+	{
+		title: 'Installs get noatime again',
+		body: '(fewer disk writes): Calamares had ignored FlickOS’s mount options.',
+	},
+];
+
+const issues = [
+	'Restore points work only on new installs with btrfs. They cover the system, not your home folder: keep backing up your files.',
+	'Opening Settings or the Welcome window a second time doesn’t bring the open window to the front, so it looks as if nothing happened. Find the window in the taskbar.',
+	'The gray descriptions under settings are hard to read, most of all in the Light style.',
+	'Windows that are already open when tiling is turned on stay floating until you tile them with Super+Shift+T, and all monitors use the same arrangement.',
+	'Traditional’s window list shows the windows of all 4 desktops, not only the current one’s.',
+	'Quick Settings has no Bluetooth switch yet.',
+	'Phone needs the firewall to let it in. If the firewall is on, allow phones in Settings → Phone.',
+	'There is no upgrade path from FlickOS 1.x.',
+];
+---
+
+<MarketingLayout
+	title="FlickOS 2.2"
+	description="FlickOS 2.2 adds restore points that undo a software change that broke the system, a Software app with a community repository, and FlickOS's own amber logo."
+>
+	<article class="page">
+		<header class="page-head flick-anim-rise">
+			<p class="date">
+				<time datetime="2026-10-13">13 October 2026</time>
+			</p>
+			<h1 class="flick-display">FlickOS 2.2: restore points and Software</h1>
+			<p>
+				FlickOS 2.2 is still based on <strong>Debian 13 “trixie”</strong>, like 2.0 and 2.1. It adds
+				<strong>restore points</strong>, which can undo a software change that broke the system, even from the boot menu.
+				A new <strong>Software</strong> app installs apps from Debian, Flathub and FlickOS’s new community repository.
+				FlickOS also has its own look now: an amber halo logo, boot menus, wallpapers and a start button in the brand color.
+			</p>
+			<p class="cta">
+				<a class="flick-btn primary" href="/download/">Download 2.2</a>
+			</p>
+		</header>
+
+		<section class="part" id="restore-points">
+			<h2 class="flick-display">Restore points</h2>
+			<p>
+				Before every software change (installing, removing or updating, from any program, also the automatic updates) FlickOS saves a restore point of the system.
+				Your files in your home folder are not part of it. The newest 5 are kept, and none is made while the disk is nearly full.
+			</p>
+			<ul>
+				<li><strong>Settings → Restore Points</strong> lists them in plain words. <em>Put Back…</em> shows what it would undo before it asks for your password, and the system goes back at the next restart. The system as it was before is kept as a restore point, so putting one back can be undone too. You can also make one by hand, delete them all, or turn them off.</li>
+				<li><strong>History</strong> lists restore points next to the software changes they were made before.</li>
+				<li><strong>Boot menu:</strong> if the system won’t start, pick <em>Restore points</em> in the boot menu and start an older one. Nothing you do there is kept until you choose <em>Keep</em> in Settings.</li>
+				<li><strong>Recovering by itself:</strong> after 2 starts in a row that don’t reach the login screen, the computer starts the newest good restore point by itself. A notification at login says why, and Settings offers <em>Keep…</em> or <em>Try Again</em>. You can turn this off and have the boot menu wait for you instead.</li>
+			</ul>
+			<p>
+				<strong>The installer uses btrfs by default</strong>, so new installs get restore points. ext4 is still offered.
+				You can also choose whether to have swap (none, without hibernation, or with hibernation, the default), and a 10&nbsp;GB disk is now enough.
+				<a href="/#restore">How restore points work</a>.
+			</p>
+		</section>
+
+		<section class="part" id="software">
+			<h2 class="flick-display">Software</h2>
+			<p>
+				A new app for finding, installing and removing apps. It replaces the old package manager window in the menus, the start menu and the Welcome window.
+			</p>
+			<ul>
+				<li>It shows apps, not packages, with icons, descriptions, screenshots and the space an app needs before you install it.</li>
+				<li>Apps come from Debian (the default), FlickOS, the FlickOS community repository and Flathub. The front page has a <em>Made for FlickOS</em> shelf.</li>
+				<li>Removing anything the desktop needs is refused.</li>
+				<li>Apps from Flathub are updated with the automatic updates.</li>
+			</ul>
+			<h3>Community repository</h3>
+			<p>
+				Other developers can publish apps for FlickOS. FlickOS builds each app from its public source code, checks it and reviews it before it is published.
+				The app’s page in Software says so, and that it can use your files like any app from Debian. Automatic updates install community apps’ updates too.
+				Developers: see <a href="/learn/publish/">Publish your app for FlickOS</a>.
+			</p>
+		</section>
+
+		<section class="part" id="look">
+			<h2 class="flick-display">FlickOS’s own look</h2>
+			<p>
+				A new halo logo, in amber. The boot menus, the splash screen and the installer use it, the installed system gets a FlickOS boot menu theme,
+				and the Dark and Light styles have new wallpapers. On the desktop only the start button’s logo is amber; everything else keeps Arc’s blue.
+			</p>
+		</section>
+
+		<section class="part" id="start-menu">
+			<h2 class="flick-display">Start menu</h2>
+			<ul>
+				<li><strong>Log Out, Restart and Shut Down take a second click.</strong> The first click turns the button red; click again within 4 seconds to go ahead. Lock Screen still works at once.</li>
+				<li><strong>Cupertino has power buttons</strong> at the top right of its app grid (while Quick Settings is off).</li>
+				<li><strong>Quick Settings</strong> has Log Out, Restart and Shut Down next to Settings and Lock Screen, in every layout.</li>
+				<li><strong>Cupertino’s app grid:</strong> clicking an app that is already open brings its window forward instead of starting it again. A middle click, <kbd>Ctrl+click</kbd> or <kbd>Ctrl+Enter</kbd> starts another copy. The app under the pointer is highlighted, and the grid has a background again, so names stay readable over any window.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="faster-starts">
+			<h2 class="flick-display">Faster starts</h2>
+			<p>
+				The startup files (initramfs) are now compressed with zstd: about 10% smaller and unpacked in 0.6&nbsp;s instead of 2.7&nbsp;s on an older laptop.
+				Upgraded systems get this at their next kernel update.
+			</p>
+		</section>
+
+		<section class="part" id="fixes">
+			<h2 class="flick-display">Fixes</h2>
+			<ul>
+				{fixes.map((f) => <li><strong>{f.title}</strong> {f.body}</li>)}
+			</ul>
+		</section>
+
+		<section class="part" id="upgrading">
+			<h2 class="flick-display">Coming from 2.1 or 2.0</h2>
+			<p>You don’t need to reinstall. Everything in 2.2 comes through FlickOS’s apt repository:</p>
+			<pre class="cmd"><code>sudo apt update && sudo apt upgrade</code></pre>
+			<p>
+				Use <code>apt upgrade</code>, not <code>apt-get upgrade</code>: <code>apt-get</code> keeps the FlickOS desktop back because it needs new packages. Then restart.
+			</p>
+			<p>
+				<strong>Restore points need a new install.</strong> They work only on the btrfs layout that the 2.2 installer sets up by default.
+				An upgraded system (ext4) gets the package, but nothing of it runs and nothing changes.
+			</p>
+			<p>The old software manager (gnome-packagekit) stays installed after the upgrade. The menus now open the new Software app, so you can remove the old one:</p>
+			<pre class="cmd"><code>sudo apt remove gnome-packagekit</code></pre>
+			<p>
+				Coming from <strong>2.0</strong>, read the <a href="https://github.com/dvbondoy/FlickOS/releases/tag/v2.1">2.1 release notes</a> too.
+				Apps that FlickOS only recommends don’t arrive with an upgrade. If you want the ad blocker, the task manager and picture thumbnails that new installs get, add them yourself:
+			</p>
+			<pre class="cmd"><code>sudo apt install gnome-package-updater webext-ublock-origin-firefox lxtask tumbler</code></pre>
+			<p>
+				The upgrade from 2.0 also adds FlickOS’s anonymous <strong>weekly count</strong>. An upgraded system is counted until you turn it off in <em>Settings → Privacy</em>.
+			</p>
+			<p>
+				Coming from FlickOS 1.x (Ubuntu/LXLE based), there is still <strong>no in-place upgrade</strong>. Back up your files and install 2.2 fresh.
+			</p>
+		</section>
+
+		<section class="part" id="known-issues">
+			<h2 class="flick-display">Known issues</h2>
+			<ul>
+				{issues.map((i) => <li>{i}</li>)}
+			</ul>
+		</section>
+
+		<section class="part closing">
+			<p>
+				Get the ISO on <a href={ISO_URL} rel="noopener noreferrer">SourceForge</a>, and see the
+				<a href="/download/">download page</a> for checking it, writing a USB stick and installing.
+				Please <a href="https://github.com/dvbondoy/FlickOS/issues">report anything that goes wrong</a>,
+				or talk about it on <a href="https://www.reddit.com/r/flickos/">r/flickos</a>.
+			</p>
+		</section>
+	</article>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.date {
+		margin: 0 0 0.6rem;
+		color: var(--flick-muted);
+		font-size: 0.95rem;
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.6rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 1rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.cta {
+		margin-top: 1.25rem !important;
+	}
+	.part {
+		margin-top: 2.75rem;
+	}
+	.part h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.45rem;
+		color: var(--flick-title);
+	}
+	.part h3 {
+		margin: 1.5rem 0 0;
+		font-size: 1.1rem;
+		color: var(--flick-title);
+	}
+	.part p,
+	.part li {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.part p {
+		margin: 0.85rem 0 0;
+	}
+	.part ul {
+		margin: 0.85rem 0 0;
+		padding-left: 1.2rem;
+		list-style: disc;
+	}
+	.part li + li {
+		margin-top: 0.6rem;
+	}
+	.cmd {
+		margin: 0.85rem 0 0;
+		padding: 0.75rem 0.9rem;
+		overflow-x: auto;
+		border-radius: 0.35rem;
+		background: var(--flick-panel);
+		border: 1px solid var(--flick-border);
+		font-size: 0.92rem;
+		line-height: 1.45;
+	}
+	.cmd code {
+		white-space: pre;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	}
+	code,
+	kbd {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.9em;
+	}
+</style>
