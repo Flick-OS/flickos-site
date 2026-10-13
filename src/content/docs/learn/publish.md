@@ -21,6 +21,8 @@ maintainer reads it, and only then is it signed and published.
 - **What it costs:** nothing. FlickOS takes no share of anything.
 - **Before this guide:** [Building a .deb](/learn/deb/) teaches every file in
   `debian/`. This guide only says what is different for a community app.
+- **A style, not an app?** It is published the same way. Step 12 says what
+  is different.
 
 ## Contents
 
@@ -35,9 +37,10 @@ maintainer reads it, and only then is it signed and published.
 9. [The review](#9-the-review)
 10. [Updates](#10-updates)
 11. [The Made for FlickOS shelf](#11-the-made-for-flickos-shelf)
-12. [Flathub instead, or as well?](#12-flathub-instead-or-as-well)
-13. [Traps](#13-traps)
-14. [Cheat sheet](#14-cheat-sheet)
+12. [A style instead of an app](#12-a-style-instead-of-an-app)
+13. [Flathub instead, or as well?](#13-flathub-instead-or-as-well)
+14. [Traps](#14-traps)
+15. [Cheat sheet](#15-cheat-sheet)
 
 ---
 
@@ -387,7 +390,121 @@ maintainer checks that it:
 The shelf is a list on FlickOS's server, so it changes without a new version
 of anything.
 
-## 12. Flathub instead, or as well?
+## 12. A style instead of an app
+
+A **style** recolors the FlickOS desktop: the panel, the terminal, the
+launcher and the notifications, the GTK and icon themes it names, the title
+bars and a wallpaper ([Make FlickOS yours](/learn/yours/) shows how to make
+one). Published as a community package, it shows in *Software → Styles*,
+where people can **Try** it until they log out, or **Use** it. Everything
+above holds, with these differences. The example is **Dusk**: Dark with an
+orange accent and its own title bars.
+
+**Its name is the style's.** The package's name is also the style's id
+(the folder name), so it must be lowercase letters, digits and `-` only, and
+it can't be `dark`, `light` or `seven`, which are FlickOS's own.
+
+**Only a style's files**, in two folders named after the package:
+
+```
+/usr/share/flickos/styles/dusk/       style.ini, waybar-colors.css, foot.ini,
+                                      fuzzel.ini, mako.conf, wallpaper.png or .jpg
+/usr/share/themes/dusk/labwc/         themerc and the title bar buttons
+                                      (.svg, .png, .xbm): optional
+```
+
+Leave out any file your style doesn't change: with `Inherits=dark` it
+takes the rest from Dark, and keeps getting FlickOS's updates to it.
+`flickos-layout export` is a good start: the archive it writes holds your
+style's folder, folded into one. A GTK or icon theme can't be in the
+package. Name one Debian has, and put its package in `Depends`
+(`greybird-gtk-theme`, `papirus-icon-theme`…).
+
+Name the window theme in `style.ini` by the package's name:
+
+```ini
+[Style]
+Name=Dusk
+Comment=Dark with an orange accent
+Inherits=dark
+Waybar=waybar-colors.css
+Fuzzel=fuzzel.ini
+LabwcTheme=dusk
+```
+
+**The metainfo file is an add-on**, not an app. It extends the layout
+chooser and names the style's folder, which is how Software knows it's a
+style:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+  <id>io.github.example.styles.Dusk</id>
+  <extends>flickos-layout.desktop</extends>
+  <name>Dusk</name>
+  <summary>Dark with an orange accent</summary>
+  <description><p>FlickOS's Dark style with an orange accent and orange title bars.</p></description>
+  <icon type="stock">preferences-desktop-theme</icon>
+  <url type="homepage">https://github.com/example/dusk</url>
+  <developer id="io.github.example"><name>Example Developer</name></developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/example/dusk/v1.0/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+  <custom><value key="FlickOS::style">dusk</value></custom>
+</component>
+```
+
+There is no desktop file and no `launchable`. Add a screenshot of the
+whole desktop with your style in use: it is what people choose by, and the
+reviewer looks at it.
+
+**debian/** is as in step 6. `Depends` names `flickos-layouts (>= 1.53)`
+and the Debian packages of any themes you name:
+
+```
+Package: dusk
+Architecture: all
+Depends: flickos-layouts (>= 1.53), ${misc:Depends}
+Description: orange style for FlickOS
+ FlickOS's Dark style with an orange accent and orange title bars.
+```
+
+```
+styles/dusk/*                          usr/share/flickos/styles/dusk/
+theme/*                                usr/share/themes/dusk/labwc/
+io.github.example.styles.Dusk.metainfo.xml   usr/share/metainfo/
+```
+
+**`check` must print nothing.** check.py runs FlickOS's own `flickos-layout
+check` on your style. A warning that you can ignore on your own desktop
+fails here: people install your style without seeing it first. Most often
+that's contrast (text too faint on its background, step 4 of
+[Make FlickOS yours](/learn/yours/#4-check)) or a theme that isn't
+installed. Check it before you open the pull request:
+
+```sh
+~/FlickOS/repo/community/check.py ../dusk_1.0_all.deb
+```
+
+```
+dusk	pass	dusk_1.0_all.deb
+```
+
+A style that fails says why, with the file:
+
+```
+dusk	FAIL	dusk_1.0_all.deb
+  style: usr/share/flickos/styles/dusk/waybar-colors.css: warning: selected_fg_color on selected_bg_color is 2.8:1, below 3:1: hard to read (HIG A11Y-6)
+```
+
+Run it on a FlickOS computer that has your themes installed: CI installs
+them from your `Depends` first.
+
+## 13. Flathub instead, or as well?
 
 Software shows Flathub's apps too, so an app on Flathub reaches FlickOS's
 users either way. Flathub is worth it when your app has a history and wants
@@ -403,7 +520,7 @@ a new app:
 The community repository has neither rule, and its packages need no runtime.
 Many apps can start here and go to Flathub later.
 
-## 13. Traps
+## 14. Traps
 
 - **A moved tag.** Never move or delete a tag that is in a pull request or
   published. Make a new one.
@@ -429,7 +546,7 @@ Many apps can start here and go to Flathub later.
 - **Building on a computer with other repositories.** The dependency rule
   asks your apt. Check on a FlickOS computer or a clean trixie, as CI does.
 
-## 14. Cheat sheet
+## 15. Cheat sheet
 
 ```sh
 appstreamcli validate --no-net ID.metainfo.xml          # E: lines must be gone
