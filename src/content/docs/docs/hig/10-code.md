@@ -149,6 +149,7 @@ These have each broken a FlickOS program before:
 | `xdg-terminal-exec` skips a desktop file whose `Exec=` uses single quotes | Double quotes only in `Exec=` |
 | The first show of a new layer-shell window costs 50–100 ms | Build it hidden, `realize()` and `get_preferred_size()` ahead ([PERF-10](/docs/hig/08-performance/#perf-10-should-do-slow-work-before-it-is-needed-off-the-critical-path)) |
 | `GtkFlowBox` filtering hides children with `set_child_visible(False)` | Check `get_child_visible()` when looking for the first shown child |
+| An active `Gtk.Spinner` on a `GtkStack` page that isn't shown keeps animating: 60 redraws a second, measured as about 3,500 wakeups a minute (Software, 2026-10) | Start a spinner on `map` and stop it on `unmap` (`Ui.loading()`, Software's `spinner()`); a hidden spinner doesn't animate |
 
 Add a row when you find a new one.
 

@@ -63,7 +63,7 @@ Output in the repository root:
 
 | File | What it is |
 |---|---|
-| `FlickOS-64bit-v2.1.iso` | The bootable image |
+| `FlickOS-64bit-v2.0.iso` | The bootable image |
 | `SHA256SUMS` | Checksum of the ISO |
 | `build.log` | Full output of the package build, `lb config` and `lb build`. Check it when something fails |
 | `flickos-amd64.packages` | Every package and version in the image |
@@ -246,7 +246,7 @@ you choose restart, the VM boots from the installed disk.
 - [ ] Right-click menu has **no** *Install FlickOS* entry
 - [ ] The keyboard layout chosen in the installer works in foot
 - [ ] Leaving the VM idle for 5 minutes locks the screen
-- [ ] Boot shows the FlickOS splash; tty2 (Ctrl+Alt+F2) shows `FlickOS 2.1 (Debian 13)` above the login prompt
+- [ ] Boot shows the FlickOS splash; tty2 (Ctrl+Alt+F2) shows `FlickOS 2.0 (Debian 13)` above the login prompt
 - [ ] `sudo ufw status` shows `Status: active`
 
 ### Without the script
@@ -256,7 +256,7 @@ The equivalent raw QEMU commands, if you ever need to tweak something:
 ```sh
 # BIOS
 qemu-system-x86_64 -enable-kvm -cpu host -m 4G -smp 2 -device virtio-vga \
-    -cdrom FlickOS-64bit-v2.1.iso
+    -cdrom FlickOS-64bit-v2.0.iso
 
 # UEFI with persistent variables and a test disk
 qemu-img create -f qcow2 disk.qcow2 20G
@@ -265,7 +265,7 @@ qemu-system-x86_64 -enable-kvm -cpu host -m 4G -smp 2 -device virtio-vga \
     -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
     -drive if=pflash,format=raw,file=vars.fd \
     -drive file=disk.qcow2,if=virtio \
-    -cdrom FlickOS-64bit-v2.1.iso -boot once=d
+    -cdrom FlickOS-64bit-v2.0.iso -boot once=d
 ```
 
 ## Measuring what a change costs
@@ -297,7 +297,7 @@ FlickOS desktop also hits the session's own copies.
 
 ```sh
 lsblk                                  # find the USB device, e.g. /dev/sdX
-sudo dd if=FlickOS-64bit-v2.1.iso of=/dev/sdX bs=4M status=progress oflag=sync
+sudo dd if=FlickOS-64bit-v2.0.iso of=/dev/sdX bs=4M status=progress oflag=sync
 ```
 
 `dd` overwrites the target without asking. Check the device name twice.

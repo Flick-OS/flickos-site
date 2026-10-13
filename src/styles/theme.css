@@ -1,6 +1,11 @@
 /*
- * FlickOS site theme — Arc-Dark / Arc-Light mapped onto Starlight variables.
- * Palette source: flickos/tools/check-palette.py
+ * FlickOS site theme — Arc-Dark / Arc-Light mapped onto Starlight variables,
+ * with FlickOS's brand amber as the accent.
+ * Palette source: flickos/tools/check-palette.py; the brand color:
+ * flickos/docs/design/flickos-accent.md (#ffb13d, #2f343f on it). On light
+ * backgrounds #ffb13d is too faint for text (1.8:1), so light mode uses the
+ * lightest amber that passes 4.5:1 on the page and under white text
+ * (#a36200) and a deeper one for links (#8f5b00).
  *
  * Starlight names (white / gray-* / black) are relative lightness in *dark* mode.
  * In light mode those tokens are inverted: --sl-color-white is dark text,
@@ -15,21 +20,21 @@
 	--flick-border: #2b2e39;
 	--flick-fg: #d3dae3;
 	--flick-title: #cfdae7;
-	--flick-accent: #5294e2;
-	--flick-accent-fg: #ffffff;
+	--flick-accent: #ffb13d;
+	--flick-accent-fg: #2f343f;
 	--flick-warning: #f27835;
 	--flick-error: #fc4138;
 	--flick-success: #73d216;
 	--flick-muted: #90939b;
-	--flick-link: #a9caf1;
+	--flick-link: #ffcf85;
 
 	--sl-font: "IBM Plex Sans", "Segoe UI", sans-serif;
 	--sl-font-system: var(--sl-font);
 
-	/* Arc-Dark → Starlight dark tokens */
-	--sl-color-accent-low: #2a4a6e;
-	--sl-color-accent: #5294e2;
-	--sl-color-accent-high: #a9caf1;
+	/* Arc-Dark → Starlight dark tokens; accent = brand amber */
+	--sl-color-accent-low: #63533f;
+	--sl-color-accent: #ffb13d;
+	--sl-color-accent-high: #ffcf85;
 	--sl-color-white: #ffffff;
 	--sl-color-gray-1: #d3dae3;
 	--sl-color-gray-2: #cfdae7;
@@ -45,8 +50,8 @@
 	--sl-color-hairline: #2b2e39;
 	--sl-color-hairline-light: #404552;
 	--sl-color-text: #d3dae3;
-	--sl-color-text-accent: #a9caf1;
-	--sl-color-text-invert: #2a4a6e;
+	--sl-color-text-accent: #ffb13d;
+	--sl-color-text-invert: #2f343f;
 }
 
 :root[data-theme="light"],
@@ -57,18 +62,18 @@
 	--flick-border: #dcdfe3;
 	--flick-fg: #5c616c;
 	--flick-title: #525d76;
-	--flick-accent: #5294e2;
+	--flick-accent: #a36200;
 	--flick-accent-fg: #ffffff;
 	--flick-warning: #f27835;
 	--flick-error: #fc4138;
 	--flick-success: #73d216;
 	--flick-muted: #90939b;
-	--flick-link: #2679db;
+	--flick-link: #8f5b00;
 
-	/* Arc-Light → Starlight light tokens (inverted naming) */
-	--sl-color-accent-low: #d6e6f8;
-	--sl-color-accent: #5294e2;
-	--sl-color-accent-high: #2679db;
+	/* Arc-Light → Starlight light tokens (inverted naming); accent = amber */
+	--sl-color-accent-low: #ffe8c5;
+	--sl-color-accent: #a36200;
+	--sl-color-accent-high: #8f5b00;
 	--sl-color-white: #383c4a;
 	--sl-color-gray-1: #525d76;
 	--sl-color-gray-2: #5c616c;
@@ -85,7 +90,7 @@
 	--sl-color-hairline: #dcdfe3;
 	--sl-color-hairline-light: #e7e8eb;
 	--sl-color-text: #5c616c;
-	--sl-color-text-accent: #2679db;
+	--sl-color-text-accent: #a36200;
 	--sl-color-text-invert: #ffffff;
 }
 
@@ -115,7 +120,7 @@ body {
 .flick-shell {
 	min-height: 100vh;
 	background:
-		radial-gradient(ellipse 80% 50% at 50% -10%, rgba(82, 148, 226, 0.18), transparent 55%),
+		radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 177, 61, 0.12), transparent 55%),
 		linear-gradient(180deg, var(--flick-panel) 0%, var(--flick-bg) 28%, var(--flick-bg) 100%);
 	color: var(--flick-fg);
 	font-family: var(--sl-font);

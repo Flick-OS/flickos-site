@@ -17,7 +17,7 @@ Should rules aren't listed. Read the pages for those.
 - [ ] **INT-6** Tested in Redmond, Cupertino and Traditional, in Dark and Light.
 - [ ] **INT-7** Hidden in the live session if it only makes sense installed, and the reverse.
 - [ ] **INT-8** Nothing new opens at first login besides `flickos-welcome`.
-- [ ] **INT-9** A new feature is opt-in and runs, generates and binds nothing while off. Only a record that runs nothing (History) may be on by default, with a switch that also deletes it; a shipped feature becomes the default only through an ADR that states its cost (the start menu); a tool that runs only when asked may bind its keys by default, through an ADR that names them (Screenshot), and anything of it that shows unasked needs its own ADR (the hidden recording button).
+- [ ] **INT-9** A new feature is opt-in and runs, generates and binds nothing while off. Only a record that runs nothing (History) may be on by default, with a switch that also deletes it, or a safety net that runs only inside an existing operation and briefly at start (restore points), through an ADR that states its cost; a shipped feature becomes the default only through an ADR that states its cost (the start menu); a tool that runs only when asked may bind its keys by default, through an ADR that names them (Screenshot), and anything of it that shows unasked needs its own ADR (the hidden recording button).
 - [ ] **INT-10** A login program starts from FlickOS's autostart, runs once per session and doesn't hold up the others.
 
 ## Settings and files ([03](/docs/hig/03-settings-and-files/))
@@ -41,7 +41,7 @@ Should rules aren't listed. Read the pages for those.
 - [ ] **WIN-6** Settings are rows in framed lists under headings, built with `Ui`.
 - [ ] **WIN-10** Results and errors show in the window, selectable, never only on stderr.
 - [ ] **WIN-11** Anything slower than about 100 ms shows a spinner or "…ing…".
-- [ ] **WIN-13** Only actions that can't be undone ask first: named object, verb button, destructive style, Cancel as default.
+- [ ] **WIN-13** Only actions that can't be undone ask first: named object, verb button, destructive style, Cancel as default (in a pop-up: a second click on the reddened button).
 - [ ] **WIN-14** Dialog buttons are Cancel and a verb, the verb suggested and default. Escape cancels.
 
 ## Writing ([05](/docs/hig/05-writing/))
@@ -57,7 +57,7 @@ Should rules aren't listed. Read the pages for those.
 
 ## Visual style ([06](/docs/hig/06-visual-style/))
 
-- [ ] **VIS-1** Only palette colors, and `tools/check-palette.py` passes.
+- [ ] **VIS-1** Only palette colors, and `tools/check-palette.py` passes. The brand amber only on brand surfaces (logo, boot menus, splash, installer, artwork).
 - [ ] **VIS-2** It follows the style in use: no CSS in GTK windows, named colors only in CSS. Hard-coded Arc-Dark only on boot, splash, installer, login screen and the lock and wallpaper background color.
 - [ ] **VIS-3** Never forces dark or light.
 - [ ] **VIS-6** Icons by freedesktop name, first one the theme has. `-symbolic` in rows.

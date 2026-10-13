@@ -22,6 +22,7 @@ included, asks that program. No two programs write the same file.
 | Tiling | `flick-tiler` |
 | Mouse, touchpad, keyboard, idle, language, night light, Do Not Disturb, startup apps | `flickos-control` |
 | Time, time zone | `timedatectl` (systemd) |
+| Animations (`enable-animations`) | GSettings; `flickos-control animations` changes it and records it |
 | System language | `localectl` (systemd) |
 
 A page in Settings for a setting it doesn't own is a view: it reads with the

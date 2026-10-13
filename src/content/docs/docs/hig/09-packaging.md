@@ -88,7 +88,9 @@ commit.
 - `Architecture: all` unless the package compiles code (only `sfwbar` does).
 - Prefer debhelper's declarative files (`install`, `links`, `sysusers`,
   `lintian-overrides`) to maintainer scripts. A hand-written `postinst` needs a
-  reason no declarative file covers. Today only `flickos-branding` has one.
+  reason no declarative file covers. Today `flickos-branding` has one, and
+  `flickos-control` has one that updates the phones' firewall profile, which
+  the helper wrote at run time.
 - System defaults under `/etc` are conffiles, so dpkg keeps an
   administrator's changes.
 - `lintian` shows no errors. An override has a comment saying why.

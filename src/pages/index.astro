@@ -51,18 +51,18 @@ const keys = [
 
 <MarketingLayout
 	title="FlickOS"
-	description="FlickOS 2.1 is a lightweight Debian 13 Wayland desktop. Live ISO, Calamares installer, Arc look, three layouts."
+	description="FlickOS 2.2 is a lightweight Debian 13 Wayland desktop. Restore points, a Software app, Arc look, three layouts."
 >
 	<section class="hero" aria-label="FlickOS">
 		<div class="hero-copy flick-anim-rise">
 			<p class="brand flick-display">FlickOS</p>
-			<a class="pill" href="#undo"><span class="pill-tag">New</span> An Undo button for every change</a>
-			<h1 class="flick-display">Familiar, hard to break, and it continues on your phone.</h1>
+			<a class="pill" href="/news/flickos-2-2/"><span class="pill-tag">New</span> FlickOS 2.2: restore points and Software</a>
+			<h1 class="flick-display">Familiar, light, and hard to break</h1>
 			<p class="lede">
-				Version 2.1 on Debian 13 with a labwc Wayland session, Arc theming, and a live ISO you can install when you are ready.
+				Every change has an Undo, and if an update stops your computer from starting, FlickOS goes back to the last working version by itself.
 			</p>
 			<div class="cta">
-				<a class="flick-btn primary" href="/download/">Download 2.1</a>
+				<a class="flick-btn primary" href="/download/">Download 2.2</a>
 				<a class="flick-btn ghost" href="/docs/01-overview/">Read the docs</a>
 			</div>
 		</div>
@@ -95,7 +95,7 @@ const keys = [
 	<section class="section features">
 		<div class="section-head">
 			<h2 class="flick-display">Built for everyday use</h2>
-			<p>What ships in FlickOS 2.1 — the same stack the ISO boots.</p>
+			<p>What ships in FlickOS 2.2 — the same stack the ISO boots.</p>
 		</div>
 		<ul class="feature-list">
 			{
@@ -131,9 +131,9 @@ const keys = [
 					<li><strong>Put Back as It Was…</strong> Returns your settings to how they were on an earlier day, and that can be undone too.</li>
 				</ul>
 				<div class="undo-note">
-					<h3>How is this different from snapshots?</h3>
+					<h3>History or a restore point?</h3>
 					<p>
-						Timeshift and Snapper roll the whole system back to a point in time. History undoes one change and leaves the rest alone — no snapshots, no reboot, no terminal, and nothing running in the background. As far as we know, no other Linux desktop has an undo list for its own settings.
+						History undoes one change and leaves the rest alone, at once and without a restart. A <a href="#restore">restore point</a> puts the whole system back to before an update, and takes a restart. Use History for a change you regret, and a restore point when the computer itself is broken. As far as we know, no other Linux desktop has an undo list for its own settings.
 					</p>
 				</div>
 			</div>
@@ -145,6 +145,39 @@ const keys = [
 					sizes="(max-width: 64rem) 100vw, 55vw"
 				/>
 			</figure>
+		</div>
+	</section>
+
+	<section class="section undo restore" id="restore">
+		<div class="undo-grid">
+			<div class="undo-copy">
+				<p class="eyebrow">Settings → Restore Points</p>
+				<h2 class="flick-display">And if an update breaks the computer</h2>
+				<p class="undo-lede">
+					Before every software change, FlickOS saves the system as a restore point. If an update goes wrong, put the computer back as it was before it: from Settings, or from the boot menu when it no longer starts.
+				</p>
+				<ul class="undo-points">
+					<li><strong>Every change.</strong> Software, apt in a terminal, and automatic updates each make one first. The newest five are kept, and none is made when the disk is nearly full.</li>
+					<li><strong>Put Back…</strong> Shows what will change before anything does. The system you had becomes a restore point too, so putting back can be undone.</li>
+					<li><strong>From the boot menu.</strong> Every restore point is in its own menu when the computer starts, so a system that no longer starts can still be put back.</li>
+				</ul>
+				<div class="undo-note">
+					<h3>On a new install of 2.2</h3>
+					<p>
+						Restore points need the disk layout the 2.2 installer sets up by default (btrfs). Computers installed with 2.0 or 2.1 keep working as before but don't get them: an upgrade can't change how a disk is formatted. Unlike Timeshift or Snapper, there is nothing to set up.
+					</p>
+				</div>
+			</div>
+			<div class="restore-card">
+				<h3>When an update stops the computer from starting</h3>
+				<ol>
+					<li>You install updates. A restore point is saved first.</li>
+					<li>The computer doesn't start, and doesn't start again on the next try.</li>
+					<li>The third start uses the newest restore point that worked. After you log in, a notification says so.</li>
+					<li>In Settings → Restore Points, keep the restored system, or try the newer one again. Nothing is changed until you choose.</li>
+				</ol>
+				<p>Rather choose yourself? Turn off going back by itself in Settings, and the boot menu waits for you instead.</p>
+			</div>
 		</div>
 	</section>
 
@@ -442,6 +475,37 @@ const keys = [
 	}
 	.undo-note p {
 		margin: 0;
+		font-size: 0.95rem;
+		line-height: 1.5;
+		color: var(--flick-muted);
+	}
+	.restore-card {
+		padding: 1.5rem 1.6rem;
+		border: 1px solid var(--flick-border);
+		border-top: 3px solid var(--flick-accent);
+		border-radius: 0.4rem;
+		background: var(--flick-panel);
+	}
+	.restore-card h3 {
+		margin: 0 0 1rem;
+		font-size: 1.1rem;
+		color: var(--flick-title);
+	}
+	.restore-card ol {
+		margin: 0;
+		padding-left: 1.4rem;
+		list-style: decimal;
+		display: grid;
+		gap: 0.7rem;
+		line-height: 1.5;
+		color: var(--flick-fg);
+	}
+	.restore-card ol li::marker {
+		color: var(--flick-accent);
+		font-weight: 700;
+	}
+	.restore-card p {
+		margin: 1.1rem 0 0;
 		font-size: 0.95rem;
 		line-height: 1.5;
 		color: var(--flick-muted);

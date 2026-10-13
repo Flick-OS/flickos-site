@@ -656,7 +656,7 @@ While it is off, none of these exist. Super+D and Alt+F3 stay fuzzel either way.
 |---|---|---|
 | `classic` (default) | Redmond | Windows 7: pinned apps, All apps, search; user, folders, Settings, Software, power |
 | `categories` | Traditional | GNOME 2/Whisker: search on top, categories left (Favorites, All apps, sections, Folders), apps right as you point at a category, user and power buttons below |
-| `grid` | Cupertino | Launchpad: every app as a big icon, full screen and see-through; click the background or press Escape to close |
+| `grid` | Cupertino | Launchpad: every app as a big icon, full screen and see-through, the power buttons top right while Quick Settings is off; click the background or press Escape to close |
 
 A user can pick one style for every layout instead, under *Start menu
 style* in the Settings page, or:
@@ -875,7 +875,7 @@ its icon theme), notifications, **new** terminal windows and the
 | File in `packages/flickos-layouts/usr/share/flickos/styles/ID/` | Purpose |
 |---|---|
 | `style.ini` | `[Style]` `Name`, `Comment`, `Order`, `GtkTheme`, `IconTheme`, `LabwcTheme`, `ColorScheme` (`default`, `prefer-dark` or `prefer-light`), and the palette files `Waybar`, `Foot`, `Fuzzel`, `Mako` (relative to the folder, or absolute); `Wallpaper` (optional) |
-| `wallpaper.png` | The style's [wallpaper](#wallpaper): the FlickOS logo next to Debian's swirl, dark or light |
+| `wallpaper.png` | The style's [wallpaper](#wallpaper): the halo (FlickOS's logo, drawn large), dark or light |
 | `waybar-colors.css` | `@define-color` for the panel. Same names in every style; layout CSS uses only these names |
 | `foot.ini` | `[colors]`: `alpha`, background, foreground and the 16 ANSI colors |
 | `fuzzel.ini` | `[main] icon-theme` and `[colors]` |
@@ -928,6 +928,15 @@ warning.
 **only while they hold one of the styles' themes** (`Arc`/`Arc-Dark`,
 `Numix-Circle`/`Numix-Circle-Light`). A theme chosen in *Settings → Appearance*
 (nwg-look), e.g. Adwaita or Papirus, is kept, and `doctor` says so.
+
+labwc's **window icons** (the title bar's `icon` button) use the same icon
+theme: the overlay rc.xml's `<theme><icon>` is the current `icon-theme`.
+flickos-settings' rc.xml has `Numix-Circle`; without it labwc looks for an icon
+theme named like the window theme, finds none and shows only hicolor's icons
+(FlickOS's own windows get labwc's). An `<icon>` in the system rc.xml that isn't
+one of the styles' icon themes is kept. labwc reads it when it reconfigures, so
+icons picked in nwg-look reach the title bars at the next style or layout change
+or login.
 
 A layout change touches only `button-layout` (`org.gnome.desktop.wm.preferences`):
 the buttons of windows that draw their own title bar, like Firefox without
@@ -1084,8 +1093,8 @@ Two windows that open in the same instant can land in the same place.
 ## Wallpaper
 
 Each [style](#styles-darklight) has its own wallpaper (`Wallpaper=wallpaper.png`
-in `style.ini`): the FlickOS logo next to Debian's on dark for Dark, on light
-for Light. Switching the style switches it; switching the layout keeps it. At
+in `style.ini`): the halo, FlickOS's logo drawn large in the brand amber, on
+dark for Dark, on light for Light. Switching the style switches it; switching the layout keeps it. At
 login, autostart runs `flickos-layout wallpaper`, which shows the first of
 these that exists:
 
@@ -1122,8 +1131,9 @@ the old one. They only replace a `swaybg` whose image is under
 `packages/flickos-layouts/usr/share/flickos/styles/ID/wallpaper.png`, at least
 1920×1080, at most 3840 px wide (each one adds to the ISO). Make sure you have
 the right to redistribute it, and record its author and license in
-flickos-layouts' `debian/copyright` (the current ones contain Debian's Open Use
-Logo, LGPL-3+). Then run `tools/make-layout-previews.sh` (the previews show
+flickos-layouts' `debian/copyright` (the current ones are FlickOS's own work,
+rendered from `packages/flickos-layouts/artwork/wallpaper-ID.svg`, which isn't
+installed). Then run `tools/make-layout-previews.sh` (the previews show
 Dark's) and bump flickos-layouts. `tests/test_styles.py` checks every style
 has one, linked into `/usr/share/backgrounds/flickos/`. To scale down a large
 photo, or drop a PNG's unused alpha channel:
@@ -1186,7 +1196,7 @@ Current defaults (all in `Recommends:`):
 | Sound settings | `pavucontrol` | `org.pulseaudio.pavucontrol.desktop` |
 | Bluetooth | `blueman` | `blueman-manager.desktop` |
 | Printers | `cups`, `system-config-printer` | `system-config-printer.desktop` |
-| Software manager and updates | `gnome-packagekit`, `gnome-package-updater` | `org.gnome.Packages.desktop`, `org.gnome.PackageUpdater.desktop` |
+| Software and updates | `flickos-software` (FlickOS's own *Software*, a Depends; see [04](/docs/04-packages/#flickos-software)), `gnome-package-updater` | `flickos-software.desktop`, `org.gnome.PackageUpdater.desktop` |
 | CPU microcode (no app) | `intel-microcode`, `amd64-microcode` | – |
 
 **Check the cost before adding an app.** A small app can pull in large
@@ -1426,8 +1436,11 @@ Problems (a broken file, a key already in use) are warnings in
 hand. Starting the program is not the add-on's job: use an XDG autostart entry
 (*Settings → Startup Applications*).
 
-`experimental/` in the repo holds add-ons that are tried out on a developer's
-own desktop before anything goes into a package. `experimental/trail/` is one.
+A package that ships its add-on in `/usr/share/flickos/addons/NAME/` can hide
+it for one user without touching the system folder: an empty folder of the
+same name in `~/.config/flickos/addons/` wins and has no files, so no keys,
+no panel button and no style (checked 2026-10-04). Delete that folder to get
+the system add-on back.
 
 ---
 
@@ -1568,6 +1581,13 @@ colors, and checks all files that contain colors. `tools/build-iso.sh` runs it
 before building and stops if a file uses a color outside the palette or the
 labwc theme has an unknown key. When you change a color, change it in the file,
 add it to the checker if it's new, and run `python3 tools/check-palette.py`.
+
+**The brand color** is FlickOS's own amber, `#ffb13d`, with `#2f343f` for text on
+it (6.89:1; white on amber is 1.81:1). It is only on the brand surfaces: the
+logo, the boot menus, the boot splash, the installer and the artwork. The desktop
+keeps Arc's blue (`docs/design/flickos-accent.md`). `tools/check-palette.py`
+allows it only in `BRAND_FILES` and fails if any other file uses it. The Light
+style's wallpaper uses a deeper amber, `#c98000`, which is readable on light.
 
 The [Light style](#styles-darklight)'s files are checked against a second list
 with **Arc**'s colors (`ARC_LIGHT`: `#f5f6f7` background, `#ffffff` content,
@@ -1759,6 +1779,16 @@ list and can't show icons.
 - **Keys:** only those listed in `man labwc-theme`. A misspelled key is silently
   ignored by labwc, so `tools/check-palette.py` checks every key against the list
   for labwc 0.8.3. When labwc gains keys in a newer version, add them there.
+- **Title bar buttons** look like arc-theme's GTK header bar buttons. Close is
+  Arc's 14 px red circle, with the X cut out on Arc-Dark's title bars and white on
+  Arc's. The other buttons are arc-openbox's 8×8 glyphs (`.xbm`), which labwc
+  colors with `window.*.button.unpressed.image.color`. Their `_hover` SVGs put the
+  glyph on a 14 px circle, as Arc does, so labwc draws no hover box of its own.
+  labwc picks a `.png` before an `.svg` before an `.xbm` of the same name, and
+  draws PNG and SVG buttons in their own colors. All SVGs are generated: change a
+  color or circle size in `tools/make-titlebuttons.py`, run it, and bump
+  flickos-settings. The glyphs live in FlickOS-Arc-Dark's folder; the script copies
+  them to FlickOS-Arc's. `tools/check-palette.py` checks the SVGs' colors.
 - **labwc looks for themes** in `/usr/share/themes/<name>/labwc/` (and `openbox-3/`),
   plus the users' `~/.local/share/themes` and `~/.themes`.
 - **Test in a VM:** edit `/usr/share/themes/FlickOS-Arc-Dark/labwc/themerc`, then
@@ -1867,11 +1897,11 @@ so only changed files live in the repo.
 | `syslinux_common/splash.png` | BIOS | Background image, 640×480, 8-bit RGB PNG |
 | `syslinux_common/live.cfg.in` | BIOS | Entry names: *Start FlickOS*, *Start FlickOS (safe mode)* |
 | `syslinux_common/menu.cfg` | BIOS | Menu title |
-| `syslinux_common/stdmenu.cfg` | BIOS | Arc-Dark colors (`#AARRGGBB`; selection is white on the accent blue), menu position below the logo |
+| `syslinux_common/stdmenu.cfg` | BIOS | Arc-Dark colors (`#AARRGGBB`; the selection is `#2f343f` on the [brand amber](#the-arc-dark-palette)), menu position below the logo |
 | `isolinux/isolinux.cfg` | BIOS | `timeout 100`: boot automatically after 10 s |
 | `grub-pc/splash.png` | UEFI | Background image, 800×600, 8-bit RGB PNG |
 | `grub-pc/grub.cfg` | UEFI | Own entries (*Start FlickOS*, safe mode), `set timeout=10` |
-| `grub-pc/live-theme/theme.txt` | UEFI | Arc-Dark colors, no title text (the splash shows the name), menu position |
+| `grub-pc/live-theme/theme.txt` | UEFI | Arc-Dark colors with the brand amber for the selected entry and the countdown, no title text (the splash shows the name), the picture centered at its own size (`desktop-image-scale-method: "padding"`), menu position |
 
 The safe mode entries use `--bootappend-live-failsafe` from `auto/config`.
 
@@ -1908,6 +1938,30 @@ outside `@…@` markers.
 It reads the first entry's kernel line from `isolinux/live.cfg`, so keep the
 `linux` / `initrd` / `append` structure of the first entry.
 
+### Installed systems
+
+live-build's files never reach an installed system, so **flickos-branding**
+gives its GRUB menu (BIOS and UEFI) the live menu's look:
+
+| File | Purpose |
+|---|---|
+| `usr/share/flickos/grub/theme.txt` | The live `theme.txt` with its picture next to it. Keep the two in sync |
+| `usr/share/flickos/grub/background.png` | The UEFI menu's picture (`make-placeholder-art.sh` copies `grub-pc/splash.png`) |
+| `etc/default/grub.d/flickos-theme.cfg` | Conffile: `GRUB_THEME` and `GRUB_BACKGROUND`, set only while the theme exists. `update-grub` reads it after `/etc/default/grub` |
+
+`GRUB_THEME` gives the full look. When GRUB can't read `/usr` (a separate `/boot`
+with an encrypted system), Debian's `00_header` skips the theme, and
+`05_debian_theme` copies `GRUB_BACKGROUND` to `/boot/grub/.background_cache.png`
+instead: the picture with GRUB's own text colors. The package's postinst and
+postrm run `update-grub` where `/boot/grub/grub.cfg` exists (not in the ISO's
+build chroot). The restore points' entries (flickos-recovery) appear in the same
+menu.
+
+**Use another theme:** set `GRUB_THEME` (and `GRUB_BACKGROUND`) in a file that
+sorts after `flickos-theme.cfg` in `/etc/default/grub.d/`, or edit the conffile,
+then `sudo update-grub`. To get Debian's own menu back, put
+`unset GRUB_THEME GRUB_BACKGROUND` in such a file (they are shell).
+
 ---
 
 ## Boot splash
@@ -1935,7 +1989,8 @@ The theme lives inside the **initramfs**, so the package triggers
 **Common changes:**
 - **Colors:** `BackgroundStartColor`/`BackgroundEndColor` (`0xRRGGBB`, same
   value = solid color; Arc-Dark `0x383c4a`) and the progress bar colors in
-  `flickos.plymouth`. Keep them in the [Arc-Dark palette](#the-arc-dark-palette).
+  `flickos.plymouth`. Keep them in the [Arc-Dark palette](#the-arc-dark-palette);
+  the bar is the brand amber.
 - **Positions:** `WatermarkVerticalAlignment` (logo) and `VerticalAlignment`
   (spinner). `0` = top, `1` = bottom.
 - **Images:** replace the PNGs, keeping the names. The spinner frames can be any
@@ -1963,9 +2018,9 @@ pretending not to be Debian**:
 
 | File | Content | Seen in |
 |---|---|---|
-| `/etc/os-release` (→ `/usr/lib/os-release`) | Debian's file with `PRETTY_NAME="FlickOS 2.1 (based on Debian GNU/Linux 13 (trixie))"`, `VARIANT="FlickOS 2.1"`, `VARIANT_ID=flickos` added. **`ID=debian`, `NAME`, `VERSION_ID` etc. unchanged** | `hostnamectl`, system info tools (e.g. fastfetch), "About" dialogs that read `os-release` |
-| `/etc/issue` | `FlickOS 2.1 (Debian 13) \n \l` | Text console login prompt |
-| `/etc/issue.net` | `FlickOS 2.1 (Debian 13)` | Network login banners |
+| `/etc/os-release` (→ `/usr/lib/os-release`) | Debian's file with `PRETTY_NAME="FlickOS 2.0 (based on Debian GNU/Linux 13 (trixie))"`, `VARIANT="FlickOS 2.0"`, `VARIANT_ID=flickos` added. **`ID=debian`, `NAME`, `VERSION_ID` etc. unchanged** | `hostnamectl`, system info tools (e.g. fastfetch), "About" dialogs that read `os-release` |
+| `/etc/issue` | `FlickOS 2.0 (Debian 13) \n \l` | Text console login prompt |
+| `/etc/issue.net` | `FlickOS 2.0 (Debian 13)` | Network login banners |
 
 `ID=debian` stays because installers, package managers and many scripts check it
 to decide how to behave. Changing it breaks them.
@@ -2050,31 +2105,36 @@ the build chroot, because they need the kernel's firewall. Instead, either:
 
 ## Artwork
 
-**The logo** is vector art in `flickos-branding`, in the [Arc-Dark palette](#the-arc-dark-palette):
+**The logo**, the halo (a flick through an open ring), is vector art in
+`flickos-branding`, in the [Arc-Dark palette](#the-arc-dark-palette) and the
+brand amber:
 
 | File | Used by |
 |---|---|
 | `packages/flickos-branding/usr/share/icons/hicolor/scalable/apps/flickos.svg` | Icon `flickos`: full color on an Arc-Dark tile. **The source** of every logo image below |
-| `packages/flickos-branding/usr/share/icons/hicolor/symbolic/apps/flickos-symbolic.svg` | Icon `flickos-symbolic`: one color (GTK draws it in the text color). The panel's launcher button (`-gtk-icontheme("flickos-symbolic")` in the layouts' `common/base.css`, hover in the accent color) |
+| `packages/flickos-branding/usr/share/icons/hicolor/symbolic/apps/flickos-symbolic.svg` | Icon `flickos-symbolic`: one color (GTK draws it in the text color). The panel's launcher button (`-gtk-icontheme("flickos-symbolic")` in the layouts' `common/base.css`): the ring and dot (class `warning`) in the style's `brand_color` through `-gtk-icon-palette`, the flick in the text color, all of it in the accent color on hover |
 
 Keep the two drawings in sync, and only use palette colors (`tools/check-palette.py`
-checks both files). The symbolic version has no speed lines and a gap between ring
-and wing, so it stays readable at 16–20 px.
+checks both files). The symbolic version has no tile, a thicker ring and a bigger
+dot, so it stays readable at 16–20 px. It must use **fills only**: GTK 3 recolors
+a symbolic icon by setting the fill of every shape, so a stroke stays its own
+color and the inside of a stroked ring gets filled (its ring is the color
+logo's arc as an outline).
 
 The images are made by `tools/make-placeholder-art.sh` (ImageMagick, with the logo
 rendered from `flickos.svg` by `rsvg-convert`). Everything except the logo is still a
-**placeholder**, except `default.jpg`, which has been replaced by an Unsplash
-photo (see flickos-settings' `debian/copyright`). The script would overwrite it
-with the placeholder, so restore it with `git checkout` after running the script:
+**placeholder**. The wallpapers aren't made by it: the styles' are drawn from
+`packages/flickos-layouts/artwork/` ([Wallpaper](#wallpaper)), and flickos-settings'
+fallback `default.jpg` is an Unsplash photo (see its `debian/copyright`).
 
 | File | Size | Used by |
 |---|---|---|
-| `packages/flickos-settings/usr/share/backgrounds/flickos/default.jpg` | 3840×2160 | Wallpaper |
 | `packages/flickos-installer/etc/calamares/branding/flickos/logo.png` | 256×256 | Calamares sidebar and window icon, slideshow |
 | `packages/flickos-installer/etc/calamares/branding/flickos/welcome.png` | 457×300 | Calamares welcome page |
 | `packages/flickos-installer/usr/share/pixmaps/flickos-install.png` | 256×256 | *Install FlickOS* launcher icon |
 | `config/bootloaders/syslinux_common/splash.png` | 640×480 | BIOS boot menu background |
 | `config/bootloaders/grub-pc/splash.png` | 800×600 | UEFI boot menu background |
+| `packages/flickos-branding/usr/share/flickos/grub/background.png` | 800×600 | The installed system's boot menu ([Installed systems](#installed-systems)), a copy of the one above |
 | `packages/flickos-branding/usr/share/plymouth/themes/flickos/*.png` | various | Boot splash: logo, spinner frames, password dialog |
 
 The desktop layout previews
@@ -2098,7 +2158,6 @@ after changing the logo or the palette):
 | **Real artwork** | Needs a designer | Replace the files listed under [Artwork](#artwork) |
 | **Firewall GUI** | `gufw` pulls in a large Python/GTK stack | `gufw` in `flickos-desktop` Recommends, plus a *Settings → Firewall* menu entry |
 | **Welcome app on first login** | Needs to be written | A small script or app in `flickos-settings`, started once from `/usr/libexec/flickos/autostart` (check for a marker file in `~/.config/flickos/`) |
-| **Automatic app updates for Flatpak** | Policy decision (bandwidth, surprise updates) | A systemd user timer running `flatpak update --noninteractive` in `flickos-settings` |
 | **Exact night light location** | Would need network geolocation (privacy) | `geoclue-2.0` + a location-aware tool instead of the time-zone lookup |
 
 For each one you adopt: packages go in `flickos-desktop`

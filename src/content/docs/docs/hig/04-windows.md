@@ -169,6 +169,13 @@ files) asks first, with a `Gtk.MessageDialog`:
 Actions that can be undone (switching a layout, turning a setting off) don't
 ask. Asking too often teaches people to click through.
 
+**Exception: pop-ups.** flickos-menu's menus and Quick Settings close when
+they lose the focus, so they can't hold a dialog. There, such a button asks
+for a second click instead: the first click turns it `destructive-action` and
+says next to it what a second click does ("Click again to shut down"); the
+second click within a few seconds runs it, and anything else puts it back
+(flickos-menu's `PowerRow`, used by Log Out, Restart and Shut Down).
+
 ### WIN-14 Must: Dialog buttons are Cancel and a verb
 
 A dialog with a form has *Cancel* on the left and the action on the right,

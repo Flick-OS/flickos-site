@@ -20,6 +20,15 @@ Arc's for the Light style's own files. `tools/check-palette.py` holds both
 lists and checks every file that contains colors, and `build-iso.sh` stops on
 a color that isn't in them.
 
+The one color of FlickOS's own is the **brand amber**, `#ffb13d`, with
+`#2f343f` for text on it (never white: 1.81:1). It is only for the brand
+surfaces: the logo, the boot menus, the boot splash, the installer and the
+artwork. The checker allows it only in those files (`BRAND_FILES`), so the
+desktop keeps Arc's blue; a program's accent is `@theme_selected_bg_color`
+([VIS-2](#vis-2-must-follow-the-style-that-is-in-use)), never amber. The one
+exception is the logo on the panel's start button, through the styles'
+`brand_color` (`#c98000` on Light, where `#ffb13d` is too faint).
+
 A new color is a design decision: add it to the checker deliberately, with the
 arc-theme role it comes from, in the same commit.
 
@@ -37,7 +46,9 @@ FlickOS surface follows at once. How depends on what draws it:
 
 **Stays Arc-Dark in every style:** the boot menus, the boot splash, the
 installer and the login screen, because they show before any user has picked a
-style. Also the lock screen's plain color and the color around a wallpaper
+style. The boot menus, the splash and the installer have the brand amber as
+their accent ([VIS-1](#vis-1-must-only-the-palettes-colors)); the login screen
+has none. Also the lock screen's plain color and the color around a wallpaper
 that doesn't fill the screen (`SWAYLOCK`, `WALLPAPER_COLOR`), which frame
 pictures rather than hold text. These are the only places a FlickOS file
 hard-codes Arc-Dark hex colors for something the user sees.
@@ -72,10 +83,18 @@ When CSS is needed (a layer-shell surface has no window frame to inherit):
 
 ### VIS-5 Should: Keep it flat and still
 
-FlickOS draws translucency without blur (panel, terminal) and no shadows,
-animations or transitions of its own beyond GTK's. They cost frames on old
-graphics hardware and add nothing to finding things. Stack transitions are
-`NONE`.
+FlickOS draws translucency without blur (panel, terminal) and no shadows.
+Its pop-ups (start menu, Quick Settings, phone popup, shortcut sheet) may
+fade in and out, at most 100 ms, never full screen, and only while
+GSettings' `enable-animations` is on; nothing else animates beyond GTK's own
+transitions. Input never waits for a fade. Stack transitions are `NONE`,
+except a crossfade of at most 100 ms between a pop-up's pages (the classic
+start menu's Home and All Apps).
+
+Motion costs frames on old graphics hardware and adds nothing to finding
+things; a short fade of a small window costs about 55 ms of CPU and nothing
+between fades
+([design/flickos-fades.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-fades.md)).
 
 ## Icons
 
