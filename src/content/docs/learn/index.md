@@ -28,6 +28,8 @@ export FLICKOS="$HOME/FlickOS"
 
 **Your own app.** An app you keep in your own repository doesn't go into FlickOS: it goes into the community repository, and Software shows it on every FlickOS computer. [Publish your app for FlickOS](/learn/publish/) is that path, after [Building a .deb](/learn/deb/).
 
+**Your own desktop.** Not building anything, only changing how FlickOS looks? [Make FlickOS yours](/learn/yours/) is for you: styles, keys, panel buttons and sharing, with a text editor and no packages.
+
 **Shipping order.** When the feature is a real one, do the stages below. The repository guide is split: the design doc is early, and wiring the package in is late. Releasing an ISO is explained in the shipping guide and not practised there.
 
 ## Think

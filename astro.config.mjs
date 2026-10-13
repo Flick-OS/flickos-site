@@ -94,6 +94,7 @@ export default defineConfig({
 						{ label: 'Shipping a package', slug: 'learn/ship' },
 						{ label: 'Into the repository', slug: 'learn/repo' },
 						{ label: 'Publish your app', slug: 'learn/publish' },
+						{ label: 'Make FlickOS yours', slug: 'learn/yours' },
 					],
 				},
 			],
