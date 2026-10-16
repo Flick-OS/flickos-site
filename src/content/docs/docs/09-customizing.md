@@ -627,7 +627,7 @@ instead: every click also closes the menu, and `left-launcher` opens the menu.
 
 A classic start menu for the apps button (package `flickos-menu`, see
 [04](/docs/04-packages/#flickos-menu) and
-[design/flickos-menu.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-menu.md)). **On by default**: the apps
+[design/flickos-menu.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-menu.md)). **On by default**: the apps
 button and a tap of Super open it; Super+D stays fuzzel. A user switches it
 under *Apps button* in *Settings → Desktop Layout & Style*, or:
 
@@ -705,7 +705,7 @@ button. The times are in `$XDG_RUNTIME_DIR/flickos/menu/timing.log`;
 
 Switches and sliders behind the panel's volume and battery icons (package
 `flickos-menu`, the start menu's daemon; see [04](/docs/04-packages/#flickos-menu)
-and [design/flickos-quick-settings.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-quick-settings.md)).
+and [design/flickos-quick-settings.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-quick-settings.md)).
 **Off by default**: a user turns it on under *Quick Settings* in *Settings →
 Desktop Layout & Style*, or:
 
@@ -1301,14 +1301,14 @@ agree. Mouse, touchpad and keyboard settings are flickos-control's own.
   `packages/flickos-layouts` to see the layout previews from the tree.
 
 The design and its decisions are in
-[design/flickos-control.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-control.md).
+[design/flickos-control.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-control.md).
 
 ---
 
 ## Weekly count
 
 Installed systems send one anonymous request a week, so FlickOS knows how many
-computers run which version ([PRIVACY.md](https://github.com/dvbondoy/FlickOS/blob/main/PRIVACY.md), package
+computers run which version ([PRIVACY.md](https://github.com/Flick-OS/flickos/blob/main/PRIVACY.md), package
 [`flickos-countme`](/docs/04-packages/#flickos-countme)). It is on by default and
 turned off in *Settings → Privacy*; the installer says so on its first
 slideshow slide, and the live session never sends it. Systems installed before

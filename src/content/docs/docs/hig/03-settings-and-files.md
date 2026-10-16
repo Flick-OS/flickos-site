@@ -78,7 +78,7 @@ things (12-hour or 24-hour clock), or when the default can't be known
   (`~/.local/state/flickos/`), not in `~/.config`. The history of changes
   (`history.jsonl`) is the only one so far. Every owner appends its changes
   there with its own `record()` in the same format
-  ([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-history.md#adr-002-one-append-only-file-in-xdg_state_homeflickos)).
+  ([design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-history.md#adr-002-one-append-only-file-in-xdg_state_homeflickos)).
 
 ### SET-5 Must: Never write into files the user owns
 

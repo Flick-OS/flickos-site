@@ -38,7 +38,7 @@ ISOs ([06](/docs/06-ci-and-releases/)).
 |---|---|---|
 | `repo/conf/distributions` | yes | Repo definition: two distributions, `trixie` (FlickOS's packages, label *FlickOS*) and `trixie-community` (other developers' apps, label *FlickOS Community*), component `main`, arch `amd64`, the `SignWith:` key fingerprint, and the DEP-11 hook |
 | `repo/conf/dep11.py` | yes | reprepro `DebIndices` hook: writes `main/dep11/Components-amd64.yml(.gz)` (AppStream data for Software) from the metainfo files in the packages; needs `gir1.2-appstream-1.0` |
-| `repo/community/` | yes | The community apps' list (`apps/NAME`), checks, build and publish scripts ([its README](https://github.com/dvbondoy/FlickOS/blob/main/repo/community/README.md)) |
+| `repo/community/` | yes | The community apps' list (`apps/NAME`), checks, build and publish scripts ([its README](https://github.com/Flick-OS/flickos/blob/main/repo/community/README.md)) |
 | `repo/conf/options` | yes | Tells reprepro to write output to `repo/public/` and its database to `repo/db/` |
 | `repo/new-key.sh` | yes | One-time key setup |
 | `repo/publish.sh` | yes | Build all packages and add them to the repo |
@@ -164,7 +164,7 @@ If the repository grows past GitHub's ~1 GB guidance, squash the history:
 ### Apps from other repositories (`EXTRAS`)
 
 Notes, Write and Phone Screen are proprietary and free of charge until
-the store opens ([store ADR-008](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-store.md#adr-008-free-of-charge-until-the-store-opens)).
+the store opens ([store ADR-008](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-store.md#adr-008-free-of-charge-until-the-store-opens)).
 Trail is proprietary too but private for now (2026-10-08): it is not in
 `EXTRAS`, so newer versions aren't published. Its 0.6, published on
 2026-10-07, stays in the repo.
@@ -195,7 +195,7 @@ in the packages, converts them with libappstream and writes
 `flickos-DISTRIBUTION-main`, which go into the signed `Release`. apt's
 `appstream` hook fetches them like Debian's, and Software shows the
 packages as apps of the source FlickOS or FlickOS Community (design:
-[Software, ADR-002](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-software.md#adr-002-one-catalog-from-appstream-three-sources)).
+[Software, ADR-002](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-software.md#adr-002-one-catalog-from-appstream-three-sources)).
 A package without metainfo (the desktop's own parts) is no app there. The
 icon and categories come from the launchable's desktop file when the
 metainfo has none. The publishing computer needs `gir1.2-appstream-1.0`
@@ -205,9 +205,9 @@ metainfo has none. The publishing computer needs `gir1.2-appstream-1.0`
 
 Other developers' apps, built by CI from their public source, checked and
 reviewed, then signed here like FlickOS's own (Software design,
-[ADR-004](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-software.md#adr-004-other-developers-publish-debs-in-a-flickos-community-repository)).
+[ADR-004](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-software.md#adr-004-other-developers-publish-debs-in-a-flickos-community-repository)).
 Everything about the list, the rules and the review is in
-[`repo/community/README.md`](https://github.com/dvbondoy/FlickOS/blob/main/repo/community/README.md); the developers'
+[`repo/community/README.md`](https://github.com/Flick-OS/flickos/blob/main/repo/community/README.md); the developers'
 guide is *Publish your app for FlickOS* on the website.
 
 ```sh

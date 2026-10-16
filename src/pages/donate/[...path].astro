@@ -117,7 +117,7 @@ const wallets = await Promise.all(
 							<h3>{method.label}</h3>
 							<p>{method.blurb}</p>
 							<a class="flick-btn primary" href={method.url} target="_blank" rel="noopener noreferrer">
-								Donate with {method.label}
+								{method.id === 'buymeacoffee' ? method.label : `Donate with ${method.label}`}
 							</a>
 						</li>
 					))
@@ -284,8 +284,8 @@ const wallets = await Promise.all(
 			<h2 class="flick-display">Other ways to help</h2>
 			<ul class="help">
 				<li>
-					Star the project, report bugs, or send a pull request on{' '}
-					<a href="https://github.com/dvbondoy/FlickOS">GitHub</a>.
+					Star the project or report bugs on{' '}
+					<a href="https://github.com/Flick-OS/flickos">GitHub</a>.
 				</li>
 				<li>
 					Answer questions and share your setup on{' '}

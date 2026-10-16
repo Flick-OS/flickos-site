@@ -10,7 +10,7 @@ sidebar:
 |---|---|
 | ISO downloads | SourceForge Files: https://sourceforge.net/projects/flickos/files/ (one folder per release, e.g. `v2.0/`) |
 | Apt repository | GitHub Pages (`dvbondoy/flickos-apt`): https://dvbondoy.github.io/flickos-apt/ ([05](/docs/05-apt-repository/)) |
-| Source code, CI, issues | GitHub: https://github.com/dvbondoy/FlickOS |
+| Source code, CI, issues | GitHub: https://github.com/Flick-OS/flickos |
 | Website | https://flickos.net |
 
 **Release history:** FlickOS 1.0 and 1.1 (`FlickOS-64bit-v1.1.iso`, May 2023)
@@ -137,7 +137,7 @@ got and the output of the failing check.
 ## Community apps: `.github/workflows/community.yml`
 
 Builds other developers' apps for the community repository (Software design,
-ADR-004; [`repo/community/README.md`](https://github.com/dvbondoy/FlickOS/blob/main/repo/community/README.md)). It runs
+ADR-004; [`repo/community/README.md`](https://github.com/Flick-OS/flickos/blob/main/repo/community/README.md)). It runs
 on pushes to `main` and pull requests that touch `repo/community/`,
 flickos-archive-keyring or the workflow, and by hand.
 

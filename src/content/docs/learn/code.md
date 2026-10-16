@@ -4,7 +4,7 @@ description: "This is stage 5 of the path from idea to release: writing the prog
 sidebar:
   order: 2
 ---
-> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/dvbondoy/FlickOS). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
+> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/Flick-OS/flickos). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
 
 The answer key and the other files for this guide are in [flickos-code-tutorial](https://github.com/dvbondoy/flickos-tutorials/tree/main/flickos-code-tutorial).
 
@@ -890,12 +890,12 @@ working example in the repo:
 
 | Addition | Why | Example to copy |
 |---|---|---|
-| **History**: `record()` appends every change to `$XDG_STATE_HOME/flickos/history.jsonl` in the shared format, and flickos-control learns to undo it | Settings → History shows and undoes changes | flick-tiler's `save_choice()`, [flickos-history](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-history.md) |
+| **History**: `record()` appends every change to `$XDG_STATE_HOME/flickos/history.jsonl` in the shared format, and flickos-control learns to undo it | Settings → History shows and undoes changes | flick-tiler's `save_choice()`, [flickos-history](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-history.md) |
 | **A Settings page or row** that *runs* the owner's commands, never opening its files (SET-1) | INT-4 | flickos-control's tiling page and `flick-tiler` |
 | **`state`**: all values as one JSON, so a page reads them in one run | SET-2, PERF-1 | `flickos-layout state` |
 | **Reading off the main loop**: a page reads in a thread with a spinner | PERF-2, WIN-11 | flickos-control's `Ui.background()` |
 | **A boot-test check** | PKG-9 | `CHECKS` in `tools/boot-test.py` |
-| **A design doc** before the code, with phase 0's spike results | stages 3–4 of the path | [flickos-phone](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-phone.md) |
+| **A design doc** before the code, with phase 0's spike results | stages 3–4 of the path | [flickos-phone](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-phone.md) |
 
 [flickos-repo-tutorial](/learn/repo/) takes Hello the rest of the way: the
 design doc, History, the Settings tile, a boot-test check, the docs and the

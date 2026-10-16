@@ -21,7 +21,7 @@ const SRC =
 	path.resolve(ROOT, '../flickos/docs');
 const DEST = path.join(ROOT, 'src/content/docs/docs');
 const HIG_DEST = path.join(DEST, 'hig');
-const GITHUB = 'https://github.com/dvbondoy/FlickOS';
+const GITHUB = 'https://github.com/Flick-OS/flickos';
 
 /** Links already written from the repo root (e.g. `packages/foo`), not relative to the doc. */
 const REPO_ROOT_LINK = /^(?:auto|config|docs|packages|repo|tools)\//;

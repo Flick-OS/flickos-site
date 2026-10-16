@@ -9,7 +9,7 @@ A FlickOS feature goes through thirteen stages, in four phases. The tutorials te
 
 The [Human Interface Guidelines](/docs/hig/) are the rules. This page is the same work, done once, in order.
 
-Set two variables before you start. `TUTORIALS` is a clone of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials), where the answer keys and scripts live. `FLICKOS` is a clone of [FlickOS](https://github.com/dvbondoy/FlickOS).
+Set two variables before you start. `TUTORIALS` is a clone of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials), where the answer keys and scripts live. `FLICKOS` is a clone of [FlickOS](https://github.com/Flick-OS/flickos).
 
 ```sh
 export TUTORIALS="$HOME/flickos-tutorials"

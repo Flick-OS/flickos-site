@@ -69,7 +69,7 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 |---|---|
 | Downloads (SourceForge Files) | https://sourceforge.net/projects/flickos/files/ |
 | Apt repository | https://dvbondoy.github.io/flickos-apt/ (GitHub repo `dvbondoy/flickos-apt`, branch `gh-pages`) |
-| Code, CI, issues | https://github.com/dvbondoy/FlickOS |
+| Code, CI, issues | https://github.com/Flick-OS/flickos |
 | Community | https://www.reddit.com/r/flickos/ |
 | SourceForge SSH keys | https://sourceforge.net/auth/shell_services |
 | Website (planned) | https://flickos.net |

@@ -27,7 +27,7 @@ export default defineConfig({
 				replacesTitle: true,
 			},
 			social: [
-				{ icon: 'github', label: 'GitHub', href: 'https://github.com/dvbondoy/FlickOS' },
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/Flick-OS/flickos' },
 			],
 			customCss: ['./src/styles/global.css', './src/styles/theme.css'],
 			head: [

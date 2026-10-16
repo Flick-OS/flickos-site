@@ -94,7 +94,7 @@ start menu's Home and All Apps).
 Motion costs frames on old graphics hardware and adds nothing to finding
 things; a short fade of a small window costs about 55 ms of CPU and nothing
 between fades
-([design/flickos-fades.md](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-fades.md)).
+([design/flickos-fades.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-fades.md)).
 
 ## Icons
 

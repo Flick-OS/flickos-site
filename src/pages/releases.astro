@@ -1,0 +1,158 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+
+const FILES = 'https://sourceforge.net/projects/flickos/files';
+const GITHUB = 'https://github.com/Flick-OS/flickos';
+
+// Newest first. Dates are when the ISO went up on SourceForge (or the news
+// post, for apps), not the git tags.
+const releases = [
+	{
+		date: '2026-10-13',
+		label: '13 October 2026',
+		title: 'FlickOS 2.2',
+		body: 'Restore points that undo a software change that broke the system, even from the boot menu, and the Software app for apps from Debian, Flathub and FlickOS’s community repository.',
+		links: [
+			{ href: '/news/flickos-2-2/', label: 'What’s new' },
+			{ href: `${FILES}/v2.2/`, label: 'ISO' },
+		],
+	},
+	{
+		date: '2026-10-07',
+		label: '7 October 2026',
+		title: 'Notes, Write and Phone Screen',
+		body: 'Three apps made for FlickOS, in the FlickOS apt repository and free of charge for now.',
+		links: [{ href: '/news/three-apps/', label: 'What they are' }],
+	},
+	{
+		date: '2026-10-01',
+		label: '1 October 2026',
+		title: 'FlickOS 2.1',
+		body: 'A login screen, a start menu, a welcome window, and the Settings window, with History: an Undo for every settings change.',
+		links: [{ href: `${FILES}/v2.1/`, label: 'Release notes and ISO' }],
+	},
+	{
+		date: '2026-09-21',
+		label: '21 September 2026',
+		title: 'FlickOS 2.0',
+		body: 'Rebuilt on Debian 13 with a Wayland desktop (labwc) and three layouts.',
+		links: [{ href: `${FILES}/v2.0/`, label: 'ISO' }],
+	},
+	{
+		date: '2023-05-01',
+		label: '1 May 2023',
+		title: 'FlickOS 1.1',
+		body: 'Based on Ubuntu 20.04 and LXLE.',
+		links: [{ href: `${FILES}/v1.1/`, label: 'ISO' }],
+	},
+	{
+		date: '2023-03-09',
+		label: '9 March 2023',
+		title: 'FlickOS 1.0',
+		body: 'The first FlickOS, based on Ubuntu 20.04 and LXLE.',
+		links: [{ href: `${FILES}/`, label: 'ISO' }],
+	},
+];
+---
+
+<MarketingLayout
+	title="Releases"
+	description="Every FlickOS release, newest first, with dates and what each one added."
+>
+	<section class="page">
+		<header class="page-head flick-anim-rise">
+			<h1 class="flick-display">Releases</h1>
+			<p>
+				Every FlickOS release, newest first. Between releases, installed systems get FlickOS’s changes through the apt repository, so FlickOS changes more often than this list shows.
+			</p>
+			<p>
+				<a href={GITHUB}>See every package update on GitHub</a>
+			</p>
+		</header>
+
+		<ol class="releases">
+			{
+				releases.map((release) => (
+					<li>
+						<p class="date">
+							<time datetime={release.date}>{release.label}</time>
+						</p>
+						<h2 class="flick-display">{release.title}</h2>
+						<p>{release.body}</p>
+						<p class="links">
+							{release.links.map((link) => (
+								<a href={link.href}>{link.label}</a>
+							))}
+						</p>
+					</li>
+				))
+			}
+		</ol>
+	</section>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.75rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 0.75rem 0 0;
+		color: var(--flick-muted);
+		line-height: 1.5;
+	}
+	.releases {
+		list-style: none;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		border-left: 2px solid var(--flick-border);
+	}
+	.releases li {
+		position: relative;
+		padding: 0 0 2rem 1.25rem;
+	}
+	.releases li::before {
+		content: '';
+		position: absolute;
+		left: -0.4rem;
+		top: 0.35rem;
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 50%;
+		background: var(--flick-accent);
+	}
+	.date {
+		margin: 0;
+		color: var(--flick-muted);
+		font-size: 0.9rem;
+	}
+	.releases h2 {
+		margin: 0.2rem 0 0;
+		font-size: 1.3rem;
+		color: var(--flick-title);
+	}
+	.releases p {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.releases p:not(.date) {
+		margin: 0.5rem 0 0;
+	}
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 1rem;
+	}
+</style>

@@ -271,7 +271,7 @@ knows Debian's and FlickOS's repositories, which the dependency rule asks):
 ```sh
 sudo apt install appstream lintian       # what the checks use, besides dpkg and apt
 dpkg-buildpackage -us -uc -b
-git clone https://github.com/dvbondoy/FlickOS.git ~/FlickOS
+git clone https://github.com/Flick-OS/flickos.git ~/FlickOS
 ~/FlickOS/repo/community/check.py ../tally_1.0_all.deb
 ```
 
@@ -304,7 +304,7 @@ git push origin main v1.0
 git rev-parse 'v1.0^{commit}'        # the full commit, 40 characters
 ```
 
-Fork [FlickOS](https://github.com/dvbondoy/FlickOS) and add one file,
+Fork [FlickOS](https://github.com/Flick-OS/flickos) and add one file,
 `repo/community/apps/NAME`:
 
 ```

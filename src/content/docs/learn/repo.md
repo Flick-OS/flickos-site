@@ -4,7 +4,7 @@ description: "This covers the stages of the path from idea to release that the o
 sidebar:
   order: 4
 ---
-> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/dvbondoy/FlickOS). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
+> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/Flick-OS/flickos). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
 
 The answer key and the other files for this guide are in [flickos-repo-tutorial](https://github.com/dvbondoy/flickos-tutorials/tree/main/flickos-repo-tutorial).
 
@@ -21,7 +21,7 @@ tutorials only mentioned:
 
 The example is **flickos-hello** 2.0 from the code tutorial. By the end, a
 copy of the FlickOS repo has it as a real FlickOS package:
-- a design doc, [flickos-hello](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-hello.md), first proposed, then accepted
+- a design doc, [flickos-hello](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-hello.md), first proposed, then accepted
   with measurements;
 - flickos-hello 2.1, which records its changes for *Settings → History*;
 - flickos-control 1.20, with a *Hello* tile and Hello's changes in History;
@@ -180,7 +180,7 @@ propose nwg-menu again next year.
 
 ### Write Hello's
 
-Create [flickos-hello](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-hello.md) with the five parts. Start with:
+Create [flickos-hello](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-hello.md) with the five parts. Start with:
 
 ```markdown
 # Hello (flickos-hello)
@@ -310,7 +310,7 @@ to *4. Phases* for now. The finished one already has phase 1's results.
 The repo commits a design before its code (flickos-phone:
 `git show --stat 45af63d`). The design can be reviewed, agreed or rejected on
 its own, and a rejected design stays in the history with its reasons
-([flickos-recap](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-recap.md) was one).
+([flickos-recap](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-recap.md) was one).
 
 ```sh
 git status                          # ?? docs/design/flickos-hello.md: new, not yet tracked
@@ -953,7 +953,7 @@ Work through it (in `practice/`):
 | [01-overview](/docs/01-overview/) | A row in *Where to change what*: "Change the example program Hello (greetings, the default greeting for everyone)", its files and the design doc. A line in the repository tree under `flickos-greeter/` | the flickos-phone row |
 | [09-customizing](/docs/09-customizing/) | The disagreement from step 3: a tile's app goes in the Settings menu only when it's a settings app. Also *More Settings* in the table above it: "plus Hello" | |
 | `CLAUDE.md` | A paragraph `  - \`flickos-hello\`: …` before `waypaper`, dense like the others: the file, what it owns and its commands, the conffile and user file, History, the tile, *a Recommends, not in REQUIRED*, tests. And two sentences in flickos-control's paragraph: the tiles are "the Settings menu's apps plus Hello", and flickos-hello's `save_greeting` is among the History owners | the flickos-welcome paragraph |
-| [flickos-hello](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-hello.md) | Status: **Accepted**, with the versions. Phase 1: "(done 2026-09-28)", a table of what you measured against the budgets, what the tests and the VM showed, and what you found on the way (the leak) | flickos-menu's phase 1 |
+| [flickos-hello](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-hello.md) | Status: **Accepted**, with the versions. Phase 1: "(done 2026-09-28)", a table of what you measured against the budgets, what the tests and the VM showed, and what you found on the way (the leak) | flickos-menu's phase 1 |
 
 Why CLAUDE.md matters as much as the docs: it's what an AI assistant reads
 first in this repo. If it doesn't say Hello is a Recommends on purpose,

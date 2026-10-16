@@ -4,7 +4,7 @@ description: "This continues where the deb tutorial stopped. There you built fli
 sidebar:
   order: 3
 ---
-> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/dvbondoy/FlickOS). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
+> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/Flick-OS/flickos). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
 
 The answer key and the other files for this guide are in [flickos-ship-tutorial](https://github.com/dvbondoy/flickos-tutorials/tree/main/flickos-ship-tutorial).
 

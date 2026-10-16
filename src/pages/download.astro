@@ -22,7 +22,7 @@ const stats = await fetchDownloadStats();
 				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.2: restore points that can undo a software change that broke the system, even from the boot menu, and a Software app for apps from Debian, Flathub and FlickOS’s new community repository. FlickOS also has its own amber halo logo, boot menus and wallpapers.
 			</p>
 			<p>
-				<a href="/news/flickos-2-2/">What’s new in 2.2</a>
+				<a href="/news/flickos-2-2/">What’s new in 2.2</a> · <a href="/releases/">All releases</a>
 			</p>
 			<p class="cta">
 				<a class="flick-btn primary" href={ISO_URL} rel="noopener noreferrer">Get the ISO on SourceForge</a>
@@ -54,6 +54,16 @@ const stats = await fetchDownloadStats();
 			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.2.
 			Back up your files and install fresh.
 		</aside>
+
+		<section class="block">
+			<h2 class="flick-display">What it needs</h2>
+			<ul class="specs">
+				<li><strong>Computer:</strong> 64-bit PC (amd64), BIOS or UEFI.</li>
+				<li><strong>Memory:</strong> 1&nbsp;GB minimum, 2&nbsp;GB or more for web browsing. After login, FlickOS itself uses about 500&nbsp;MB.</li>
+				<li><strong>Disk:</strong> 10&nbsp;GB minimum. 20&nbsp;GB or more is recommended, so restore points have room.</li>
+				<li><strong>Tested on:</strong> FlickOS is developed and tested on a 2014 ASUS R556L laptop.</li>
+			</ul>
+		</section>
 
 		<section class="block">
 			<h2 class="flick-display">Verify the download</h2>
@@ -94,7 +104,7 @@ const stats = await fetchDownloadStats();
 			<h2 class="flick-display">Install</h2>
 			<ol>
 				<li>Start the Calamares installer from the desktop menu.</li>
-				<li>Follow the steps: language, keyboard, partitioning, user account. The installer uses btrfs by default, so you get restore points; ext4 is still offered. You can also choose whether to have swap. A 10&nbsp;GB disk is enough.</li>
+				<li>Follow the steps: language, keyboard, partitioning, user account. The installer uses btrfs by default, so you get restore points; ext4 is still offered. You can also choose whether to have swap. A 10&nbsp;GB disk is enough to install; with 20&nbsp;GB or more, restore points have room.</li>
 				<li>Reboot into the installed system when Calamares finishes.</li>
 			</ol>
 			<p>
@@ -106,11 +116,22 @@ const stats = await fetchDownloadStats();
 		</section>
 
 		<section class="block">
+			<h2 class="flick-display">Privacy and licensing</h2>
+			<p>
+				Once a week, an installed FlickOS sends one anonymous count: its version and roughly how long ago it was installed. Nothing else: no machine ID, and the server keeps no internet addresses. It is never sent from the live session, and you can turn it off at any time in <strong>Settings → Privacy</strong>.
+				The counts are <a href="https://flickos-countme.dvbondoy.workers.dev/v1/stats">public</a>.
+			</p>
+			<p>
+				FlickOS’s own work is free software under the GPL-3.0. Like Debian’s own install images, the ISO also includes some non-free parts from Debian, mainly firmware so Wi-Fi and graphics work on more computers. Notes, Write and Phone Screen are not free software: they are free of charge for now, are not on the ISO, and are installed only if you choose them.
+			</p>
+		</section>
+
+		<section class="block">
 			<h2 class="flick-display">Need more detail?</h2>
 			<p>
 				<a href="/docs/02-building-and-testing/">Building and testing</a>
-				covers QEMU boots and install checks. Source and issues live on
-				<a href="https://github.com/dvbondoy/FlickOS">GitHub</a>.
+				covers QEMU boots and install checks. Report problems on
+				<a href="https://github.com/Flick-OS/flickos/issues">GitHub</a>.
 			</p>
 		</section>
 	</section>
@@ -224,6 +245,17 @@ const stats = await fetchDownloadStats();
 	}
 	.block ol {
 		padding-left: 1.2rem;
+	}
+	.specs {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.specs li + li {
+		margin-top: 0.5rem;
+	}
+	.specs strong {
+		color: var(--flick-title);
 	}
 	.block li + li {
 		margin-top: 0.75rem;

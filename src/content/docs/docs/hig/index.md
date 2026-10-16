@@ -61,11 +61,11 @@ and examples.
 This HIG says *what* to do and *why*. The step-by-step *how* stays where it
 already is, and these pages link to it:
 
-- [CLAUDE.md](https://github.com/dvbondoy/FlickOS/blob/main/CLAUDE.md): the short version of every package and the
+- [CLAUDE.md](https://github.com/Flick-OS/flickos/blob/main/CLAUDE.md): the short version of every package and the
   project's invariants.
 - [04 – Packages](/docs/04-packages/) and [09 – Customizing](/docs/09-customizing/):
   how each package works and how to change it.
-- [docs/design/](https://github.com/dvbondoy/FlickOS/tree/main/docs/design/): design docs with the decisions (ADRs) and
+- [docs/design/](https://github.com/Flick-OS/flickos/tree/main/docs/design/): design docs with the decisions (ADRs) and
   measurements behind the bigger programs.
 
 When a rule here and a detail there disagree, fix one of them in the same

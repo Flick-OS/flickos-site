@@ -160,7 +160,7 @@ Add a row when you find a new one.
 - **No X11.** Nothing uses `xdotool`, `xprop`, `DISPLAY` or X11-only GDK calls.
 - **Windows can't be placed from outside.** labwc doesn't let one program move
   another's windows. Tiling writes labwc regions and window rules into a
-  fragment that `flickos-layout reconfigure` merges ([`flick-tiler`](https://github.com/dvbondoy/FlickOS/blob/main/packages/flick-tiler/usr/bin/flick-tiler)).
+  fragment that `flickos-layout reconfigure` merges ([`flick-tiler`](https://github.com/Flick-OS/flickos/blob/main/packages/flick-tiler/usr/bin/flick-tiler)).
 - **Windows can't be embedded.** Settings starts another app's window instead
   of showing it inside.
 - **labwc ignores config keys it doesn't know**, without a warning. Before

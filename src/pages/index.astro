@@ -1,11 +1,20 @@
 ---
 import { Image } from 'astro:assets';
 import MarketingLayout from '../layouts/MarketingLayout.astro';
+import hero from '../assets/screenshots/hero-redmond.png';
 import redmond from '../assets/screenshots/layout-redmond.png';
 import cupertino from '../assets/screenshots/layout-cupertino.png';
 import traditional from '../assets/screenshots/layout-traditional.png';
 import history from '../assets/screenshots/history.png';
 import { highlights } from '../data/features';
+import { testimonials, testimonialsSource } from '../data/testimonials';
+
+const initials = (name: string) =>
+	name
+		.split(/\s+/)
+		.map((part) => part.charAt(0))
+		.join('')
+		.toUpperCase();
 
 const specs = [
 	{ label: 'Debian 13', detail: 'trixie · Linux 6.12 LTS' },
@@ -68,7 +77,7 @@ const keys = [
 		</div>
 		<div class="hero-visual flick-anim-hero" style="animation-delay: 0.12s">
 			<Image
-				src={redmond}
+				src={hero}
 				alt="FlickOS Redmond layout desktop in a live session"
 				widths={[720, 1080, 1366]}
 				sizes="100vw"
@@ -202,6 +211,37 @@ const keys = [
 		<p class="more">
 			<a href="/screenshots/">See more screenshots</a>
 		</p>
+	</section>
+
+	<section class="section testimonials">
+		<div class="section-head">
+			<h2 class="flick-display">What people are saying</h2>
+			<p>From the comments on our Facebook post.</p>
+		</div>
+		<ul class="quote-grid">
+			{
+				testimonials.map((t) => (
+					<li>
+						<figure>
+							<blockquote>
+								<p>{t.quote}</p>
+							</blockquote>
+							<figcaption>
+								<span class="avatar" aria-hidden="true">
+									{initials(t.name)}
+								</span>
+								{t.name}
+							</figcaption>
+						</figure>
+					</li>
+				))
+			}
+		</ul>
+		{testimonialsSource ? (
+			<p class="more">
+				<a href={testimonialsSource}>Read the original post</a>
+			</p>
+		) : null}
 	</section>
 
 	<section class="section keys">
@@ -557,6 +597,66 @@ const keys = [
 	}
 	.more {
 		margin: 1.25rem 0 0;
+	}
+	.quote-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 1.25rem;
+	}
+	@media (min-width: 48rem) {
+		.quote-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	.quote-grid figure {
+		height: 100%;
+		margin: 0;
+		padding: 1.25rem 1.4rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		border: 1px solid var(--flick-border);
+		border-left: 3px solid var(--flick-accent);
+		border-radius: 0.4rem;
+		background: var(--flick-panel);
+	}
+	.quote-grid blockquote {
+		flex: 1;
+		margin: 0;
+	}
+	.quote-grid blockquote p {
+		margin: 0;
+		font-size: 1.05rem;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.quote-grid blockquote p::before {
+		content: '“';
+	}
+	.quote-grid blockquote p::after {
+		content: '”';
+	}
+	.quote-grid figcaption {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--flick-title);
+	}
+	.avatar {
+		display: inline-grid;
+		place-items: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 999px;
+		background: var(--flick-accent);
+		color: var(--flick-accent-fg);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
 	}
 	.keys .table-wrap {
 		overflow-x: auto;

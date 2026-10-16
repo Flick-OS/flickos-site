@@ -15,7 +15,7 @@ const SRC =
 	process.env.FLICKOS_TUTORIALS_PATH ?? path.resolve(ROOT, '../../flickos-tutorials');
 const DEST = path.join(ROOT, 'src/content/docs/learn');
 const TUTORIALS = 'https://github.com/dvbondoy/flickos-tutorials';
-const FLICKOS = 'https://github.com/dvbondoy/FlickOS';
+const FLICKOS = 'https://github.com/Flick-OS/flickos';
 
 const GUIDES = [
 	{

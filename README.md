@@ -1,6 +1,6 @@
 # FlickOS website
 
-Marketing site and documentation for [FlickOS](https://github.com/dvbondoy/FlickOS), built with [Astro](https://astro.build/), [Starlight](https://starlight.astro.build/), and Tailwind CSS v4.
+Marketing site and documentation for [FlickOS](https://github.com/Flick-OS/flickos), built with [Astro](https://astro.build/), [Starlight](https://starlight.astro.build/), and Tailwind CSS v4.
 
 - **Site:** https://flickos.net
 - **Product repo:** sibling checkout at `../flickos` (not a submodule)

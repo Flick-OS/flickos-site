@@ -4,7 +4,7 @@ description: "You will make a small package, flickos-hello, from nothing. You bu
 sidebar:
   order: 1
 ---
-> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/dvbondoy/FlickOS). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
+> Set `TUTORIALS` to the root of the [tutorials repository](https://github.com/dvbondoy/flickos-tutorials) and `FLICKOS` to your clone of [FlickOS](https://github.com/Flick-OS/flickos). Paths below use those two variables. Scripts read the FlickOS checkout from `FLICKOS_REPO` or `FLICKOS`.
 
 The answer key and the other files for this guide are in [flickos-deb-tutorial](https://github.com/dvbondoy/flickos-tutorials/tree/main/flickos-deb-tutorial).
 
@@ -471,7 +471,7 @@ head -8 debian/copyright
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: flickos-hello
 Upstream-Contact: Jon <dvbondoy@gmail.com>
-Source: https://github.com/dvbondoy/FlickOS
+Source: https://github.com/Flick-OS/flickos
 
 Files: *
 Copyright: 2026 Jon <dvbondoy@gmail.com>

@@ -122,7 +122,7 @@ a switch in Settings, and turning it off also deletes what it kept. The reason
 is that a record started only after someone needs it is empty. The History
 page is the one case so far: the owners append a line to
 `~/.local/state/flickos/history.jsonl` when a setting changes, and nothing
-else runs ([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-history.md#adr-007-on-by-default-with-a-switch-to-turn-it-off)).
+else runs ([design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-history.md#adr-007-on-by-default-with-a-switch-to-turn-it-off)).
 
 **A safety net.** A feature whose only job is to undo damage may be on by
 default when, like a record, it would be useless if turned on only after the
@@ -133,7 +133,7 @@ switch in Settings, which says what it holds and offers to delete it.
 Restore points are the one case so far (planned): a snapshot in apt's hook
 before each software change, and a start counter that runs for a few seconds
 at each start
-([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-recovery.md#adr-002-a-restore-point-before-every-software-change-nothing-in-between-accepted)).
+([design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-recovery.md#adr-002-a-restore-point-before-every-software-change-nothing-in-between-accepted)).
 
 **Making a shipped feature the default.** A feature that has shipped opt-in
 may later become the default, as a decision of its own: an ADR in its design
@@ -142,7 +142,7 @@ Settings, and everything above still holds while a user has it off. The start
 menu is the one case so far: since flickos-layouts 1.23 the apps button opens
 it unless the user chose the app launcher, for about 35 MB of private memory
 and no CPU while idle
-([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-menu.md#adr-010-on-by-default)).
+([design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-menu.md#adr-010-on-by-default)).
 
 **A tool that runs only when asked.** A program that runs no process until
 the user presses its key or opens it, generates nothing in the overlay, and
@@ -155,15 +155,15 @@ it adds that runs or shows without being asked (a panel module, a daemon)
 still needs its own decision. Screenshots are the one case so far: the Print
 keys, which existed already, Super+Shift+S and Super+Shift+R run
 `flickos-screenshot`, and nothing of it runs in between
-([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md#adr-002-on-by-default-as-the-print-keys-already-are)).
+([design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-screenshot.md#adr-002-on-by-default-as-the-print-keys-already-are)).
 Its panel button is such a decision: `custom/recording` is in every layout's
 panel, empty and hidden while nothing records, because adding it only when a
 recording starts would restart the panel into the video
-([ADR-007](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-screenshot.md#adr-007-while-recording-the-panel-shows-it-and-stops-it)).
+([ADR-007](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-screenshot.md#adr-007-while-recording-the-panel-shows-it-and-stops-it)).
 It costs one `cat` of a missing file when the panel starts. Screen zoom is
 the second case: labwc's own magnifier, so no program at all, with
 Super+=, Super+-, Super+0 and Super+scroll bound for everyone
-([design](https://github.com/dvbondoy/FlickOS/blob/main/docs/design/flickos-zoom.md#adr-002-on-by-default-keys-named-here)).
+([design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-zoom.md#adr-002-on-by-default-keys-named-here)).
 
 ### INT-10 Must: Login programs start from FlickOS's autostart and stay single
 
