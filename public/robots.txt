@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://flickos.net/sitemap-index.xml
+Sitemap: https://www.flickos.org/sitemap-index.xml

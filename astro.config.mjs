@@ -8,7 +8,7 @@ import { store } from './src/config/store';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://flickos.net',
+	site: 'https://www.flickos.org',
 	output: 'static',
 	integrations: [
 		mermaid({
@@ -33,7 +33,7 @@ export default defineConfig({
 			head: [
 				{
 					tag: 'meta',
-					attrs: { property: 'og:image', content: 'https://flickos.net/og-image.png' },
+					attrs: { property: 'og:image', content: 'https://www.flickos.org/og-image.png' },
 				},
 				{
 					tag: 'meta',
@@ -41,7 +41,7 @@ export default defineConfig({
 				},
 				{
 					tag: 'meta',
-					attrs: { name: 'twitter:image', content: 'https://flickos.net/og-image.png' },
+					attrs: { name: 'twitter:image', content: 'https://www.flickos.org/og-image.png' },
 				},
 				{
 					tag: 'link',
