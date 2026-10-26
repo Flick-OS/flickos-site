@@ -265,7 +265,7 @@ This says what kind of *source package* this is:
   packages. It has an upstream tarball, and versions like `2.4-1`, where `-1`
   is Debian's packaging revision.
 
-**That is why FlickOS versions never have a `-1`** (CLAUDE.md: "no `-1`
+**That is why FlickOS versions never have a `-1`** (HIG PKG-3: "never add a `-1`
 suffix"). waypaper and sfwbar are third-party code, but they are packaged as
 native too, with versions like `2.7+flickos1`.
 
@@ -362,7 +362,7 @@ Other relation fields you'll meet in FlickOS's `control` files:
 
 | Field | Meaning |
 |---|---|
-| `Recommends:` | installed by default with apt, but not in FlickOS's image (`--apt-recommends false`) and not on installed systems (the `00recommends` apt config). That's why CLAUDE.md says "use Depends" |
+| `Recommends:` | installed by default with apt, but not in FlickOS's image (`--apt-recommends false`) and not on installed systems (the `00recommends` apt config). That's why HIG PKG-4 says a new Recommends never reaches installed systems |
 | `Suggests:` | never installed automatically |
 | `Breaks: pkg (<< 1.7)` | "I don't work with that old a version of pkg": apt upgrades pkg too |
 | `Conflicts:` | the two can never be installed together |
@@ -480,7 +480,7 @@ License: GPL-3+
 
 - `Files: *` covers everything by default: FlickOS's own work, GPL-3+.
 - Each file from somewhere else gets its own `Files:` stanza under it. An
-  example is flickos-layouts' Unsplash wallpapers (CLAUDE.md, "License").
+  example is flickos-layouts' Unsplash wallpapers (HIG PKG-5).
 - The `License: GPL-3+` stanza at the bottom holds the licence's text, or
   points to `/usr/share/common-licenses/GPL-3`.
 
@@ -840,7 +840,7 @@ flickos-hello (1.1) trixie; urgency=medium
 ```
 
 `-i` means increment: 1.0 → 1.1. `-D trixie` avoids `UNRELEASED`. This is the
-exact command CLAUDE.md asks for with every FlickOS package change.
+exact command HIG PKG-3 asks for with every FlickOS package change.
 
 **Next, make the change:**
 
@@ -1009,7 +1009,7 @@ Everything above is how the repo works. The table maps each step onto it:
 |---|---|
 | `work/flickos-hello/` | `packages/NAME/` (the folder name is the package name) |
 | `./build-and-check.sh work/flickos-hello` | `sh packages/build.sh` builds **all** packages, each from a copy in `packages/.build/`. It fails when two packages contain the same file (dpkg would say "trying to overwrite" deep inside `lb build`), then copies the `.deb`s to `config/packages.chroot/`, where the ISO build takes them |
-| `dch -i -D trixie "…"` before a change | the same, and CLAUDE.md requires it for every content change. Never `UNRELEASED`, never `-1` |
+| `dch -i -D trixie "…"` before a change | the same, and HIG PKG-3 requires it for every content change. Never `UNRELEASED`, never `-1` |
 | a package's tests in `override_dh_auto_test` | the same in flickos-layouts, -control, -menu, -phone, -shortcuts, -welcome, flick-tiler |
 | `sudo apt install ./out/…deb` to try it | `sudo apt install ./config/packages.chroot/NAME_*.deb` on your own FlickOS, then reload the panel or labwc, or log out and in (docs/09 "Shipping a change") |
 | a `.deb` in `out/` | `repo/publish.sh && repo/upload.sh` put it in the signed apt repo, **the only way installed systems get it**. The ISO is only a snapshot for new installs |
@@ -1033,7 +1033,7 @@ $TUTORIALS/flickos-deb-tutorial/build-and-check.sh packages/flickos-welcome
 ```
 
 **If the change adds a dependency**, bump the package that depends on it too
-(CLAUDE.md, "Package versions").
+(HIG PKG-3).
 
 **If the change adds a new program to Depends**, check its cost first with
 `tools/package-cost.py PKG` (HIG PERF-7).
@@ -1052,7 +1052,7 @@ this guide, plus:
    `config/hooks/normal/0010-sanity.hook.chroot`.
 5. If it's user-visible, add a boot-test check to `CHECKS` in
    `tools/boot-test.py`.
-6. Document it: its line in CLAUDE.md, `docs/01` and `docs/04`, and its HIG
+6. Document it: `docs/01` and `docs/04`, and its HIG
    checklist ([checklist](/docs/hig/checklist/)).
 
 **Testing a local build that has the same version as the published one:**

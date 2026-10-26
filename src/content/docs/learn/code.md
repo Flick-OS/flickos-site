@@ -890,12 +890,12 @@ working example in the repo:
 
 | Addition | Why | Example to copy |
 |---|---|---|
-| **History**: `record()` appends every change to `$XDG_STATE_HOME/flickos/history.jsonl` in the shared format, and flickos-control learns to undo it | Settings → History shows and undoes changes | flick-tiler's `save_choice()`, [flickos-history](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-history.md) |
+| **History**: `record()` appends every change to `$XDG_STATE_HOME/flickos/history.jsonl` in the shared format, and flickos-control learns to undo it | Settings → History shows and undoes changes | flick-tiler's `save_choice()`, `docs/design/flickos-history.md` |
 | **A Settings page or row** that *runs* the owner's commands, never opening its files (SET-1) | INT-4 | flickos-control's tiling page and `flick-tiler` |
 | **`state`**: all values as one JSON, so a page reads them in one run | SET-2, PERF-1 | `flickos-layout state` |
 | **Reading off the main loop**: a page reads in a thread with a spinner | PERF-2, WIN-11 | flickos-control's `Ui.background()` |
 | **A boot-test check** | PKG-9 | `CHECKS` in `tools/boot-test.py` |
-| **A design doc** before the code, with phase 0's spike results | stages 3–4 of the path | [flickos-phone](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-phone.md) |
+| **A design doc** before the code, with phase 0's spike results | stages 3–4 of the path | `docs/design/flickos-phone.md` |
 
 [flickos-repo-tutorial](/learn/repo/) takes Hello the rest of the way: the
 design doc, History, the Settings tile, a boot-test check, the docs and the

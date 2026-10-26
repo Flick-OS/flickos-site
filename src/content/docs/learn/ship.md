@@ -233,7 +233,7 @@ The rules:
   files). Use a retry time for things the desktop starts in the background:
   `("waybar running", "pgrep -u user -x waybar", 60)`.
 - A fourth field names a screenshot to take after the check passes.
-- CLAUDE.md asks for a check with every user-visible feature. This line is
+- HIG PKG-9 asks for a check with every user-visible feature. This line is
   what stops a later change from quietly breaking your feature.
 
 A check for flickos-hello only makes sense once it is in the ISO: in

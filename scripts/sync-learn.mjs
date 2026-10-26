@@ -16,6 +16,8 @@ const SRC =
 const DEST = path.join(ROOT, 'src/content/docs/learn');
 const TUTORIALS = 'https://github.com/dvbondoy/flickos-tutorials';
 const FLICKOS = 'https://github.com/Flick-OS/flickos';
+/** The tutorials link the private development repo; readers get the public one. */
+const PRIVATE_FLICKOS = 'https://github.com/dvbondoy/FlickOS';
 
 const GUIDES = [
 	{
@@ -120,10 +122,6 @@ function linkify(prose) {
 		/`docs\/(\d{2}-[a-z0-9-]+)\.md`/g,
 		(_, name) => `[${name}](/docs/${name}/)`,
 	);
-	out = out.replace(
-		/`docs\/design\/([a-z0-9.-]+)\.md`/g,
-		(_, name) => `[${name}](${FLICKOS}/blob/main/docs/design/${name}.md)`,
-	);
 	out = out.replace(/`(flickos-[a-z0-9-]+)`/g, (full, name) => {
 		const href = GUIDE_LINKS[name];
 		return href ? `[${name}](${href})` : full;
@@ -144,7 +142,7 @@ function processGuide(guide) {
 	if (!lines[0].startsWith('# ')) {
 		throw new Error(`${guide.src}: expected an H1`);
 	}
-	let body = lines.slice(1).join('\n').replace(/^\n/, '');
+	let body = lines.slice(1).join('\n').replace(/^\n/, '').replaceAll(PRIVATE_FLICKOS, FLICKOS);
 	const description = descriptionFrom(body)
 		.replaceAll('$TUTORIALS/flickos-deb-tutorial', 'the deb tutorial')
 		.replaceAll('$TUTORIALS/flickos-code-tutorial', 'the code tutorial')

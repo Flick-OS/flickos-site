@@ -21,13 +21,13 @@ tutorials only mentioned:
 
 The example is **flickos-hello** 2.0 from the code tutorial. By the end, a
 copy of the FlickOS repo has it as a real FlickOS package:
-- a design doc, [flickos-hello](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-hello.md), first proposed, then accepted
+- a design doc, `docs/design/flickos-hello.md`, first proposed, then accepted
   with measurements;
 - flickos-hello 2.1, which records its changes for *Settings → History*;
 - flickos-control 1.20, with a *Hello* tile and Hello's changes in History;
 - flickos-desktop 1.22, which recommends it;
 - three boot-test checks, tried in the live ISO;
-- docs 01, 04 and 09 and CLAUDE.md updated;
+- docs 01, 04 and 09 updated;
 - two commits, the way the repo's own history does it.
 
 The review in step 3 finds three things the code tutorial left out. Two of
@@ -60,7 +60,7 @@ the real ones.
 | Path | What it is |
 |---|---|
 | `README.md` | This guide |
-| `check-wiring.py` | Checks that a package is wired in everywhere HIG PKG-10 asks for: debian files, who installs it, `REQUIRED`, the boot test, docs 01 and 04, CLAUDE.md, a design doc. Works on **any** package, in any clone |
+| `check-wiring.py` | Checks that a package is wired in everywhere HIG PKG-10 asks for: debian files, who installs it, `REQUIRED`, the boot test, docs 01 and 04, a design doc. Works on **any** package, in any clone |
 | `try-checks.py` | Turns boot-test checks into a script for the ship tutorial's `vm-run.py`, so a new check runs in the live ISO before any ISO contains your package |
 | `finished/0001-…patch`, `0002-…patch` | The answer key: the two commits, as `git format-patch` wrote them |
 | `finished/flickos-hello-design.md` | The finished design doc, to read on its own |
@@ -180,7 +180,7 @@ propose nwg-menu again next year.
 
 ### Write Hello's
 
-Create [flickos-hello](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-hello.md) with the five parts. Start with:
+Create `docs/design/flickos-hello.md` with the five parts. Start with:
 
 ```markdown
 # Hello (flickos-hello)
@@ -310,7 +310,7 @@ to *4. Phases* for now. The finished one already has phase 1's results.
 The repo commits a design before its code (flickos-phone:
 `git show --stat 45af63d`). The design can be reviewed, agreed or rejected on
 its own, and a rejected design stays in the history with its reasons
-([flickos-recap](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-recap.md) was one).
+(`docs/design/flickos-recap.md` was one).
 
 ```sh
 git status                          # ?? docs/design/flickos-hello.md: new, not yet tracked
@@ -941,7 +941,6 @@ flickos-hello
   MISSING docs/04: section ### `flickos-hello`
   MISSING docs/01: a row in "Where to change what" naming packages/flickos-hello/
   note    docs/01: flickos-hello/ in the repository layout tree
-  MISSING CLAUDE.md: a paragraph   - `flickos-hello`: …
   ok      docs/design/flickos-hello.md exists
 ```
 
@@ -952,12 +951,10 @@ Work through it (in `practice/`):
 | [04-packages](/docs/04-packages/) | A section `### \`flickos-hello\`` before `### \`flickos-greeter\``: one paragraph of what it is, then bullets: the setting, the window, History, *a Recommends*, unit tests and the boot test. Also add Hello to the *More Settings* list in flickos-control's section | `### \`flickos-shortcuts\`` |
 | [01-overview](/docs/01-overview/) | A row in *Where to change what*: "Change the example program Hello (greetings, the default greeting for everyone)", its files and the design doc. A line in the repository tree under `flickos-greeter/` | the flickos-phone row |
 | [09-customizing](/docs/09-customizing/) | The disagreement from step 3: a tile's app goes in the Settings menu only when it's a settings app. Also *More Settings* in the table above it: "plus Hello" | |
-| `CLAUDE.md` | A paragraph `  - \`flickos-hello\`: …` before `waypaper`, dense like the others: the file, what it owns and its commands, the conffile and user file, History, the tile, *a Recommends, not in REQUIRED*, tests. And two sentences in flickos-control's paragraph: the tiles are "the Settings menu's apps plus Hello", and flickos-hello's `save_greeting` is among the History owners | the flickos-welcome paragraph |
-| [flickos-hello](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-hello.md) | Status: **Accepted**, with the versions. Phase 1: "(done 2026-09-28)", a table of what you measured against the budgets, what the tests and the VM showed, and what you found on the way (the leak) | flickos-menu's phase 1 |
+| `docs/design/flickos-hello.md` | Status: **Accepted**, with the versions. Phase 1: "(done 2026-09-28)", a table of what you measured against the budgets, what the tests and the VM showed, and what you found on the way (the leak) | flickos-menu's phase 1 |
 
-Why CLAUDE.md matters as much as the docs: it's what an AI assistant reads
-first in this repo. If it doesn't say Hello is a Recommends on purpose,
-the next change may "fix" it into a Depends.
+Why docs/04 must say *a Recommends* on purpose: if it doesn't, the next
+change may "fix" Hello into a Depends.
 
 The measurements for the design doc (yours will be close):
 - `greeting list`: 76–79 ms (it was 72 ms: `record()` added the `json` and
@@ -985,7 +982,6 @@ git status --short
 ```
 
 ```
- M CLAUDE.md
  M docs/01-overview.md
  M docs/04-packages.md
  M docs/09-customizing.md
@@ -1008,7 +1004,7 @@ here.
 ```sh
 git add -A                              # everything git status listed
 git diff --cached --stat
-git diff --cached -- CLAUDE.md          # read the parts a reviewer would
+git diff --cached -- docs              # read the parts a reviewer would
 git ls-files -s packages/flickos-hello/debian/rules packages/flickos-hello/usr/bin/flickos-hello
 ```
 
@@ -1042,7 +1038,7 @@ flickos-hello 2.1: the example program, in FlickOS (phase 1)
   the window (hello-dark.png). Tried in the 2.1 live ISO with both
   packages from a local test repo.
 - Docs: 04, 01 (row and tree), 09 (a tile's app goes in the Settings
-  menu only when it is a settings app), CLAUDE.md, and the design doc,
+  menu only when it is a settings app), and the design doc,
   accepted, with phase 1's measurements.
 ```
 
@@ -1097,7 +1093,7 @@ is what it found in the real repo:
 | Package | Finding |
 |---|---|
 | flickos-welcome | **`debian/rules` isn't executable** in git (`100644`). dpkg-buildpackage fixes the mode at build time and says so, so the build works, but docs/04 says it must be executable. Fix: `git update-index --chmod=+x packages/flickos-welcome/debian/rules` |
-| flickos-welcome | **No section in docs/04.** CLAUDE.md, docs/01 and docs/09 describe it, docs/04 doesn't |
+| flickos-welcome | **No section in docs/04.** docs/01 and docs/09 describe it, docs/04 doesn't |
 | flickos-greeter, sfwbar | **No row in docs/01's "Where to change what"** (both are in the tree above it) |
 | flickos-menu, flickos-phone, flickos-welcome | Not in docs/01's **repository tree** (a note: PKG-10 asks only for the table row) |
 | waypaper | A note: a Depends of flickos-desktop, but not in `REQUIRED`. A judgment call: FlickOS runs without the Wallpaper app |

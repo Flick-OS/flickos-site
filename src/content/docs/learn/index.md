@@ -110,11 +110,11 @@ Everything else in the repo that has to know about it.
 
 ### 9. Document it
 
-A section in the packages doc, a row and a tree line in the overview, a paragraph in `CLAUDE.md`, and the design doc accepted with its measurements.
+A section in the packages doc, a row and a tree line in the overview, and the design doc accepted with its measurements.
 
 - **Taught in:** [Into the repository](/learn/repo/) §11
 - **Tools:** `check-wiring.py`
-- **Done when:** someone who reads only `CLAUDE.md` would not undo one of your decisions by mistake.
+- **Done when:** someone who reads only the packages doc would not undo one of your decisions by mistake.
 
 ### 10. Commit and push
 
