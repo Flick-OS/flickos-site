@@ -97,7 +97,7 @@ Should rules aren't listed. Read the pages for those.
 - [ ] **PKG-6** Native, `Architecture: all`, declarative debhelper files, conffiles, lintian without errors.
 - [ ] **PKG-8** Unit tests in `tests/`, run at build time without display, network or root.
 - [ ] **PKG-9** A boot-test check for every user-visible feature.
-- [ ] **PKG-10** A new package is in `flickos-desktop`, docs/04, docs/01, `CLAUDE.md`, and has a design doc if it's big.
+- [ ] **PKG-10** A new package is in `flickos-desktop`, docs/04 and docs/01, and has a design doc if it's big.
 
 ## Code ([10](/docs/hig/10-code/))
 

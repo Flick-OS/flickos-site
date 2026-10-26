@@ -636,7 +636,7 @@ instead: every click also closes the menu, and `left-launcher` opens the menu.
 
 A classic start menu for the apps button (package `flickos-menu`, see
 [04](/docs/04-packages/#flickos-menu) and
-[design/flickos-menu.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-menu.md)). **On by default**: the apps
+design/flickos-menu.md). **On by default**: the apps
 button and a tap of Super open it; Super+D stays fuzzel. A user switches it
 under *Apps button* in *Settings → Desktop Layout & Style*, or:
 
@@ -714,7 +714,7 @@ button. The times are in `$XDG_RUNTIME_DIR/flickos/menu/timing.log`;
 
 Switches and sliders behind the panel's volume and battery icons (package
 `flickos-menu`, the start menu's daemon; see [04](/docs/04-packages/#flickos-menu)
-and [design/flickos-quick-settings.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-quick-settings.md)).
+and design/flickos-quick-settings.md).
 **Off by default**: a user turns it on under *Quick Settings* in *Settings →
 Desktop Layout & Style*, or:
 
@@ -1024,7 +1024,7 @@ user's style and its parent ("style dark-orange (yours, inherits dark)"), so
 it shows in bug reports; and *Settings → Desktop Layout & Style* has *Back to
 FlickOS's Look* (`flickos-layout set default --style default`, undone from
 History) while the layout or style isn't the default (`state`'s `default`).
-Design: [design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md).
+Design: design/flickos-ricing.md.
 
 ```sh
 flickos-layout style new dark-orange --from dark --name "Dark Orange"   # prints the folder
@@ -1197,7 +1197,7 @@ folder, then in FlickOS's own; the first folder with an id wins, and `doctor`
 says when a user's layout hides FlickOS's. The chooser and Settings list
 them after FlickOS's with "Yours" (a layout without `Preview=` gets a tile
 with its name), and *Settings → About* says "(yours)" after it. The plain
-session leaves them out. Design: [design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md),
+session leaves them out. Design: design/flickos-ricing.md,
 phase 5.
 
 ```sh
@@ -1621,7 +1621,7 @@ agree. Mouse, touchpad and keyboard settings are flickos-control's own.
   `packages/flickos-layouts` to see the layout previews from the tree.
 
 The design and its decisions are in
-[design/flickos-control.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-control.md).
+design/flickos-control.md.
 
 ---
 
@@ -1785,7 +1785,7 @@ files are written for a labwc without FlickOS, so don't copy them whole.
 
 Merging is **off**, and the user's files replace FlickOS's as they always did,
 when it would break FlickOS (`merge_decision` in flickos-layout, decided at
-every login; [design ADR-003](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md)):
+every login; design ADR-003):
 
 | When | Why | To merge instead |
 |---|---|---|

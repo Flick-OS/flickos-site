@@ -8,7 +8,8 @@
  * - Rewrites cross-doc links: 04-packages.md → /docs/04-packages/
  * - Rewrites hig/*.md → /docs/hig/.../
  * - Rewrites links to other repo files to GitHub URLs
- * - design/ is internal and not published; links to it go to GitHub
+ * - Unlinks files the public repo lacks (design/ is internal, tools/ and the
+ *   like are left out of it), keeping the link text
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,6 +23,9 @@ const SRC =
 const DEST = path.join(ROOT, 'src/content/docs/docs');
 const HIG_DEST = path.join(DEST, 'hig');
 const GITHUB = 'https://github.com/Flick-OS/flickos';
+/** Checkout of the public repo, to tell which repo files GitHub has. */
+const PUBLIC = process.env.FLICKOS_PUBLIC_PATH ?? path.resolve(ROOT, '../flickos');
+const HAVE_PUBLIC = fs.existsSync(path.join(PUBLIC, '.git'));
 
 /** Links already written from the repo root (e.g. `packages/foo`), not relative to the doc. */
 const REPO_ROOT_LINK = /^(?:auto|config|docs|packages|repo|tools)\//;
@@ -95,7 +99,8 @@ function descriptionFromBody(body, filename) {
 
 /**
  * `fromDir` is the linking doc's folder in the product repo (`docs`, `docs/hig`).
- * Other docs become site URLs; any other repo file becomes a GitHub URL.
+ * Other docs become site URLs; any other repo file becomes a GitHub URL, or
+ * null when the public repo doesn't have it.
  */
 function rewriteHref(href, fromDir) {
 	if (!href || /^[a-z]+:/i.test(href) || href.startsWith('#')) return href;
@@ -113,6 +118,8 @@ function rewriteHref(href, fromDir) {
 		const m = repoPath.match(pattern);
 		if (m) return url(m) + hash;
 	}
+	if (repoPath.startsWith('docs/design/')) return null;
+	if (HAVE_PUBLIC && !fs.existsSync(path.join(PUBLIC, repoPath))) return null;
 	const kind = repoPath.endsWith('/') ? 'tree' : 'blob';
 	return `${GITHUB}/${kind}/main/${repoPath}${hash}`;
 }
@@ -120,7 +127,7 @@ function rewriteHref(href, fromDir) {
 function rewriteLinks(markdown, fromDir) {
 	return markdown.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (full, text, href) => {
 		const next = rewriteHref(href.trim(), fromDir);
-		return `[${text}](${next})`;
+		return next === null ? text : `[${text}](${next})`;
 	});
 }
 

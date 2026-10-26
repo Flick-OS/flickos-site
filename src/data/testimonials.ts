@@ -20,11 +20,11 @@ export const testimonials: Testimonial[] = [
 		name: 'Maurice J.',
 	},
 	{
-		quote: 'Running on a HP Chromebook G4 (G3?), 4GB RAM, Celeron, USB boot. 450MB RAM at idle — not bad.',
-		name: 'Engine E.',
+		quote: 'Great, easy to use, clean interface and fast! Works great even on 2013 celeron laptop. Keep up the good work!',
+		name: 'Pekka K.',
 	},
 	{
-		quote: 'Love the clean minimal theme including the menu.',
-		name: 'Ryan T.',
+		quote: 'I am on Windows since my first PC and this is the first distro I am willing to try.',
+		name: 'Piotr K.',
 	},
 ];

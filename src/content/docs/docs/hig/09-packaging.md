@@ -132,9 +132,8 @@ through its command line. Windows are opened and screenshotted
 2. Pulled in by `flickos-desktop` (Depends or Recommends, bumped), and listed
    in `REQUIRED` if the desktop needs it.
 3. Unit tests (PKG-8) and a boot-test check (PKG-9).
-4. A section in [04 – Packages](/docs/04-packages/), a row in
-   [01's "Where to change what"](/docs/01-overview/), and its paragraph in
-   `CLAUDE.md`.
+4. A section in [04 – Packages](/docs/04-packages/) and a row in
+   [01's "Where to change what"](/docs/01-overview/).
 5. A design doc in `docs/design/` for anything bigger than a small tool: the
    problem, the decisions (ADRs) and the measurements
    ([PERF-7](/docs/hig/08-performance/#perf-7-must-state-the-cost-of-what-you-add)).

@@ -94,7 +94,7 @@ start menu's Home and All Apps).
 Motion costs frames on old graphics hardware and adds nothing to finding
 things; a short fade of a small window costs about 55 ms of CPU and nothing
 between fades
-([design/flickos-fades.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-fades.md)).
+(design/flickos-fades.md).
 
 ## Icons
 
@@ -149,7 +149,7 @@ and the suggested action.
 
 Users make their own styles, and others share them
 ([09 – Your own style](/docs/09-customizing/#your-own-style),
-[design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md)). VIS-1 is for what FlickOS ships: a
+design). VIS-1 is for what FlickOS ships: a
 user's style may use any colors. In return FlickOS promises that its own
 surfaces follow any style through the named colors
 ([VIS-2](#vis-2-must-follow-the-style-that-is-in-use)), so a style never has to

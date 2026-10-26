@@ -338,7 +338,7 @@ go. Also *Settings → Keyboard Shortcuts* and the app launcher
   GSettings' `enable-animations` is on (`Sheets`; a test compares the curve
   with flickos-menu's when both are in the tree); a zoom key (`BUSY_SIGNAL`)
   hides it at once. About 65 ms of CPU per fade. Design:
-  [design/flickos-fades.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-fades.md).
+  design/flickos-fades.md.
 - **What it lists:** the keybinds of the rc.xml labwc uses (first of
   `$XDG_CONFIG_HOME`, then `$XDG_CONFIG_DIRS`: a user's own, the flickos-layouts
   overlay with flick-tiler's keys while tiling is on, or flickos-settings'),
@@ -362,7 +362,7 @@ the wallpaper, in the colors of the GTK theme (so of the style in use). One
 Python 3 file, `usr/bin/flickos-lock`, plus `usr/share/flickos/lock/style.css`
 (theme colors only, in `tools/check-palette.py`) and the PAM file
 `/etc/pam.d/flickos-lock` (`@include common-auth`). Design, decisions and
-measurements: [design/flickos-lock.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-lock.md).
+measurements: design/flickos-lock.md.
 
 - **How it locks:** only through `ext-session-lock-v1`, so labwc keeps every
   screen covered whatever the lock screen does. `flickos-lock lock` (the
@@ -415,7 +415,7 @@ Downloads), and `flickos-phone send FILE|URL`, `--text`, `--clipboard` go the
 other way. One Python 3 file, `usr/bin/flickos-phone`, standard library only
 (no GTK, except the file chooser of `send --choose`), plus the conffile `etc/xdg/flickos/phone.conf`. Design, decisions
 and the phase 0 measurements with a real phone:
-[design/flickos-phone.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-phone.md).
+design/flickos-phone.md.
 
 - **Off by default** (`flickos-phone set enabled yes|no|default`); while off
   nothing runs. Never in the live session. Settings in `[Phone]` of
@@ -526,7 +526,7 @@ Python 3 file, `usr/bin/flickos-screenshot` (GTK 3 and gtk-layer-shell only
 for the bar, the frozen screen and a recording's outline; GStreamer only in
 the recorder), plus its desktop file *Screenshot*, FlickOS's portal-wlr
 config and screen chooser. Design and measurements:
-[design/flickos-screenshot.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-screenshot.md).
+design/flickos-screenshot.md.
 
 - **Keys** (flickos-settings' rc.xml): Print = `shot region`, Shift+Print =
   `shot screen` (every screen), Ctrl+Print = `shot region --copy-only`,
@@ -628,7 +628,7 @@ around a ring in the middle of the screen. One Python 3
 file, `usr/bin/flickos-media` (GTK 3 and gtk-layer-shell only in the
 spectrum), its conffile and its panel icon
 (`usr/share/icons/hicolor/scalable/actions/flickos-spectrum-symbolic.svg`).
-Design and measurements: [design/flickos-media.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-media.md).
+Design and measurements: design/flickos-media.md.
 A Depends of flickos-desktop and in the sanity hook's `REQUIRED`.
 
 - **Off by default** (HIG INT-9). `flickos-media set controls on` runs
@@ -682,7 +682,7 @@ A Depends of flickos-desktop and in the sanity hook's `REQUIRED`.
 The weather in the panel: the temperature and the sky now, the next hours and
 days in the tooltip, for a place the user picks. One Python 3 file,
 `usr/bin/flickos-weather` (standard library only, no GTK), and its conffile.
-Design: [design/flickos-weather.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-weather.md); what it sends:
+Design: design/flickos-weather.md; what it sends:
 [PRIVACY.md](https://github.com/Flick-OS/flickos/blob/main/PRIVACY.md#the-weather). A Depends of flickos-desktop and in
 the sanity hook's `REQUIRED`.
 
@@ -767,7 +767,7 @@ Restore points of the whole system: a read-only btrfs snapshot before every
 software change, putting one back, the boot menu's *Restore points*, and
 recovering by itself after starts that failed. Design, decisions and
 measurements:
-[flickos-recovery.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-recovery.md). One Python 3 file,
+flickos-recovery.md. One Python 3 file,
 `usr/bin/flickos-recovery` (stdlib only), plus `usr/libexec/flickos/recovery-helper`
 (root, through pkexec).
 
@@ -884,7 +884,7 @@ Log Out, Restart and Shut Down run on a second click: the first turns the
 button red and says to click again. **On by default** (since flickos-layouts 1.23): a user who wants fuzzel back picks
 *App launcher* under *Apps button* in *Settings → Desktop Layout & Style*
 (`flickos-layout launcher set fuzzel`). Design and measurements:
-[design/flickos-menu.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-menu.md).
+design/flickos-menu.md.
 
 **Quick Settings** is the daemon's second window, opened by the panel's volume
 and battery icons and Super+A while the user turns it on under *Quick
@@ -892,7 +892,7 @@ Settings* in *Settings → Desktop Layout & Style* (`flickos-layout
 quick-settings set on`): switches for Wi-Fi, Do Not Disturb, night light,
 tiling and the phone, sliders for volume and brightness, the battery,
 Settings and the power buttons. Design, measurements and what is left (Bluetooth):
-[design/flickos-quick-settings.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-quick-settings.md).
+design/flickos-quick-settings.md.
 
 | File in package | Installed to | Purpose |
 |---|---|---|
@@ -918,7 +918,7 @@ Settings and the power buttons. Design, measurements and what is left (Bluetooth
   window below), and showing it again maps it anew, since labwc gives a layer
   surface the keyboard only when it is mapped. About 55 ms of CPU per fade,
   the daemon and labwc together, and nothing between fades. Design:
-  [design/flickos-fades.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-fades.md).
+  design/flickos-fades.md.
 - **A tap of Super** is labwc's `onRelease` keybind; the daemon ignores it
   unless Super was pressed alone and let go within `TAP_MS` (600 ms), so a hold
   still shows flickos-shortcuts' sheet.
@@ -952,7 +952,7 @@ app launcher): one window with a sidebar of pages grouped under *Desktop*,
 touchpad, keyboard and idle settings. One Python 3 file,
 `usr/bin/flickos-control`, GTK 3 through python3-gi with no CSS of its own, so
 it follows the Dark or Light style. Design and decisions:
-[design/flickos-control.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-control.md).
+design/flickos-control.md.
 
 - **Pages:** *Desktop Layout & Style* (layout with previews, style, desktop
   clicks), *Displays* (the screens now, *Arrange Screens…* starts wdisplays through `displays arrange`, which moves a screen it turns on over another beside them,
@@ -1179,7 +1179,7 @@ it follows the Dark or Light style. Design and decisions:
   its new value. The file holds values, never commands. `history.enabled` (on
   by default; conffile `/etc/xdg/flickos/history.conf`, which the other
   owners read too) turns recording off and deletes the file. Design:
-  [design/flickos-history.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-history.md).
+  design/flickos-history.md.
   - **System settings** (power button and lid, firewall, automatic login,
     automatic updates, time zone, network time, the login screen's keyboard
     layout) change through `flickos-control system KEY [VALUE]`, which the
@@ -1235,7 +1235,7 @@ it follows the Dark or Light style. Design and decisions:
 file, the Flatpak update timer and an apt setting. It replaced
 gnome-packagekit's `gpk-application` in both menus, the welcome window and
 the start menu. Design and measurements:
-[design/flickos-software.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-software.md).
+design/flickos-software.md.
 
 - **Apps, not packages:** every desktop app in the apt sources' AppStream
   catalogs (DEP-11, which the `appstream` package's apt hook keeps in
@@ -1280,7 +1280,7 @@ the start menu. Design and measurements:
   `APT::Periodic::Update-Package-Lists` (only once something fetched it), the
   apps with `APT::Periodic::Unattended-Upgrade`. So *Settings → Updates*
   turns it on and off with the rest.
-- **Styles** (1.3, [design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md)
+- **Styles** (1.3, design/flickos-ricing.md
   phase 4b): an apt package whose metainfo is an AppStream add-on extending
   `flickos-layout.desktop` with a `FlickOS::style` custom value (the style's
   folder) is a style (`style_of`): it shows only under *Styles* (Software's
@@ -1314,7 +1314,7 @@ bar lighter than base.css (the glass only darkens towards the bottom); no
 pinned apps, since in waybar an open pinned app would show twice. Design,
 the spike and the naming rule (an allusion, like Redmond and Cupertino; no
 other system's names or assets): ADR-013 (amended for the layout) and
-sections 11–12 of [design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md).
+sections 11–12 of design/flickos-ricing.md.
 
 - **Opt-in:** not in the ISO and not in flickos-desktop; installed from
   Software (*Styles*) or with `sudo apt install flickos-style-seven`. It
@@ -1357,7 +1357,7 @@ bar at the bottom: the apps button and the desktops as numbered boxes on the
 left (4 desktops, flickos-layouts' desktop buttons), the status as monospace
 text on the right (`W:`, `CPU`, `MEM`, `VOL`, `BAT`, the date and time).
 Design: ADR-014 and phase 5 step 5e of
-[design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md); named by allusion
+design/flickos-ricing.md; named by allusion
 (ADR-013).
 
 - **Opt-in:** not in the ISO and not in flickos-desktop; installed from
@@ -1397,7 +1397,7 @@ each open one, the list of an app's windows on hover, and *Show Apps* at the
 bottom, which runs what the apps button runs). The dock keeps its width and
 is in labwc's bottom layer, so the top bar spans the whole width above it.
 The start menu is the full-screen grid, at the top left. Design: ADR-016 and
-phase 8 of [design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md); named by
+phase 8 of design/flickos-ricing.md; named by
 allusion (ADR-013).
 
 - **Opt-in:** not in the ISO and not in flickos-desktop; installed from
@@ -1444,7 +1444,7 @@ shadow that grow under the pointer, a dark dot under open apps), and close on th
 the right. The dock's behavior is Cupertino's: `layout.ini` names
 `../cupertino/dock.config`, so renaming that file means changing this
 layout too. Design: ADR-017 and phase 9 of
-[design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md); named by allusion
+design/flickos-ricing.md; named by allusion
 (ADR-013).
 
 - **Opt-in:** not in the ISO and not in flickos-desktop; installed from
@@ -1491,7 +1491,7 @@ title bar keeps labwc's own order (icon on the left; minimize, maximize,
 close on the right), so the layout has no `TitlebarLayout=`. Its CSS uses
 named colors only: the green is the style's `selected_bg_color` and the
 notification area its `base_color`, so the layout follows any style. Design:
-ADR-018 and phase 10 of [design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md);
+ADR-018 and phase 10 of design/flickos-ricing.md;
 named by allusion (ADR-013).
 
 - **Opt-in:** not in the ISO and not in flickos-desktop; installed from
@@ -1539,7 +1539,7 @@ flickos-layouts 1.67, flickos-menu 1.22). The title bar keeps labwc's own
 order, so the layout has no `TitlebarLayout=`. Its CSS uses named colors
 only (the blue line is the style's `selected_bg_color`, lightened), so the
 layout follows any style. Design: ADR-019 and phase 11 of
-[design/flickos-ricing.md](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md); named by allusion
+design/flickos-ricing.md; named by allusion
 (ADR-013).
 
 - **Opt-in:** not in the ISO and not in flickos-desktop; installed from

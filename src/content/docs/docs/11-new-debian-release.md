@@ -59,8 +59,8 @@ out in the summer. Each freeze step is a signal for FlickOS:
 
 ## Things to know before you start
 
-1. **There are two delivery paths** (CLAUDE.md, *Architecture*). The ISO is a
-   snapshot. Installed systems change only through the apt repository, and
+1. **There are two delivery paths** ([01 – Overview](/docs/01-overview/)). The ISO
+   is a snapshot. Installed systems change only through the apt repository, and
    only when their sources name the right suite.
 2. **The release has one name in the tree.** `FLICKOS_DEBIAN` in
    `packages/flickos-branding/usr/lib/flickos-release` is read by
@@ -471,7 +471,7 @@ warn when `/etc/os-release`'s `VERSION_CODENAME` differs from the suites in
    - countme counts `version=3.0` without a server change (its Worker accepts
      any `X.Y`).
 5. **Sweep the docs:** `git grep -n -i 'trixie\|debian 13'` in `docs/`,
-   CLAUDE.md, the READMEs and the `server/` READMEs. Leave the trixie branch's
+   the READMEs and the `server/` READMEs. Leave the trixie branch's
    docs as they are.
 
 ## After the release: keeping the old release alive
@@ -512,8 +512,9 @@ The traps in one place:
     release notes.
 11. Calamares' `mount.conf` subvolumes must stay `@` and `@snapshots`, or
     restore points silently stop working on new installs.
-12. Users' files are never changed (CLAUDE.md, *Layout overlay*), and the
-    upgrade tool follows the same rule.
+12. Users' files are never changed
+    ([HIG SET-5](/docs/hig/03-settings-and-files/#set-5-must-never-write-into-files-the-user-owns)),
+    and the upgrade tool follows the same rule.
 13. Don't upgrade your own development computer before phase 5 passes.
 14. Debian packages can still leave testing until the soft freeze: re-run
     `tools/check-debian-deps.py` at every freeze step.
