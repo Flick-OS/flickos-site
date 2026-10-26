@@ -245,7 +245,8 @@ you choose restart, the VM boots from the installed disk.
 - [ ] `dpkg -l 'live-*' flickos-installer calamares` shows they're gone (Calamares removed them)
 - [ ] Right-click menu has **no** *Install FlickOS* entry
 - [ ] The keyboard layout chosen in the installer works in foot
-- [ ] Leaving the VM idle for 5 minutes locks the screen
+- [ ] Leaving the VM idle for 5 minutes locks the screen with FlickOS's lock screen (clock, name, password box); a key or a mouse move within 5 seconds of it unlocks without the password, after that only the password does (a wrong one says so)
+- [ ] Super+L locks; the eye (Alt+V) shows the password; Caps Lock shows "Caps Lock is on"; the password unlocks
 - [ ] Boot shows the FlickOS splash; tty2 (Ctrl+Alt+F2) shows `FlickOS 2.0 (Debian 13)` above the login prompt
 - [ ] `sudo ufw status` shows `Status: active`
 

@@ -138,8 +138,83 @@ and the suggested action.
 
 - Layout previews come from `tools/make-layout-previews.sh`, the placeholder
   art (boot, splash, installer) from `tools/make-placeholder-art.sh`, both from
-  the palette. Regenerate them when a layout or a color changes, and don't
+  the palette, and the fastfetch logo from `flickos.svg` by
+  `tools/make-fastfetch-logo.py`. Regenerate them when a layout or a color changes, and don't
   edit the images by hand.
 - A picture from elsewhere (a wallpaper photo) has its own stanza in the
   package's `debian/copyright` with its author and license
   ([PKG-5](/docs/hig/09-packaging/#pkg-5-must-every-file-has-a-known-license)).
+
+## Styles made by others
+
+Users make their own styles, and others share them
+([09 – Your own style](/docs/09-customizing/#your-own-style),
+[design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-ricing.md)). VIS-1 is for what FlickOS ships: a
+user's style may use any colors. In return FlickOS promises that its own
+surfaces follow any style through the named colors
+([VIS-2](#vis-2-must-follow-the-style-that-is-in-use)), so a style never has to
+know about each program, and that the names it uses stay the same.
+
+### VIS-10 Must: The palette keys are an interface
+
+Users' styles inherit FlickOS's (`Inherits=`) and set some of these keys, so a
+key that changes breaks their styles without a word. These are frozen:
+
+| File | Keys |
+|---|---|
+| `waybar-colors.css` | `@define-color` `wm_bg`, `bg_color`, `base_color`, `fg_color`, `selected_bg_color`, `selected_fg_color`, `borders`, `warning_color`, `error_color`, `brand_color` |
+| `foot.ini` | `[colors]` `alpha`, `background`, `foreground`, `regular0`–`regular7`, `bright0`–`bright7` |
+| `fuzzel.ini` | `[main]` `icon-theme`; `[colors]` `background`, `text`, `prompt`, `input`, `match`, `selection`, `selection-text`, `selection-match`, `border` |
+| `mako.conf` | `background-color`, `text-color`, `border-color`; `[urgency=critical]` `border-color` |
+
+- **Add** a key when FlickOS needs one: to Dark, Light and the base configs at
+  once (`tests/test_styles.py` and `tools/check-palette.py` check that every
+  style sets the same keys). A user's style that doesn't set it gets the
+  parent's.
+- **Don't rename or remove** one without a reason. If you must, keep the old
+  name working for at least two releases (define it from the new one in
+  FlickOS's palette files, which `check` then accepts), and have
+  `flickos-layout check` say `OLD is now NEW` until it goes.
+- The keys `check` accepts in a style's palette files are the ones Dark's own
+  files set (`base_palette_keys`): adding one to Dark is what allows it.
+- A style's palette files hold colors only (no `include=`, no keys that run
+  programs), whoever made the style. `check` refuses anything else.
+
+**Contrast** is the user's choice in their own style. `check` warns below
+A11Y-6's ratios (4.5:1 text, 3:1 the accent's text); a style shared as a
+community package must pass.
+
+### VIS-11 Must: The panel's shared names are an interface
+
+Users' own layouts (flickos-layouts 1.56, [docs/09 *Your own
+layout*](/docs/09-customizing/#your-own-layout)) include FlickOS's shared
+modules and CSS by their full paths and refer to its names in their own
+config and CSS, so a name that changes breaks their panel without a word.
+These are frozen:
+
+| What | Names |
+|---|---|
+| Shared files | `/usr/share/flickos/layouts/common/modules.jsonc`, `/usr/share/flickos/layouts/common/base.css` |
+| Modules in `modules.jsonc` | `custom/launcher`, `custom/desktop`, `custom/tiler`, `custom/phone`, `custom/recording`, `custom/media-previous`, `custom/media-play`, `custom/media-next`, `custom/media-title`, `custom/media-spectrum`, `custom/weather`, `wlr/taskbar`, `clock`, `wireplumber`, `battery`, `tray` |
+| Placeholders flickos-layout fills in | `flickos/pinned` (`custom/pin#CLASS`), `flickos/desktops` (`custom/desk#N`), `flickos/weather` (`custom/weather` while the weather is on, nothing while off) |
+| Signals (`SIGRTMIN+N`) | 8 `custom/tiler`, 9 `custom/phone`, 10 `custom/recording`, 11 the desktop buttons, 12 the media buttons, 13 `custom/weather` |
+| Groups | `group/quick` (`#quick` in CSS) |
+| Classes FlickOS's buttons set | `custom/tiler`: `on`, `off` and the arrangement's id; `custom/phone`: `waiting`; `custom/recording`: `recording`; desktop buttons: `active`; media buttons and title: `playing`, `paused`, `stopped`; `custom/media-title`: `scrolling`; `custom/media-spectrum`: `on`, `off` and `behind`, `top`; `custom/weather`: the sky (`clear`, `clear-night`, `few-clouds`, `few-clouds-night`, `overcast`, `fog`, `showers-scattered`, `showers`, `snow`, `storm`), `stale`, `unset` |
+
+- **Add** freely: a new module, class or signal reaches users' layouts that
+  ask for it. A new signal takes the next free number.
+- **Don't rename or remove** one without a reason. If you must, keep the old
+  name working for at least two releases (both in `modules.jsonc`, or the
+  program setting both classes), and have `flickos-layout check` say
+  `OLD is now NEW` until it goes.
+- `base.css`'s look may change: that's how fixes reach users' layouts. Its
+  selectors for the names above stay.
+- Users' panel tweaks (flickos-layouts 1.58, [docs/09 *Panel
+  tweaks*](/docs/09-customizing/#panel-tweaks)) may rely on these names and on
+  waybar's own (`window#waybar`, its `top`/`bottom` classes, `#clock`, …), not
+  on a layout's own selectors: a layout's CSS may change in an update, and a
+  tweak that stops matching does nothing. If you make a layout's rule
+  stronger than the tweaks starter's (`TWEAKS_EXAMPLES`), `StarterSelectorsTest`
+  fails: make the example as strong.
+- `tests/test_layouts.py` (`InterfaceTest`) lists these names; change it
+  together with this rule.

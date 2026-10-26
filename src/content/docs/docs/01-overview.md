@@ -17,11 +17,11 @@ sidebar:
 | Apps | Firefox ESR (with uBlock Origin), LibreOffice, VLC, Mousepad, Ristretto, Evince, Xarchiver, GNOME PackageKit (software manager); Bluetooth, printing, Flatpak (Flathub) |
 | Updates | Automatic updates (unattended-upgrades): Debian's security fixes and stable updates, and FlickOS's own packages |
 | Security | Firewall (ufw) on by default: incoming blocked, outgoing allowed |
-| Branding | The halo logo and the brand amber (boot menus, boot splash, installer, artwork; the desktop keeps Arc's blue), FlickOS boot menu on the ISO and on installed systems (GRUB theme), boot splash (Plymouth), `os-release` variant and login banner; `ID=debian` kept |
+| Branding | The halo logo and the brand amber (boot menus, boot splash, installer, artwork; the desktop keeps Arc's blue), FlickOS boot menu on the ISO and on installed systems (GRUB theme), boot splash (Plymouth), `os-release` variant and login banner, fastfetch logo; `ID=debian` kept |
 | Login | Graphical login screen on installed systems (greetd + gtkgreet, `flickos-greeter`), optional automatic login. The live session logs in automatically on tty1 |
 | Installer | Calamares with FlickOS branding (`flickos-installer`) |
 | Image | `FlickOS-64bit-v2.0.iso`: hybrid ISO, boots on BIOS (syslinux) and UEFI (GRUB); can be written to USB |
-| Published at | ISOs: SourceForge Files. Apt repository: https://dvbondoy.github.io/flickos-apt/. Code: GitHub `Flick-OS/flickos` |
+| Published at | ISOs: SourceForge Files. Apt repository: https://dvbondoy.github.io/flickos-apt/. Code: GitHub `dvbondoy/FlickOS` |
 
 ## The big picture
 
@@ -85,8 +85,16 @@ flickos/
 │   ├── flickos-layouts/          Desktop layouts, wallpapers + the flickos-layout tool (and its unit tests)
 │   ├── flick-tiler/              Opt-in window tiling on top of labwc (daemon + panel button)
 │   ├── flickos-shortcuts/        Keyboard shortcut sheet while Super is held (daemon + GTK sheet)
+│   ├── flickos-lock/             Lock screen: password box with show password, clock, name, style colors (swaylock as fallback)
 │   ├── flickos-control/          The Settings window (pages over flickos-layout, flick-tiler, flickos-shortcuts)
+│   ├── flickos-weather/          The weather in the panel (off by default; Open-Meteo, a place the user picks)
 │   ├── flickos-software/         Software: install and remove Debian, FlickOS, community and Flathub apps (window + Flatpak update timer)
+│   ├── flickos-style-seven/      Seven, an opt-in extra style with its own layout (light, see-through blue title bars, a glass bottom panel with a round start button)
+│   ├── flickos-style-aye3/       Aye3wm, an opt-in extra style with its own layout (slate blue title bars, one black bar with desktop numbers)
+│   ├── flickos-style-footprint/  Footprint, an opt-in extra style with its own layout (black top bar, round title buttons, a dock on the left)
+│   ├── flickos-style-elemental/  Elemental, an opt-in extra style with its own layout (light windows, see-through top bar with Applications, a light dock, close left, maximize right)
+│   ├── flickos-style-experience/ Experience, an opt-in extra style with its own layout (deep blue title bars, glossy buttons, a blue bottom panel with a green Start button)
+│   ├── flickos-style-eleven/     Eleven, an opt-in extra style with its own layout (dark grey title bars with flat buttons, a dark bottom panel with the apps and windows in the middle)
 │   ├── flickos-greeter/          Login screen of installed systems (greetd + gtkgreet)
 │   ├── flickos-countme/          Anonymous weekly count (version + install age; PRIVACY.md)
 │   ├── flickos-recovery/         Restore points: a btrfs snapshot before every software change, putting one back
@@ -107,6 +115,7 @@ flickos/
 │   ├── check-palette.py          Checks every config file uses the Arc-Dark palette
 │   ├── check-menus.py            Checks the installed and live root menus are in sync
 │   ├── make-layout-previews.sh   Generates the desktop layout chooser previews
+│   ├── make-fastfetch-logo.py    Generates the fastfetch logo from flickos.svg
 │   └── make-placeholder-art.sh   Generates the installer, boot menu and boot splash images
 │
 ├── repo/                         apt repository tooling
@@ -185,8 +194,15 @@ starts the same session.
 | Change keybindings, menu, startup programs, panel, theme, default wallpaper | `packages/flickos-settings/` | [09](/docs/09-customizing/) |
 | Add or change a desktop layout, or change the default layout | `packages/flickos-layouts/` | [09](/docs/09-customizing/#desktop-layouts) |
 | Change the Dark/Light styles, or add a style | `packages/flickos-layouts/usr/share/flickos/styles/`, labwc themes in `packages/flickos-settings/usr/share/themes/` | [09](/docs/09-customizing/#styles-darklight) |
+| Change the Seven style or its layout (an opt-in package), or publish another style package | `tools/make-seven.py` writes `packages/flickos-style-seven/` and its layout's preview (the metainfo, Software's style form, and the layout's config and CSS in `usr/share/flickos/layouts/seven/` by hand); its colors in `tools/check-palette.py`'s `ALLOWED_SEVEN` | [04](/docs/04-packages/#flickos-style-seven) |
+| Change the Footprint style or its layout | `tools/make-footprint.py` writes the style, window theme with its buttons, wallpaper and the layout's preview; the layout's config and dock by hand in `packages/flickos-style-footprint/usr/share/flickos/layouts/footprint/`; its colors in `ALLOWED_FOOTPRINT` | [04](/docs/04-packages/#flickos-style-footprint) |
+| Change the Elemental style or its layout | `tools/make-elemental.py` writes the style, window theme with its buttons, wallpaper and the layout's preview; the layout's config and dock look by hand in `packages/flickos-style-elemental/usr/share/flickos/layouts/elemental/` (the dock's behavior is Cupertino's `dock.config`); its colors in `ALLOWED_ELEMENTAL` | [04](/docs/04-packages/#flickos-style-elemental) |
+| Change the Experience style or its layout | `tools/make-experience.py` writes the style, window theme with its buttons, wallpaper and the layout's preview; the layout's config and CSS by hand in `packages/flickos-style-experience/usr/share/flickos/layouts/experience/`; its colors in `ALLOWED_EXPERIENCE` | [04](/docs/04-packages/#flickos-style-experience) |
+| Change the Eleven style or its layout | `tools/make-eleven.py` writes the style, window theme with its buttons, wallpaper and the layout's preview; the layout's config and CSS by hand in `packages/flickos-style-eleven/usr/share/flickos/layouts/eleven/`; its colors in `ALLOWED_ELEVEN` | [04](/docs/04-packages/#flickos-style-eleven) |
+| Change the Aye3 style or its layout | `tools/make-aye3.py` writes the style, themerc, wallpaper and the layout's preview; the layout's config is by hand in `packages/flickos-style-aye3/usr/share/flickos/layouts/aye3/`; its colors in `ALLOWED_AYE3` | [04](/docs/04-packages/#flickos-style-aye3) |
 | Change the default wallpaper (one per style), or the Wallpaper app (waypaper) | `packages/flickos-layouts/usr/share/flickos/styles/ID/wallpaper.png`, `packages/waypaper/` | [09](/docs/09-customizing/#wallpaper) |
 | Change window tiling (arrangements, keys, apps that float) | `packages/flick-tiler/` (`MODES`, `KEYBINDS`, `etc/xdg/flickos/tiler.conf`), Super+T in `packages/flickos-settings/etc/xdg/labwc/rc.xml` | [09](/docs/09-customizing/#window-tiling) |
+| Change the lock screen (what it shows, the password check, the grace period after the idle lock, zoom, what happens if it fails) | `packages/flickos-lock/` (`TEXT`, `GRACE_SECONDS`, `ZOOM_STEPS`, `CARD_ALPHA`, `DIM`, `PreLock`, `guard`, `LockScreen`, `usr/share/flickos/lock/style.css`, the PAM file `etc/pam.d/flickos-lock`), the command in `packages/flickos-control/` (`lock_command`, `FLICKOS_LOCK`, `LOCK_SCREEN_IDLE`) | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-lock.md) |
 | Change the hold-Super shortcut sheet (descriptions, hold time, look) | `packages/flickos-shortcuts/` (`COMMANDS`, `ACTIONS`, `HOLD_MS`, `usr/share/flickos/shortcuts/style.css`) | [09](/docs/09-customizing/#shortcut-sheet-hold-super) |
 | Put a program that isn't a FlickOS package on the desktop (keys, panel button) | an add-on folder read by `packages/flickos-layouts/` (`addons()`, `addon_fragments`, `use_addons`) | [09](/docs/09-customizing/#add-ons) |
 | Change the Settings window (pages, tiles for other apps, mouse/touchpad/keyboard options) | `packages/flickos-control/usr/bin/flickos-control` (`PAGES`, `TILES`, `SETTINGS`); *All Settings* in both menus | [09](/docs/09-customizing/#settings-window) |
@@ -202,6 +218,8 @@ starts the same session.
 | Change the welcome window, or stop it at a new account's logins | `packages/flickos-welcome/` (`CARDS`, `etc/xdg/flickos/welcome.conf`, `etc/skel/.config/flickos/welcome`); the chooser on its own is flickos-layouts' `choose-layout` and `flickos-layout first-run` | [09](/docs/09-customizing/#first-login) |
 | Change the phone connection (what a phone may send, notifications, calls, browsing its files, media control, what the phone plays, named commands, ports, on for everyone, Send to Phone in the file manager) | `packages/flickos-phone/` (`INCOMING`/`OUTGOING` and `capabilities()`, `on_share`, `menu_entries`, `etc/xdg/flickos/phone.conf`), Send to Phone in Thunar in `packages/flickos-settings/etc/xdg/flickos/Thunar/uca.xml`, its panel button in `packages/flickos-layouts/` (`custom/phone` in `common/modules.jsonc` and `base.css`, `use_phone`), its autostart line in `packages/flickos-settings/usr/libexec/flickos/autostart`, the *Phone* page in `packages/flickos-control/` (`PhonePage`) | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-phone.md) |
 | Change screen zoom (keys, whole screen or lens, zoom steps) | `<magnifier>` and the Zoom keys and Super+scroll in `packages/flickos-settings/etc/xdg/labwc/rc.xml`, their descriptions in `packages/flickos-shortcuts/` (`ACTIONS`, `BUSY_SIGNAL`), the user's settings in `packages/flickos-control/` (`zoom.*` in `SETTINGS`, `magnifier_options`, `AccessibilityPage`, conffile `etc/xdg/flickos/zoom.conf`) | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-zoom.md) |
+| Change the weather in the panel (what the button and its tooltip show, how often it asks, the settings, what is sent) | `packages/flickos-weather/` (`panel_json`, `tooltip_text`, `update_cache`, `REFRESH_SECONDS`, `etc/xdg/flickos/weather.conf`), the button in `packages/flickos-layouts/` (`custom/weather` in `common/modules.jsonc` and `base.css`, `use_weather`), the *Weather* page in `packages/flickos-control/` (`WeatherPage`), and `PRIVACY.md` | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-weather.md) |
+| Change the media controls or the sound spectrum (the panel buttons, what they show, the spectrum's look, cost and layer, the settings) | `packages/flickos-media/` (`panel_json`, `Follower`, `Strip`, `BARS`/`FRAMERATE`, `etc/xdg/flickos/media.conf`), the buttons in `packages/flickos-layouts/` (`custom/media-*` in `common/modules.jsonc` and `base.css`, `use_media`), the *Media Controls* page in `packages/flickos-control/` (`MediaPage`) | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-media.md) |
 | Change screenshots and recordings (keys, the capture bar, the frozen screen, where they are saved, the recording's pipeline, the portal's screen chooser, the panel's recording button, the settings) | `packages/flickos-screenshot/` (`DELAYS`, `FOLDER`, `NOTICES`, `FrozenScreen`, `pipeline_description`, `Recorder`, `get`/`set`, `etc/xdg/flickos/screenshot.conf`, `usr/libexec/flickos/screencast-chooser`), the *Screenshots* page in `packages/flickos-control/` (`ScreenshotsPage`), `custom/recording` in `packages/flickos-layouts/usr/share/flickos/layouts/common/modules.jsonc`, the keys in `packages/flickos-settings/etc/xdg/labwc/rc.xml` and their descriptions in `packages/flickos-shortcuts/` (`COMMANDS`) | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-screenshot.md) |
 | Change installer branding or behavior | `packages/flickos-installer/` | [09](/docs/09-customizing/#installer) |
 | Change restore points (when one is taken, how many are kept, putting one back, the apt hook, the boot menu, recovering after failed starts, the login notification, the Settings page, the installer's btrfs layout) | `packages/flickos-recovery/` (`KEEP`, `MIN_FREE`, `create`, `restore`, `LIMIT`, `GOOD_SECONDS`, `etc/apt/apt.conf.d/80flickos-recovery`, `etc/grub.d/42_flickos-recovery`, `usr/share/initramfs-tools/`, the `flickos-recovery-*.service` units, `usr/libexec/flickos/recovery-helper`), the `notify` line in `packages/flickos-settings/usr/libexec/flickos/autostart`, the *Restore Points* page in `packages/flickos-control/` (`RestorePointsPage`, `recovery_available`), the layout in `packages/flickos-installer/etc/calamares/modules/mount.conf` and `partition.conf` | [design](https://github.com/Flick-OS/flickos/blob/main/docs/design/flickos-recovery.md) |
@@ -211,6 +229,6 @@ starts the same session.
 | Change bootloader, kernel boot options | `auto/config` | [03](/docs/03-live-build-config/) |
 | Change the FlickOS version (ISO name, os-release, …) | `packages/flickos-branding/usr/lib/flickos-release` + installer `branding.desc` | [06](/docs/06-ci-and-releases/#the-version-number) |
 | Change the boot menu (ISO and installed), boot splash, logo, OS name, firewall | `config/bootloaders/`, `packages/flickos-branding/`, `config/hooks/normal/0200-firewall.hook.chroot` | [09](/docs/09-customizing/#boot-menu) |
-| Change the apt repo URL (e.g. to flickos.net) | `packages/flickos-archive-keyring/etc/apt/sources.list.d/flickos.sources` | [05](/docs/05-apt-repository/#moving-the-repository-eg-to-flickosnet) |
+| Change the apt repo URL (e.g. to apt.flickos.org) | `packages/flickos-archive-keyring/etc/apt/sources.list.d/flickos.sources` | [05](/docs/05-apt-repository/#moving-the-repository-eg-to-aptflickosorg) |
 | Ship an update to installed systems | bump version, `repo/publish.sh`, `repo/upload.sh` | [05](/docs/05-apt-repository/) |
 | Make a release | tag `vX.Y` | [06](/docs/06-ci-and-releases/) |

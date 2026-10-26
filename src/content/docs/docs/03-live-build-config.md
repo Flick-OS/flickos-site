@@ -136,7 +136,7 @@ source (`/etc/apt/sources.list.d/flickos.sources`, pointing to
 https://dvbondoy.github.io/flickos-apt) and its key come from the
 `flickos-archive-keyring` package. That way a package update can change the
 repository address on installed systems later
-([05](/docs/05-apt-repository/#moving-the-repository-eg-to-flickosnet)).
+([05](/docs/05-apt-repository/#moving-the-repository-eg-to-aptflickosorg)).
 
 If you ever need `config/archives/` for another repository:
 

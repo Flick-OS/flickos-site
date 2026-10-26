@@ -158,6 +158,13 @@ Everything that carries the name:
 | Installer | `packages/flickos-installer/etc/calamares/branding/flickos/` (`branding.desc`, `show.qml`, images) |
 | Login screen | `flickos-greeter` (`/usr/share/flickos/greeter/`) |
 | Root menu | `flickos-settings` `menu.xml` and `flickos-installer`'s live copy |
+| The logo: the panel's apps button, menus, Welcome | `flickos-branding` (`flickos.svg`, `flickos-symbolic.svg` in `/usr/share/icons/hicolor/`) |
+| Installed system's boot menu | `flickos-branding` (`/usr/share/flickos/grub/`) |
+| Dark and Light wallpapers (the halo drawn large) | `flickos-layouts` (`artwork/wallpaper-*.svg` → `styles/*/wallpaper.png`) |
+| fastfetch's logo | `flickos-branding` (`/usr/share/flickos/fastfetch/flickos.txt`) |
+
+A changed system someone else hands out must replace every row
+([TRADEMARKS.md](https://github.com/Flick-OS/flickos/blob/main/TRADEMARKS.md)).
 
 The name is spread across roughly sixty files, but only the table above is
 user-visible. The rest are comments, package descriptions and paths.
@@ -321,7 +328,16 @@ everything from elsewhere. **A variant package needs its own `copyright`**, and
 any file taken from somewhere else needs its own stanza.
 
 The licence lets anyone rebuild FlickOS, including a client who stops paying.
-What it does not let them do is call it FlickOS. The name and the artwork are
-the only exclusive thing in a deal like this — which is exactly why a
+The GPL says nothing about the name, though: that is trademark, and
+[TRADEMARKS.md](https://github.com/Flick-OS/flickos/blob/main/TRADEMARKS.md) is FlickOS's policy. A system someone changed
+and hands out needs its own name and logo; unchanged FlickOS, and computers
+sold with it and extra apps, may keep the name. The logo files themselves are
+GPL-3+ like everything else (anyone may copy them); what the policy withholds
+is using them to mark a different system (GPL-3 section 7(e), noted in
+`flickos-branding`'s `debian/copyright`).
+
+So the only exclusive thing in a deal like this is permission to use the name
+and the logo beyond what TRADEMARKS.md allows, which is exactly why a
 white-label engagement licenses the name and hands over the code freely, rather
-than the other way round.
+than the other way round. Put that permission in writing, with an end date or
+an end condition, so a client who stops paying also stops using the name.

@@ -345,6 +345,15 @@ overrides it.
 nm-applet must run with `--indicator` (waybar's tray doesn't support old-style
 icons), and waybar's config must include `"tray"`. Check `pgrep -a nm-applet`.
 
+**Two panels on top of each other on a screen**
+waybar 0.12 adds a second bar to a screen that is turned on while it runs and
+was off when waybar started or last reloaded (a laptop's own screen turned on
+next to an external one). Since flickos-layouts 1.54 the panel's supervisor
+watches the screens and reloads waybar once they have been still for 1.5 s,
+which leaves one bar per screen; `panel.log` says `the screens changed:
+reloading waybar`. With an older flickos-layouts, or if it happens anyway:
+`pkill -USR2 -x waybar` (waybar's own reload).
+
 **No panel at all (no bar, but the wallpaper and the menu are there)**
 The panel, notifications and the dock run under a supervisor
 (`flickos-layout supervise`, one per program) that restarts one that fails, so a
@@ -373,6 +382,24 @@ Start the panel by hand to watch it fail in a terminal:
 waybar -c $XDG_RUNTIME_DIR/flickos/waybar/config.jsonc -s $XDG_RUNTIME_DIR/flickos/waybar/style.css
 ```
 
+**My own rc.xml replaces all of FlickOS's keys**
+labwc merges a user's `~/.config/labwc/rc.xml` over FlickOS's, except when it
+is a copy of FlickOS's file or has `<default />`, when a `menu.xml` uses
+FlickOS's menu ids, or when there is a `~/.config/labwc/autostart`.
+`flickos-layout explain labwc` says which; `flickos-layout doctor` says what to
+change. It takes effect at the next login
+([09 – Your own labwc files](/docs/09-customizing/#your-own-labwc-files)).
+
+**Something looks or acts wrong, and you have changed your own config**
+Log out and pick **flickos-session-plain** in the login screen's session list
+(on a text login, run `flickos-session-plain`). It is FlickOS without your own
+changes: labwc reads only FlickOS's files (`labwc -C` on
+`$XDG_RUNTIME_DIR/flickos/plain/labwc`), and flickos-layout leaves out your own
+styles, add-ons, `~/.config/waybar` and `~/.config/mako`. Nothing of yours is
+changed, and choices can't be changed there. If the problem is gone, it comes
+from your files: `flickos-layout check` lists what's wrong with them. *Settings →
+About* says "plain session" while you are in it.
+
 **Panel is a single top bar (taskbar, clock, status) instead of the chosen layout**
 That's flickos-settings' fallback panel: `flickos-layout panel` couldn't generate
 the layout's panel. Run `flickos-layout set $(flickos-layout current)` in a
@@ -400,7 +427,7 @@ upstream bug FlickOS patches, see `packages/sfwbar/debian/README.source`):
 at all, check that `$XDG_RUNTIME_DIR/flickos/xdg/labwc/rc.xml` has
 `<desktops number="4">` (`flickos-layout set traditional` regenerates it and
 reloads labwc) and that no `~/.config/labwc/rc.xml` replaces it
-(`flickos-layout doctor`).
+(`flickos-layout explain labwc`, `doctor`).
 
 **Tray icons missing after switching layouts**
 waybar owns the tray (`StatusNotifierWatcher`). After a restart, applets must
@@ -416,12 +443,20 @@ names it. Pick Arc or Arc-Dark in Appearance (or
 `gsettings set org.gnome.desktop.interface gtk-theme Arc-Dark`), then choose the
 style again. Already open GTK apps usually update live; restart one that doesn't.
 
+**Light style, but windows stay dark**
+GSettings says `Arc`, yet GTK apps draw dark: `~/.config/gtk-3.0/settings.ini`
+(or `gtk-4.0`'s) has `gtk-application-prefer-dark-theme=1`, which nwg-look
+writes. GTK on Wayland takes the theme's name from GSettings but that key from
+the file, and Arc's dark variant is Arc-Dark. FlickOS never edits the file;
+`flickos-layout doctor` names it. Delete the line and restart the apps.
+
 **Window title bars show labwc's icon instead of the app's**
 labwc takes window icons from `<theme><icon>` in rc.xml; unset, it looks for an
 icon theme named like the window theme and shows only hicolor's icons. Check
 `grep '<icon>' $XDG_RUNTIME_DIR/flickos/xdg/labwc/rc.xml` (or the system rc.xml):
 it should name the GTK icon theme (`gsettings get org.gnome.desktop.interface icon-theme`).
-A `~/.config/labwc/rc.xml` replaces FlickOS's and needs its own `<icon>`. If the
+A `~/.config/labwc/rc.xml` that replaces FlickOS's (a copy of it, or one with
+`<default />`: `flickos-layout explain labwc`) needs its own `<icon>`. If the
 window's app id has no desktop file (`lswt` lists app ids), labwc and the panel
 have no icon for it either.
 
@@ -443,8 +478,9 @@ themes by design; it only follows `color-scheme`, which styles do set
   `styles/ID/mako.conf`.
 
 **Window borders and menus don't follow the style**
-labwc takes the window theme from the first `rc.xml`. `~/.config/labwc/rc.xml`
-hides the overlay. The overlay also keeps a theme other than `FlickOS-Arc-Dark`
+labwc takes the window theme from the overlay `rc.xml`, unless a
+`~/.config/labwc/rc.xml` that labwc doesn't merge hides it (`flickos-layout
+explain labwc`), or a merged one sets its own `<theme><name>`. The overlay also keeps a theme other than `FlickOS-Arc-Dark`
 or `FlickOS-Arc` that an administrator set in `/etc/xdg/labwc/rc.xml`. Check
 `grep -A1 '<theme>' $XDG_RUNTIME_DIR/flickos/xdg/labwc/rc.xml`.
 
@@ -575,9 +611,10 @@ tr '\0' '\n' < /proc/$(pgrep -x labwc)/environ | grep XDG_CONFIG_DIRS
   doesn't, labwc never reads the overlay and **nothing** the tiler writes has
   any effect. That happens when the session didn't start through
   `flickos-session`, or when `flickos-layout prepare` failed at login.
-- A user's own `~/.config/labwc/rc.xml` replaces the whole system file,
+- A user's own `~/.config/labwc/rc.xml` that labwc doesn't merge (a copy of
+  FlickOS's, or one with `<default />`) replaces the whole system file,
   including the overlay: tiling can't work at all. `flickos-layout doctor`
-  reports it. Move it away and log in again.
+  says why and what to change; then log in again.
 - Regions present but windows still float: run `labwc --reconfigure` by hand,
   then `flick-tiler off && flick-tiler on`.
 - No daemon at all: autostart didn't start it (`grep -n flick-tiler
@@ -798,6 +835,25 @@ flickos-shortcuts list                 # what it would show
 - A shortcut with a vague description (*Run …*, under *Other*) is a command
   `COMMANDS` doesn't know ([09](/docs/09-customizing/#shortcut-sheet-hold-super)).
 
+## Lock screen (flickos-lock)
+
+What happened at the last locks: `$XDG_RUNTIME_DIR/flickos/lock/lock.log`
+(the guard and the lock screen write there; "swaylock takes over" means the
+lock screen failed and swaylock held the lock instead).
+
+- **A black screen that takes no keys** (the lock screen and its guard both
+  gone): labwc keeps the session locked. Switch to a text console
+  (Ctrl+Alt+F2), log in, and lock again from there with the session's
+  display: `WAYLAND_DISPLAY=wayland-0 XDG_RUNTIME_DIR=/run/user/$(id -u)
+  flickos-lock lock` (or `swaylock`), then go back (Ctrl+Alt+F7) and unlock.
+  A new locker takes over a lock nobody holds.
+- **The old ring (swaylock) instead of the lock screen:** flickos-lock isn't
+  installed, or swaylock has a config of yours (`~/.config/swaylock/config`,
+  `~/.swaylock/config`, `/etc/swaylock/config`), which keeps swaylock on
+  purpose; or the log says why it took over.
+- **The screen stays dark when the lid opens:** some laptops don't wake on
+  the lid; press a key. Not the lock screen's doing (swaylock does the same).
+
 ## Settings window (flickos-control)
 
 A mouse, touchpad or keyboard setting doesn't apply:
@@ -809,9 +865,10 @@ grep -A3 '<libinput>' $XDG_RUNTIME_DIR/flickos/xdg/labwc/rc.xml   # merged into 
 flickos-layout doctor                                # user files that hide the overlay
 ```
 
-- A `~/.config/labwc/rc.xml` replaces the whole overlay, so none of these
-  settings (nor layouts or tiling) apply; a `~/.config/labwc/environment`
-  hides the keyboard layout. `doctor` and the page's warning bar say so.
+- A `~/.config/labwc/rc.xml` that labwc doesn't merge replaces the whole
+  overlay, so none of these settings (nor layouts or tiling) apply; then a
+  `~/.config/labwc/environment` also hides the keyboard layout. `doctor` and
+  the page's warning bar say so and what to change.
 - Back to the *Device default* click method takes effect at the next login:
   labwc keeps a libinput option that disappears from its config.
 - The keyboard layout of the login screen and the console is

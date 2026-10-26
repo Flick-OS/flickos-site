@@ -69,10 +69,10 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 |---|---|
 | Downloads (SourceForge Files) | https://sourceforge.net/projects/flickos/files/ |
 | Apt repository | https://dvbondoy.github.io/flickos-apt/ (GitHub repo `dvbondoy/flickos-apt`, branch `gh-pages`) |
-| Code, CI, issues | https://github.com/Flick-OS/flickos |
+| Code, CI, issues | https://github.com/dvbondoy/FlickOS |
 | Community | https://www.reddit.com/r/flickos/ |
 | SourceForge SSH keys | https://sourceforge.net/auth/shell_services |
-| Website (planned) | https://flickos.net |
+| Website | https://flickos.org |
 
 ## File index
 
@@ -99,6 +99,7 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 | `packages/flickos-greeter/` | ✏️ | Login screen of installed systems (greetd + gtkgreet) |
 | `packages/flickos-installer/` | ✏️ | Calamares config + branding, launcher, live menu |
 | `tools/make-placeholder-art.sh` | rarely | Regenerates wallpaper, installer, boot menu and boot splash images (Arc-Dark palette; logo rendered from flickos-branding's `flickos.svg`, needs librsvg2-bin) |
+| `tools/make-fastfetch-logo.py` | when `flickos.svg` changes | Regenerates flickos-branding's fastfetch logo (`usr/share/flickos/fastfetch/flickos.txt`) from `flickos.svg`; `--preview` prints it without writing |
 | `tools/make-layout-previews.sh` | when a layout changes | Regenerates the chooser's `preview.png` per layout (schematic, or from boot-test screenshots) |
 | `tools/check-menus.py` | no | Checks the live menu equals the installed menu plus *Install FlickOS*; run by `build-iso.sh` |
 | `tools/check-palette.py` | ✏️ when adding a color | Checks all color-bearing files use the Arc-Dark palette and the labwc theme uses valid keys; run by `build-iso.sh` |

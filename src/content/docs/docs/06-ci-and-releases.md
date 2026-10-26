@@ -10,8 +10,8 @@ sidebar:
 |---|---|
 | ISO downloads | SourceForge Files: https://sourceforge.net/projects/flickos/files/ (one folder per release, e.g. `v2.0/`) |
 | Apt repository | GitHub Pages (`dvbondoy/flickos-apt`): https://dvbondoy.github.io/flickos-apt/ ([05](/docs/05-apt-repository/)) |
-| Source code, CI, issues | GitHub: https://github.com/Flick-OS/flickos |
-| Website | https://flickos.net |
+| Source code, CI, issues | GitHub: https://github.com/dvbondoy/FlickOS |
+| Website | https://flickos.org (Vercel, from the `flickos-site` repository; DNS at Namecheap) |
 
 **Release history:** FlickOS 1.0 and 1.1 (`FlickOS-64bit-v1.1.iso`, May 2023)
 were based on Ubuntu 20.04 and LXLE. FlickOS **2.0** is a rebuild on Debian 13.
@@ -238,6 +238,14 @@ They're independent:
 - **FlickOS release** (`FLICKOS_VERSION`, tag `v2.0`, ISO name): the ISO snapshot as a whole.
 - **Package versions** (`flickos-settings 1.3`): bumped whenever that package
   changes. Many package updates can ship between two ISO releases, through the apt repo.
+
+## Moving to a new Debian release
+
+`FLICKOS_DEBIAN` in `packages/flickos-branding/usr/lib/flickos-release`
+(`trixie`) is the Debian release FlickOS is built on and the name of its apt
+suites; `tools/build-iso.sh` stops when the build host, `repo/conf/distributions`,
+`flickos.sources` or the workflows' containers name another. The whole move,
+in phases: [11 – Moving to a new Debian release](/docs/11-new-debian-release/).
 
 ## Ideas for later
 
