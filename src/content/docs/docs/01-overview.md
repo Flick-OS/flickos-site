@@ -190,6 +190,7 @@ starts the same session.
 
 | I want to… | Change | Doc |
 |---|---|---|
+| Translate FlickOS, or make a package translatable | `packages/NAME/po/`, `tools/update-po.sh` | [12](/docs/12-translating/) |
 | Add or remove an app for everyone | `packages/flickos-desktop/debian/control` | [04](/docs/04-packages/) |
 | Change keybindings, menu, startup programs, panel, theme, default wallpaper | `packages/flickos-settings/` | [09](/docs/09-customizing/) |
 | Add or change a desktop layout, or change the default layout | `packages/flickos-layouts/` | [09](/docs/09-customizing/#desktop-layouts) |

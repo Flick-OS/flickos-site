@@ -265,8 +265,10 @@ without a tray.
   doesn't ellipsize their titles. So it shows icons only, and titles only in
   the tooltip: with titles, many open windows would push the tray, status and
   clock off the bar.
-- The dock has no magnification or drag-to-pin. Pinned apps are set in
-  `layout.ini`.
+- The dock has no magnification or drag-to-pin. Pinned apps are the
+  layout's (`layout.ini`) until a user chooses their own in *Settings →
+  Desktop Layout & Style → Pinned Apps* (`flickos-layout pinned`): a stopgap
+  while sfwbar, in beta, can't pin apps itself in a way that lasts.
 - The hidden dock reappears only when the pointer touches the bottom edge
   right below it: the strip that reacts is as wide as the dock.
 - The dock only knows whether the active window is maximized, not where windows
@@ -352,6 +354,7 @@ battery icons. A layout without it has no Quick Settings even while it is on.
 `Pinned` (optional) lists desktop file ids separated by `;`. They are shown
 where a bar in `waybar.jsonc` has the module name **`flickos/pinned`**, and in
 the dock where its config has the line **`pins = "flickos/pinned"`**.
+A user's own list for the layout (`flickos-layout pinned`, below) replaces it.
 
 `Dock` and `DockStyle` (optional, both or neither) are a bar run by
 [sfwbar](/docs/04-packages/#sfwbar) next to waybar (Cupertino's dock,
@@ -458,6 +461,7 @@ A sibling that hangs costs a warning, never the panel.
 | `flickos-layout set [ID] [--style STYLE] [--clicks CLICKS]` | Saves the choice, regenerates the overlay and the panel files and, inside the session, runs `labwc --reconfigure`, restarts the FlickOS panel and, for a new layout, replaces a FlickOS wallpaper with the layout's. Outside a session (no `WAYLAND_DISPLAY`/`LABWC_PID`) it only saves: "applies at next login". `--style` and `--clicks` also set the style and the desktop clicks, with one panel restart. Without `ID` the layout stays |
 | `flickos-layout style list`, `style current`, `style set ID` | The same for [styles](#styles-darklight) |
 | `flickos-layout clicks list`, `clicks current`, `clicks set ID` | The same for [desktop clicks](#desktop-clicks) |
+| `flickos-layout pinned list\|set IDS\|add ID\|remove ID [--layout ID]` | The pinned apps of a layout whose dock or bar shows them (default: the one in use). `list`: the installed ones, desktop id and name. `set` takes desktop ids separated by `;` (empty: none) or `default` (the layout's `Pinned=` again); `add` pins last (`--first`: first). The user's lists are in `~/.config/flickos/pinned` (`[Pinned]` `LAYOUT=IDS`, deleted when none is left). Inside the session the panel and dock of the layout in use show the change at once (regenerated, then waybar `SIGUSR2`, sfwbar `SIGHUP`); recorded for History. The plain session ignores the user's lists and refuses `set` |
 | `flickos-layout wallpaper` | Shows the [wallpaper](#wallpaper) (autostart): `waypaper --restore` if the user chose one there, else swaybg with `~/.config/flickos/wallpaper`, the layout's, the style's or the default wallpaper. If waypaper fails, the layout's or the style's |
 | `flickos-layout prepare` | Regenerates the overlay (`xdg/`). Run by the session script at login, before labwc starts |
 | `flickos-layout panel` | Starts mako with the generated notification config, generates the panel files, starts the layout's dock (sfwbar), then stays on as waybar's [supervisor](#keeping-the-panel-running) (autostart). If anything goes wrong it starts flickos-settings' default panel and notification config. A user's own waybar or mako config is used as is |
@@ -2201,6 +2205,14 @@ option).
   installed system.
 - **Users** override the layout in `~/.config/labwc/environment`, e.g.
   `XKB_DEFAULT_LAYOUT=us,de` and `XKB_DEFAULT_OPTIONS=grp:alt_shift_toggle`.
+- **Keys move with the layout.** FlickOS binds keys by their US symbol. On a
+  keyboard that can't type one without Shift or AltGr, flickos-layout moves
+  the keybind to the key in the same place, so Super+ is Super+Å on a
+  Finnish keyboard and Super+1 is Super+& on a French one; `=` becomes `+`
+  where `+` needs no Shift. The shortcut sheet shows the moved keys,
+  `flickos-layout explain labwc` lists them, and `doctor` names any that
+  couldn't move ([design). A layout with `us` in it
+  (`us,ru`) moves nothing: labwc finds the key there whichever layout is active.
 
 ---
 

@@ -102,6 +102,7 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 | `tools/make-fastfetch-logo.py` | when `flickos.svg` changes | Regenerates flickos-branding's fastfetch logo (`usr/share/flickos/fastfetch/flickos.txt`) from `flickos.svg`; `--preview` prints it without writing |
 | `tools/make-layout-previews.sh` | when a layout changes | Regenerates the chooser's `preview.png` per layout (schematic, or from boot-test screenshots) |
 | `tools/check-menus.py` | no | Checks the live menu equals the installed menu plus *Install FlickOS*; run by `build-iso.sh` |
+| `tools/update-po.sh` | ✏️ when a translatable package's text changes | Writes `packages/NAME/po/NAME.pot` from `po/POTFILES` and merges it into each `po/LANG.po`; `NAME LANG` starts a language ([12](/docs/12-translating/)) |
 | `tools/check-palette.py` | ✏️ when adding a color | Checks all color-bearing files use the Arc-Dark palette and the labwc theme uses valid keys; run by `build-iso.sh` |
 | `tools/package-cost.py` | no | Packages and KB a package would add to the image (compares with the last build's `flickos-amd64.packages`) |
 | `tools/measure.py` | no | CPU, PSS/Private memory and wakeups of a process (and its children) while it runs |

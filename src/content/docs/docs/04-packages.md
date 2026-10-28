@@ -143,7 +143,10 @@ the chosen layout and style at login and live (see
 - **It depends on `sfwbar`** (`+flickos4` or later: `+flickos3` has the
   `running` class and `sensor_maximized`, `+flickos4` highlights the current
   desktop) for the Cupertino dock and Traditional's bottom panel (window list
-  and desktop switcher).
+  and desktop switcher). A user's own pinned apps per layout
+  (`flickos-layout pinned`, `~/.config/flickos/pinned`; Settings' *Pinned
+  Apps*) replace the layout's `Pinned=`: a stopgap while sfwbar, in beta,
+  can't pin apps itself in a way that lasts.
 - **It gives a layout labwc desktops** (`Desktops=`, only Traditional: 4)
   through the rc.xml overlay: `<desktops>` named `1` to `4` and the keys
   Super+Ctrl+←/→ and Super+1 to Super+4 (with Shift to take the window
@@ -166,6 +169,18 @@ the chosen layout and style at login and live (see
   flickos-control's `control/environment` (the keyboard layout) it writes an
   overlay `labwc/environment`: the system one's lines (and its `environment.d/`),
   then the fragment's, since labwc reads only the first environment file it finds.
+- **It moves keys the keyboard lacks** (1.71,
+  design/flickos-keys.md): labwc finds a keybind's
+  key only where a layout of the keymap gives its symbol without Shift or
+  AltGr, so Super+[ never fires on a Finnish keyboard. The last step of the
+  overlay rc.xml (`move_keys`) reads labwc's keymap (`keyboard_names`: the
+  user's labwc `environment`, flickos-control's, the system's, else
+  `/etc/default/keyboard`; libxkbcommon through ctypes, not loaded for a US
+  keyboard) and moves such a keybind to `KEY_ALIASES`' stand-in (`=` → `+`),
+  else to the key in the same place on a US keyboard (`[` → `å`), unless that
+  key is bound; `KEY_PAIRS` (`[`/`]`, the tiling ratio) move both or neither
+  (`moved_keys`, pure). `keys/moved.json` lists what moved and what couldn't,
+  for `explain labwc`, `doctor` and flickos-shortcuts.
 - **It plugs in add-ons** (`addons()`): programs that aren't FlickOS packages
   (yet), each a folder `~/.config/flickos/addons/NAME/` or
   `/usr/share/flickos/addons/NAME/` (the user's wins; an empty one turns off
@@ -346,7 +361,10 @@ go. Also *Settings → Keyboard Shortcuts* and the app launcher
   again every time it is shown. Descriptions come from `COMMANDS` and
   `ACTIONS`, and for add-ons' keys from flickos-layouts'
   `$XDG_RUNTIME_DIR/flickos/shortcuts/addons.json` (under *Other*); media,
-  volume and brightness keys are left out.
+  volume and brightness keys are left out. A key flickos-layouts moved for the
+  keyboard layout (`keys/moved.json`) shows as the keyboard labels it (Super +
+  Å; `key_name`, libxkbcommon's character or `DEAD_KEYS`), and moved number
+  keys keep one row per desktop action (1.17).
 - **Started by** flickos-settings' autostart (`flickos-shortcuts daemon`, one
   per session: `$XDG_RUNTIME_DIR/flickos/shortcuts.lock`).
 - **A Depends of `flickos-desktop`** and in the sanity hook's `REQUIRED`.
@@ -942,6 +960,14 @@ design/flickos-quick-settings.md.
   wouldn't reach them), and in the sanity hook's `REQUIRED`. It depends on
   `procps` for `pkill`, and on `python3-gi-cairo` for the empty input region
   of a window fading out.
+- **Translatable** (1.23, [12 – Translating](/docs/12-translating/)): one
+  gettext domain, `flickos-menu`, for the menu, Quick Settings and the phone
+  popup (`po/POTFILES` lists all three files). `_` loads the translation at
+  the first text shown, so a click (`toggle`, `super`) still imports
+  nothing; `load_quick`/`load_phone` give those files the menu's `_`
+  (loaded on their own, as in the tests, they show English). Section and
+  category names stay English as keys (`list`) and are translated where
+  they're shown.
 - **Unit tests** in `tests/`, run at package build.
 
 ### `flickos-control`
@@ -1669,6 +1695,7 @@ packages/flickos-settings/
 | `install` | Paths are relative to the package root. Destination is a directory |
 | `rules` | Must be executable (`chmod +x`). `dh $@` runs the standard debhelper sequence |
 | `source/format` | `3.0 (native)` for all FlickOS packages |
+| `po/` (optional) | Translations: `POTFILES`, the template `NAME.pot`, `LINGUAS` and one `LANG.po` per language, built by `debian/rules`. Example: `flickos-welcome`; see [12 – Translating](/docs/12-translating/) |
 | `PACKAGE.postinst`, `.postrm`, `.triggers` (optional) | Maintainer scripts run by dpkg on install/remove, and trigger declarations. `#DEBHELPER#` marks where debhelper inserts generated code. Must be executable. Example: `flickos-branding` |
 
 ## Building

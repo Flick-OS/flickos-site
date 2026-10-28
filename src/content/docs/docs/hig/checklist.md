@@ -13,7 +13,7 @@ Should rules aren't listed. Read the pages for those.
 - [ ] **INT-1** A program people open has a desktop file with the standard keys.
 - [ ] **INT-3** A labwc menu change is in both the installed and the live menu (`tools/check-menus.py`).
 - [ ] **INT-4** A user-facing setting has a Settings row or tile, and search keywords for a new page or tile.
-- [ ] **INT-5** A new keybinding has a description on the shortcut sheet and doesn't take an app's key.
+- [ ] **INT-5** A new keybinding has a description on the shortcut sheet, doesn't take an app's key, and a symbol key can move on Nordic and German keyboards.
 - [ ] **INT-6** Tested in Redmond, Cupertino and Traditional, in Dark and Light.
 - [ ] **INT-7** Hidden in the live session if it only makes sense installed, and the reverse.
 - [ ] **INT-8** Nothing new opens at first login besides `flickos-welcome`.

@@ -61,7 +61,12 @@ A key added to labwc (in `flickos-settings`' `rc.xml` or in a program's own
 labwc fragment) gets a description in `flickos-shortcuts`' `COMMANDS` or
 `ACTIONS`, so holding Super lists it. Before taking a key, check the sheet
 (`flickos-shortcuts list`) and the keys of the desktop the layout copies. Use
-Super for desktop actions. Leave Ctrl and Alt combinations to apps.
+Super for desktop actions. Leave Ctrl and Alt combinations to apps. Bind a key
+by its US symbol: on a keyboard that lacks it without Shift or AltGr,
+flickos-layout moves the keybind to the key in the same place
+(keys). Prefer letters, digits and arrows, and
+for a new symbol key check with `moved_keys` that it can move on Nordic and
+German keyboards without landing on a key FlickOS already binds.
 
 ## Every layout, every style, every session
 
