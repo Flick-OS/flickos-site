@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "sync-docs": "node scripts/sync-docs.mjs",
-    "sync-learn": "node scripts/sync-learn.mjs"
+    "sync-learn": "node scripts/sync-learn.mjs",
+    "sync-tour": "node scripts/sync-tour.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

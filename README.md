@@ -13,6 +13,7 @@ Requires Node.js 22.12+.
 npm install
 npm run sync-docs   # vendors ../flickos/docs into src/content/docs/docs
 npm run sync-learn  # vendors the four core tutorials into src/content/docs/learn
+npm run sync-tour   # the 3.0 tour from ../FlickOS-forky/tour (tools/make-tour.py) into public/tour and src/data/tour.json
 npm run dev
 ```
 
@@ -21,7 +22,7 @@ npm run build
 npm run preview
 ```
 
-Set `FLICKOS_DOCS_PATH` if the product repo is not at `../flickos`. Set `FLICKOS_TUTORIALS_PATH` if the tutorials repo is not at `../../flickos-tutorials`.
+Set `FLICKOS_DOCS_PATH` if the product repo is not at `../flickos`. Set `FLICKOS_TOUR_PATH` if the tour capture is not at `../FlickOS-forky/tour`. Set `FLICKOS_TUTORIALS_PATH` if the tutorials repo is not at `../../flickos-tutorials`.
 
 ## The store
 

@@ -1,0 +1,200 @@
+{
+	"v": 1,
+	"version": "3.0-alpha1",
+	"date": "2026-11-02",
+	"width": 1280,
+	"height": 800,
+	"credits": [
+		{
+			"for": "music",
+			"text": "Pop Rock Commercial by Twisterium (Pixabay)",
+			"url": "https://pixabay.com/music/indie-pop-pop-rock-commercial-627431/"
+		}
+	],
+	"steps": [
+		{
+			"id": "boot",
+			"picture": "01-boot.webp",
+			"caption": "FlickOS starts from its own boot menu.",
+			"alt": "The boot menu: the FlickOS logo above three entries, the first highlighted in amber.",
+			"click": {
+				"x": 25,
+				"y": 49.5,
+				"w": 25,
+				"h": 3.25,
+				"label": "Start FlickOS"
+			}
+		},
+		{
+			"id": "splash",
+			"picture": "02-splash.webp",
+			"caption": "The splash while it starts: the cursor in the logo blinks.",
+			"alt": "The FlickOS logo and name on a dark grey screen.",
+			"click": null
+		},
+		{
+			"id": "login",
+			"picture": "03-login.webp",
+			"caption": "The login screen. Here the name is typed for you; Log in asks for the password next.",
+			"alt": "A login box on a blue background with circles, the user name sam typed in.",
+			"click": {
+				"x": 62.81,
+				"y": 55.88,
+				"w": 5.31,
+				"h": 3.75,
+				"label": "Log in"
+			}
+		},
+		{
+			"id": "welcome",
+			"picture": "04-welcome.webp",
+			"caption": "At the first login, Welcome shows where everything is.",
+			"alt": "The Welcome window with cards: choose your desktop, all settings, Wi-Fi, keyboard shortcuts, install software and more.",
+			"click": {
+				"x": 73.12,
+				"y": 79.5,
+				"w": 4.38,
+				"h": 3,
+				"label": "Close"
+			}
+		},
+		{
+			"id": "desktop",
+			"picture": "05-desktop.webp",
+			"caption": "The desktop: the Redmond layout in the Light style, FlickOS 3.0's default. Hold Super to see every keyboard shortcut.",
+			"alt": "A blue desktop with the FlickOS logo in the middle and a light panel along the bottom.",
+			"click": {
+				"x": 0,
+				"y": 95,
+				"w": 3.44,
+				"h": 5,
+				"label": "Open the start menu"
+			}
+		},
+		{
+			"id": "menu",
+			"picture": "06-menu.webp",
+			"caption": "The start menu: your apps, your folders, Settings and the power buttons.",
+			"alt": "The start menu open above the panel, apps on the left and Sam Taylor's folders, Settings and Software on the right.",
+			"click": {
+				"x": 24.69,
+				"y": 63.62,
+				"w": 10.16,
+				"h": 3,
+				"label": "Settings"
+			}
+		},
+		{
+			"id": "media-off",
+			"picture": "07-media-off.webp",
+			"caption": "Settings, Media Controls: media buttons in the panel and a sound spectrum, both off until you turn them on.",
+			"alt": "The Media Controls page with five switches, all off.",
+			"click": {
+				"x": 78.12,
+				"y": 17.75,
+				"w": 4.84,
+				"h": 3.25,
+				"label": "Turn on media controls in the panel"
+			}
+		},
+		{
+			"id": "music",
+			"picture": "08-music.webp",
+			"caption": "Then some music: the Music folder, opened from the start menu.",
+			"alt": "The file manager showing the Music folder with one song.",
+			"click": {
+				"x": 26.95,
+				"y": 20.12,
+				"w": 10,
+				"h": 15.25,
+				"label": "Play the song"
+			}
+		},
+		{
+			"id": "playing",
+			"picture": "09-playing.webp",
+			"caption": "While it plays, the panel has its buttons and the title, and the bars appear just above the panel.",
+			"alt": "VLC playing the song; the panel shows previous, pause and next buttons, the song's title and a bars button, with spectrum bars above the panel.",
+			"click": null
+		},
+		{
+			"id": "spectrum",
+			"clip": {
+				"webm": "10-spectrum.webm",
+				"mp4": "10-spectrum.mp4"
+			},
+			"poster": "10-spectrum.webp",
+			"caption": "The bars move with the sound.",
+			"alt": "Spectrum bars above the panel moving with the music.",
+			"click": null
+		},
+		{
+			"id": "ring-settings",
+			"picture": "11-ring-settings.webp",
+			"caption": "The spectrum can also be a ring in the middle of the screen, and take every color.",
+			"alt": "The Media Controls page with the controls, the spectrum, the ring and rainbow colors turned on.",
+			"click": null
+		},
+		{
+			"id": "ring",
+			"clip": {
+				"webm": "12-ring.webm",
+				"mp4": "12-ring.mp4"
+			},
+			"poster": "12-ring.webp",
+			"caption": "The ring sits behind your windows and clicks go through it.",
+			"alt": "A ring of bars in every color around the FlickOS logo, moving with the music.",
+			"click": null
+		},
+		{
+			"id": "layouts",
+			"picture": "13-layouts.webp",
+			"caption": "Settings, Desktop Layout & Style: the whole desktop changes with one click.",
+			"alt": "The Desktop Layout & Style page with three layouts: Redmond, chosen, Cupertino and Traditional.",
+			"click": {
+				"x": 51.09,
+				"y": 18.5,
+				"w": 15.47,
+				"h": 27.25,
+				"label": "Choose Cupertino"
+			}
+		},
+		{
+			"id": "cupertino",
+			"picture": "14-cupertino.webp",
+			"caption": "Cupertino: a bar at the top and a dock at the bottom. The music controls came along.",
+			"alt": "The desktop with a bar along the top, a dock at the bottom and the Settings window open.",
+			"click": {
+				"x": 77.03,
+				"y": 51,
+				"w": 5.78,
+				"h": 3.5,
+				"label": "Choose the Dark style"
+			}
+		},
+		{
+			"id": "dark",
+			"picture": "15-dark.webp",
+			"caption": "And the Dark style. Every layout works with every style, and it all goes back with one click in Settings.",
+			"alt": "The Cupertino layout in dark colors, the dock at the bottom and the rainbow ring around the logo.",
+			"click": null
+		},
+		{
+			"id": "end",
+			"end": {
+				"title": "FlickOS 3.0, coming with Debian 14",
+				"text": "This tour shows a test version; things will change before the release. FlickOS 2 is ready today.",
+				"links": [
+					{
+						"label": "Download FlickOS 2",
+						"url": "/download/"
+					},
+					{
+						"label": "News",
+						"url": "/news/"
+					}
+				]
+			}
+		}
+	]
+}
