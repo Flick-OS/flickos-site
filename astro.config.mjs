@@ -66,6 +66,7 @@ export default defineConfig({
 						{ label: 'Customizing', slug: 'docs/09-customizing' },
 						{ label: 'Custom builds', slug: 'docs/10-custom-builds' },
 						{ label: 'New Debian release', slug: 'docs/11-new-debian-release' },
+						{ label: 'Translating', slug: 'docs/12-translating' },
 					],
 				},
 				{
