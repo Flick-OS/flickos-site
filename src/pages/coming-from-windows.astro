@@ -1,0 +1,229 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+---
+
+<MarketingLayout
+	title="Coming from Windows"
+	description="How to move from Windows to FlickOS: what to save first, how to copy your files, whether to keep Windows, and what to use instead of your Windows programs."
+>
+	<article class="page">
+		<header class="page-head flick-anim-rise">
+			<h1 class="flick-display">Coming from Windows</h1>
+			<p>
+				Windows 10’s free extended security updates ended on 13 October 2026, and many computers that run it can’t run Windows 11.
+				FlickOS is made for those computers. It’s free, and you can try it from a USB stick without changing anything on your computer.
+			</p>
+			<p>
+				This page takes you through the move in order: what to save while you’re still on Windows, how to copy your files, whether to keep Windows, and what to do on your first day. It’s written for FlickOS 2.3 and newer.
+			</p>
+			<p class="cta">
+				<a class="flick-btn primary" href="/download/">Download FlickOS</a>
+			</p>
+		</header>
+
+		<section class="part" id="before">
+			<h2 class="flick-display">1. Before you switch</h2>
+			<p>Do these on Windows. FlickOS can’t do them for you afterwards.</p>
+
+			<h3>Export your passwords</h3>
+			<p>
+				Windows locks the passwords saved in Chrome and Edge to your Windows account, so no other system can read them. Export them from the browser while you still can.
+			</p>
+			<ul>
+				<li><strong>Chrome:</strong> <a href="https://support.google.com/chrome/answer/13068232" rel="noopener noreferrer">Google’s steps</a>. In short: menu, Passwords and autofill, Google Password Manager, Settings, Export passwords.</li>
+				<li><strong>Edge:</strong> Settings, Passwords, then the <em>…</em> menu next to Saved passwords, Export passwords. The menu names change between versions.</li>
+				<li><strong>Firefox:</strong> sign in to a Mozilla account on Windows and again on FlickOS. Your passwords and bookmarks follow you.</li>
+			</ul>
+			<p>
+				Save the file to a USB drive. It holds every password in plain text, so keep it safe. On FlickOS, <a href="https://support.mozilla.org/kb/import-login-data-file" rel="noopener noreferrer">import it into Firefox</a>, then delete it.
+			</p>
+
+			<h3>Download your OneDrive files</h3>
+			<p>
+				Many files in OneDrive aren’t really on the computer: Windows only shows them and fetches them when you open them. To copy them, they have to be on the disk.
+				In File Explorer, right-click the OneDrive folder and choose <strong>Always keep on this device</strong>, then wait until every file has a green check mark. This needs enough free space. <a href="https://support.microsoft.com/office/0e6860d3-d9f3-4971-b321-7092438fb38e" rel="noopener noreferrer">Microsoft’s steps</a>.
+			</p>
+
+			<h3>Save your BitLocker recovery key</h3>
+			<p>
+				Many newer computers encrypt the disk without asking. To read it from FlickOS, you need its 48-digit recovery key. If you sign in to Windows with a Microsoft account, the key is usually at <a href="https://account.microsoft.com/devices/recoverykey" rel="noopener noreferrer">account.microsoft.com/devices/recoverykey</a>. Write it down or print it, even if you aren’t sure the disk is encrypted.
+				Windows may also ask for it after you change the computer’s startup settings. Without the key, nobody can open the disk, not even Microsoft. <a href="https://support.microsoft.com/help/4026181" rel="noopener noreferrer">Where else to look</a>.
+			</p>
+
+			<h3>Note your product keys and Wi-Fi password</h3>
+			<ul>
+				<li><strong>Paid programs:</strong> find their product keys, usually in the order email or on the box, in case you use them again.</li>
+				<li><strong>Windows itself:</strong> the license is usually tied to the computer or your Microsoft account, so there’s nothing to write down unless you bought a key yourself.</li>
+				<li><strong>Wi-Fi:</strong> write down the password. FlickOS will ask for it.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="files">
+			<h2 class="flick-display">2. Try FlickOS and copy your files</h2>
+			<p>
+				You need one USB stick for FlickOS and a second USB drive for your files. The FlickOS stick can’t hold them.
+			</p>
+			<ol>
+				<li><a href="/download/">Download FlickOS and write it to the USB stick</a>.</li>
+				<li>Start the computer from the stick. The key for its boot menu differs by maker, and is often <kbd>F12</kbd>, <kbd>F9</kbd> or <kbd>Esc</kbd>. If it won’t start, turn off Secure Boot in the computer’s startup settings.</li>
+				<li>FlickOS opens without installing anything. Try it: check the Wi-Fi, sound and screen on your computer.</li>
+				<li>Connect the second USB drive and open <strong>Bring Files from Windows</strong> from the start menu.</li>
+				<li>Choose your account and folders, then <strong>Copy</strong>. Your files go into a folder called <em>Files from Windows</em> on the USB drive.</li>
+			</ol>
+			<p>
+				It copies your Desktop, Documents, Downloads, Music, Pictures and Videos, the same folders in OneDrive, and your Chrome, Edge or Brave bookmarks. It only reads the Windows disk and never changes it.
+			</p>
+			<ul>
+				<li><strong>“Windows wasn’t fully shut down”</strong> is normal. Your files can still be copied.</li>
+				<li><strong>Files only in OneDrive</strong> can’t be copied. When it’s done, the window lists them, and you can download them from <a href="https://onedrive.live.com/" rel="noopener noreferrer">onedrive.live.com</a>.</li>
+				<li><strong>Files over 4&nbsp;GB</strong> don’t fit on a drive formatted as FAT32, as many USB sticks are. The window lists them too.</li>
+			</ul>
+			<aside class="warn" role="note">
+				<strong>Check your copies before you go on</strong>
+				Open a few copied files from the USB drive, and most of all a few from OneDrive, before you erase anything.
+				So far this tool has been tested on test disks, not on real Windows computers, so don’t rely on it unchecked.
+			</aside>
+		</section>
+
+		<section class="part" id="install">
+			<h2 class="flick-display">3. Keep Windows or replace it</h2>
+			<p>
+				Choose <strong>Install FlickOS</strong> from the start menu. If it finds Windows, it first offers to copy your files. The installer then gives you these choices:
+			</p>
+			<ul>
+				<li><strong>Install alongside</strong> keeps Windows and its files. The installer shrinks Windows to make room, and a menu lets you pick a system each time the computer starts. Good if you aren’t sure yet and the disk has room.</li>
+				<li><strong>Erase disk</strong> deletes Windows and every file on it, and gives FlickOS the whole disk. Best for a small disk or an old computer that no longer gets Windows updates. It can’t be undone.</li>
+			</ul>
+			<p>
+				FlickOS needs at least 10&nbsp;GB, and 20&nbsp;GB or more is better. If you choose <em>Install alongside</em>, get Windows ready first:
+			</p>
+			<ul>
+				<li><strong>Copy your files anyway.</strong> Shrinking a disk is safe most of the time, not all of the time.</li>
+				<li><strong>Turn off Fast Startup.</strong> In Windows: Control Panel, Power Options, <em>Choose what the power buttons do</em>, <em>Change settings that are currently unavailable</em>, then clear <em>Turn on fast startup</em>. Then shut down.</li>
+				<li><strong>Turn off BitLocker or Device encryption</strong> if it’s on, and wait until it finishes. The installer can’t shrink a locked disk.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="first-day">
+			<h2 class="flick-display">4. Your first day on FlickOS</h2>
+
+			<h3>Your files</h3>
+			<p>
+				Copied them to a USB drive? Connect it and move them into your home folder. If Windows is still on the disk, open <strong>Bring Files from Windows</strong> at any time: the Welcome window has a card for it, and your files go straight into the matching folders. It never overwrites a file. A different file with the same name is kept as <em>NAME (from Windows)</em>.
+			</p>
+			<p>
+				Your bookmarks are in Documents as <em>Bookmarks from Windows.html</em>. In Firefox, choose Bookmarks, Manage Bookmarks, Import and Backup, Import Bookmarks from HTML.
+			</p>
+
+			<h3>Your programs</h3>
+			<p>
+				Windows programs don’t install on FlickOS, but you don’t have to work out what to use instead. Double-click a <code>.exe</code>, <code>.msi</code> or <code>.msix</code> file and a window says what it is and what to use: the same app in Software, its web version, or something similar. It knows 161 Windows programs, and nothing in the file is run.
+				You can also search for a Windows program in <strong>Software</strong>: search for <em>photoshop</em> or <em>ms word</em> and it says what to use instead.
+			</p>
+			<p>
+				For a program with nothing to replace it, the window offers <strong>Try with Wine</strong>, which runs some Windows programs. It takes about 3&nbsp;GB, and many programs don’t work with it.
+			</p>
+
+			<h3>Your web apps</h3>
+			<p>
+				WhatsApp, Outlook, Teams, Netflix and other websites can have a window of their own, with a taskbar button and a place in the start menu. Find them in <strong>Software → Explore → Web Apps</strong>, or use <em>New Web App…</em> for any address. Firefox makes them with the button at the right of its address bar, and they share Firefox’s sign-ins.
+			</p>
+		</section>
+
+		<section class="part" id="not-coming">
+			<h2 class="flick-display">What doesn’t come with you</h2>
+			<ul>
+				<li><strong>Installed programs and their settings.</strong> Only your files come across. Install the programs you need from Software.</li>
+				<li><strong>Every Windows program.</strong> Some have no good replacement, and Wine may not run them. Check the ones you can’t do without while you try FlickOS from the USB stick.</li>
+				<li><strong>Saved passwords you didn’t export.</strong> After <em>Erase disk</em> they’re gone.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="help">
+			<h2 class="flick-display">Need a hand?</h2>
+			<p>
+				Ask on <a href="https://discord.gg/vFj3VxYwC">Discord</a> or <a href="https://www.reddit.com/r/flickos/">Reddit</a>. People there can help you before you erase anything.
+			</p>
+		</section>
+	</article>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.6rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 1rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.cta {
+		margin-top: 1.25rem !important;
+	}
+	.part {
+		margin-top: 2.75rem;
+	}
+	.part h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.45rem;
+		color: var(--flick-title);
+	}
+	.part h3 {
+		margin: 1.5rem 0 0;
+		font-size: 1.1rem;
+		color: var(--flick-title);
+	}
+	.part p,
+	.part li {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.part p {
+		margin: 0.85rem 0 0;
+	}
+	.part ul,
+	.part ol {
+		margin: 0.85rem 0 0;
+		padding-left: 1.2rem;
+	}
+	.part ul {
+		list-style: disc;
+	}
+	.part ol {
+		list-style: decimal;
+	}
+	.part li + li {
+		margin-top: 0.6rem;
+	}
+	.warn {
+		margin-top: 1.25rem;
+		padding: 1rem 1.1rem;
+		border-left: 3px solid var(--flick-warning);
+		background: color-mix(in srgb, var(--flick-warning) 12%, var(--flick-panel));
+		color: var(--flick-fg);
+		line-height: 1.45;
+	}
+	.warn strong {
+		display: block;
+		margin-bottom: 0.35rem;
+		color: var(--flick-title);
+	}
+	code,
+	kbd {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.9em;
+	}
+</style>
