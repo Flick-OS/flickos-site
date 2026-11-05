@@ -1,0 +1,267 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+
+const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.3/';
+
+const fixes = [
+	{
+		title: 'Folders opened in Firefox',
+		body: 'instead of the file manager from Show in Folder and Settings’ folder buttons.',
+	},
+	{
+		title: 'A second panel',
+		body: 'appeared on a screen turned on while you were logged in.',
+	},
+	{
+		title: 'The clock’s calendar',
+		body: 'was an empty box after a screen was turned on or off, or after the panel was changed.',
+	},
+	{
+		title: 'Phone',
+		body: 'couldn’t pair with a computer running KDE Connect. A computer’s clipboard is now ignored, since KDE Connect sends it at every change; text shared from a computer still arrives.',
+	},
+	{
+		title: 'Redmond’s tray menus',
+		body: 'were unreadable in the Light style.',
+	},
+	{
+		title: 'Screen recordings',
+		body: 'of a whole screen of odd size (a virtual machine’s window) failed, and a recording of a screen that never changed was announced as saved but empty.',
+	},
+	{
+		title: 'Media controls',
+		body: 'kept showing a video that had been closed, and counted Flathub’s Spotify as silent.',
+	},
+	{
+		title: 'The dock',
+		body: 'could crash at start when switching layouts, and a dock on the left ran past the bottom of the screen.',
+	},
+	{
+		title: 'Restore points',
+		body: 'made by apt commands with options are named after the packages again, and Put Back lists the change a restore point was made before.',
+	},
+	{
+		title: 'History',
+		body: 'names apps better (Thunar no longer shows as Bulk Rename).',
+	},
+];
+
+const issues = [
+	'Bring Files from Windows has been tested on test disks, not yet on many real Windows computers. After copying, open a few files from your OneDrive folders: if one opens empty, download it from OneDrive instead, and please tell us.',
+	'Web apps use a Firefox feature that Mozilla hasn’t turned on for Linux yet. A site that moves you to another address when you sign in (Teams does) may show in Software as not installed after you made its web app.',
+	'Wine runs some Windows programs, not most, and takes about 3 GB.',
+	'Restore points work only on new installs with btrfs. They cover the system, not your home folder: keep backing up your files.',
+	'Opening Settings or the Welcome window a second time doesn’t bring the open window to the front, so it looks as if nothing happened. Find the window in the taskbar.',
+	'The gray descriptions under settings are hard to read, most of all in the Light style.',
+	'Tiling uses the same arrangement on all monitors.',
+	'Traditional’s window list shows the windows of all 4 desktops, not only the current one’s.',
+	'Quick Settings has no Bluetooth switch yet.',
+	'Phone needs the firewall to let it in. If the firewall is on, allow phones in Settings → Phone.',
+	'There is no upgrade path from FlickOS 1.x.',
+];
+---
+
+<MarketingLayout
+	title="FlickOS 2.3"
+	description="FlickOS 2.3 is made for people coming from Windows: it brings your files over, says what to use instead of a Windows program, and puts websites in windows of their own. It also has its own login and lock screens."
+>
+	<article class="page">
+		<header class="page-head flick-anim-rise">
+			<p class="date">
+				<time datetime="2026-11-05">5 November 2026</time>
+			</p>
+			<h1 class="flick-display">FlickOS 2.3: made for people coming from Windows</h1>
+			<p>
+				FlickOS 2.3 is still based on <strong>Debian 13 “trixie”</strong>. It is made for people <strong>coming from Windows</strong>: it brings your files over from the Windows part of your disk, tells you what to use instead of a Windows program, and puts websites like WhatsApp or Outlook in windows of their own.
+				It also has its own <strong>login screen</strong> and <strong>lock screen</strong>, <strong>media controls</strong> and <strong>weather</strong> in the panel, a <strong>volume and brightness ring</strong>, and many ways to make the desktop your own.
+			</p>
+			<p class="cta">
+				<a class="flick-btn primary" href="/download/">Download 2.3</a>
+			</p>
+		</header>
+
+		<section class="part" id="windows">
+			<h2 class="flick-display">Coming from Windows</h2>
+			<p>
+				Moving over? <a href="/coming-from-windows/">The switching guide</a> takes you through it in order, starting with what to save while you’re still on Windows.
+			</p>
+			<h3>Bring Files from Windows</h3>
+			<p>
+				It copies your Desktop, Documents, Downloads, Music, Pictures and Videos, your OneDrive folders and your Chrome, Edge or Brave bookmarks from the Windows part of the disk.
+				It only reads Windows and never changes it, never overwrites a file (a different file with the same name is copied as <em>NAME (from Windows)</em>), and unlocks BitLocker with your recovery key.
+				Files that live only in OneDrive’s cloud are listed with where to download them instead of being copied.
+			</p>
+			<ul>
+				<li>In the <strong>live session</strong>, it copies to a USB drive, so you can save your files before installing. <strong>Install FlickOS</strong> offers to do that first when it finds Windows.</li>
+				<li>On an installed system it is in the start menu, and the Welcome window shows a card for it when the computer has Windows.</li>
+				<li>The installer can also install FlickOS <strong>next to Windows</strong> (<em>Install alongside</em>), shrinking the Windows partition.</li>
+			</ul>
+			<h3>Windows programs</h3>
+			<p>
+				Double-click a <code>.exe</code>, <code>.msi</code> or <code>.msix</code> file and a window says what the program is and what to use instead: the FlickOS version in Software, its web version, or similar apps, from a list of 161 Windows programs. Nothing in the file is run.
+			</p>
+			<ul>
+				<li><strong>Try with Wine</strong> installs Wine from Software, with the 32-bit part most Windows programs need (about 3&nbsp;GB). Many programs don’t work with Wine, and the window says so.</li>
+				<li><strong>Software’s search</strong> knows the same programs: search for <em>photoshop</em> or <em>ms word</em> and Software says what to use instead, above the results.</li>
+			</ul>
+			<h3>Web apps</h3>
+			<p>
+				WhatsApp, Outlook, Teams, Netflix and other websites in a window of their own, with a taskbar button and a place in the start menu, sharing Firefox’s sign-ins.
+				Find them in <strong>Software → Explore → Web Apps</strong>, or make one of any address with <em>New Web App…</em>. Firefox makes them with the button at the right of its address bar, so they get the site’s own name and icon.
+			</p>
+		</section>
+
+		<section class="part" id="desktop">
+			<h2 class="flick-display">The desktop</h2>
+			<ul>
+				<li><strong>FlickOS’s own login screen:</strong> pick your name from a list instead of typing it. It remembers the last user and each user’s session, can show the password as you type it, and has Shut Down and Restart, zoom (<kbd>Super+=</kbd>, <kbd>Super+-</kbd>, <kbd>Super+0</kbd>) and, with more than one keyboard layout, a button that shows the layout in use.</li>
+				<li><strong>Your picture:</strong> choose one in <em>Settings → Users</em>. It shows on the login screen, on the lock screen and in the start menu.</li>
+				<li><strong>FlickOS’s own lock screen</strong> for <kbd>Super+L</kbd>, the menus and the idle lock, in the style’s colors. When the screen locks by itself, a key or a mouse move within a few seconds unlocks it again. The volume, microphone and media keys work while the screen is locked.</li>
+				<li><strong>The level ring:</strong> the volume, microphone and brightness keys show the new level for a moment. It can be turned off in <em>Settings → Notifications</em>.</li>
+				<li><strong>Media controls</strong> in the panel (previous, play or pause, next, and what is playing), and a <strong>sound spectrum</strong> above the panel or as a ring in the middle of the screen, in the style’s colors or rainbow ones. Off by default: <em>Settings → Media Controls</em>.</li>
+				<li><strong>The weather</strong> in the panel for a place you choose, from Open-Meteo. Off by default: <em>Settings → Weather</em>. While it is on, only the place’s position, rounded to about 1&nbsp;km, is sent, at most once an hour.</li>
+				<li><strong>Pinned apps</strong> in the dock and panel can be added, moved and removed in <em>Settings → Desktop Layout &amp; Style</em>.</li>
+				<li><strong>Keys for every keyboard layout:</strong> a FlickOS shortcut whose key needs Shift or AltGr on your keyboard moves to the key in the same place (on a Nordic keyboard, <kbd>Super+[</kbd> becomes <kbd>Super+Å</kbd>). The shortcut sheet shows the keys as your keyboard labels them, and now fits small screens.</li>
+				<li><strong>Tiling</strong> now tiles the windows that are already open when you turn it on.</li>
+				<li><strong>The clock’s calendar</strong> marks today. Scroll over the clock for another month, right-click for the year.</li>
+				<li><strong>The start menu</strong> is translated into <strong>Finnish</strong> (thanks, Pekka Kurki), and the start menu, Quick Settings, the login screen and the Welcome window can now be translated. Help is welcome.</li>
+				<li><strong>Save Report…</strong> in <em>Settings → About</em> puts what a bug report needs in one file for you to attach. Nothing is sent. Your home folder, your user and computer names and web addresses are left out; file names stay, so read it first.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="yours">
+			<h2 class="flick-display">Make it yours</h2>
+			<ul>
+				<li><strong>More styles in Software:</strong> <em>Seven</em>, <em>Aye3wm</em>, <em>Footprint</em>, <em>Elemental</em>, <em>Experience</em> and <em>Eleven</em>, each with its own look and layout, under <strong>Software → Styles</strong>. <em>Try</em> uses one until you log out; <em>Use</em> keeps it.</li>
+				<li><strong>Your own styles and layouts:</strong> start from any FlickOS style or layout and change only what you want. Your own panel tweaks (CSS), and your own labwc settings added on top of FlickOS’s. FlickOS checks your files first, so a mistake can’t leave you without a panel. <em>Settings → Desktop Layout &amp; Style</em> has a button for each folder, and <code>flickos-layout</code> can try a style, share it as one file and apply your changes as you save them.</li>
+				<li><strong>The plain session:</strong> if your changes break something, pick <strong>FlickOS (Plain Session)</strong> from the button at the bottom left of the login screen to get FlickOS without them.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="fixes">
+			<h2 class="flick-display">Fixes</h2>
+			<ul>
+				{fixes.map((f) => <li><strong>{f.title}</strong> {f.body}</li>)}
+			</ul>
+		</section>
+
+		<section class="part" id="upgrading">
+			<h2 class="flick-display">Coming from 2.2, 2.1 or 2.0</h2>
+			<p>You don’t need to reinstall. Everything in 2.3 comes through FlickOS’s apt repository:</p>
+			<pre class="cmd"><code>sudo apt update && sudo apt upgrade</code></pre>
+			<p>
+				Use <code>apt upgrade</code>, not <code>apt-get upgrade</code>: <code>apt-get</code> keeps the FlickOS desktop back because it needs new packages. Then restart. If Firefox was open, close it and open it again, so it can make web apps.
+			</p>
+			<p>
+				New installs also get <strong>fastfetch</strong>, which shows the FlickOS logo in the terminal. An upgraded system can add it:
+			</p>
+			<pre class="cmd"><code>sudo apt install fastfetch</code></pre>
+			<p>
+				Coming from <strong>2.1 or 2.0</strong>, read <a href="/news/flickos-2-2/#upgrading">the 2.2 notes</a> too: restore points need a new install, and a few apps only arrive if you add them yourself.
+			</p>
+			<p>
+				Coming from FlickOS 1.x (Ubuntu/LXLE based), there is still <strong>no in-place upgrade</strong>. Back up your files and install 2.3 fresh.
+			</p>
+		</section>
+
+		<section class="part" id="known-issues">
+			<h2 class="flick-display">Known issues</h2>
+			<ul>
+				<li>
+					The login screen can’t change an expired password. Press <kbd>Ctrl+Alt+F1</kbd> and log in on the text screen, which asks for a new one.
+					If you ever get the old login screen, where you type your user name, the new one couldn’t start: please tell us, with the output of <code>journalctl -b -t flickos-greeter</code>.
+				</li>
+				{issues.map((i) => <li>{i}</li>)}
+			</ul>
+		</section>
+
+		<section class="part closing">
+			<p>
+				Get the ISO on <a href={ISO_URL} rel="noopener noreferrer">SourceForge</a>, and see the{' '}
+				<a href="/download/">download page</a> for checking it, writing a USB stick and installing.
+				Please <a href="https://github.com/Flick-OS/flickos/issues">report anything that goes wrong</a>,
+				or talk about it on <a href="https://www.reddit.com/r/flickos/">r/flickos</a>.
+			</p>
+		</section>
+	</article>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.date {
+		margin: 0 0 0.6rem;
+		color: var(--flick-muted);
+		font-size: 0.95rem;
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.6rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 1rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.cta {
+		margin-top: 1.25rem !important;
+	}
+	.part {
+		margin-top: 2.75rem;
+	}
+	.part h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.45rem;
+		color: var(--flick-title);
+	}
+	.part h3 {
+		margin: 1.5rem 0 0;
+		font-size: 1.1rem;
+		color: var(--flick-title);
+	}
+	.part p,
+	.part li {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.part p {
+		margin: 0.85rem 0 0;
+	}
+	.part ul {
+		margin: 0.85rem 0 0;
+		padding-left: 1.2rem;
+		list-style: disc;
+	}
+	.part li + li {
+		margin-top: 0.6rem;
+	}
+	.cmd {
+		margin: 0.85rem 0 0;
+		padding: 0.75rem 0.9rem;
+		overflow-x: auto;
+		border-radius: 0.35rem;
+		background: var(--flick-panel);
+		border: 1px solid var(--flick-border);
+		font-size: 0.92rem;
+		line-height: 1.45;
+	}
+	.cmd code {
+		white-space: pre;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	}
+	code,
+	kbd {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.9em;
+	}
+</style>

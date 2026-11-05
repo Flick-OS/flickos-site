@@ -32,6 +32,11 @@ exception is the logo on the panel's start button, through the styles'
 A new color is a design decision: add it to the checker deliberately, with the
 arc-theme role it comes from, in the same commit.
 
+Colors outside the palette only where the user turns them on, never by
+default: flickos-media's rainbow spectrum (`spectrum-colors rainbow`, its
+hues worked out in code; `docs/design/flickos-media.md` ADR-012). Its
+default, `style`, follows [VIS-2](#vis-2-must-follow-the-style-that-is-in-use).
+
 ### VIS-2 Must: Follow the style that is in use
 
 The user picks Dark or Light in *Settings → Desktop Layout & Style*, and every

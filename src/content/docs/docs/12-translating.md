@@ -27,6 +27,7 @@ translatable one package at a time:
 |---|---|---|
 | `flickos-welcome` | Yes (1.7) | The welcome window and its menu entry |
 | `flickos-menu` | Yes (1.23) | The start menu (all three styles), Quick Settings and the phone popup |
+| `flickos-greeter` | Yes (2.0) | The login screen; PAM's messages and the keyboard layouts' names come from those projects' own translations |
 | Every other FlickOS package | Not yet | See the [HIG audit](/docs/hig/audit/) (TXT-10) |
 
 ## How it works
@@ -217,7 +218,9 @@ program:
    need one.
 6. **The `po/` folder:** `POTFILES` lists the program and the desktop files,
    `LINGUAS` starts with only comments, then run `tools/update-po.sh NAME` to
-   write the `.pot`.
+   write the `.pot`. Text kept in a data file (flickos-switch's Windows apps
+   list) needs an executable `po/extract` that prints its entries;
+   `update-po.sh` adds them to the template after xgettext's.
 7. **`debian/`:** copy flickos-welcome's `rules` (the `LANGS` line,
    `override_dh_auto_build`, `override_dh_install`) and `clean`, change the
    names, and add `gettext` to `Build-Depends`.

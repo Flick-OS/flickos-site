@@ -82,7 +82,8 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 | `auto/clean` | rarely | `lb clean` plus removal of generated config |
 | `config/package-lists/*.list.chroot` | ✏️ | Packages in the image |
 | `config/hooks/normal/0NNN-*.hook.chroot` | ✏️ | Build-time scripts inside the image |
-| `config/packages.chroot/` | ❌ generated | Built FlickOS `.deb`s |
+| `config/packages.chroot/` | ❌ generated | Built FlickOS `.deb`s, every one installed in the image |
+| `config/packages.opt-in/` | ❌ generated | Built `flickos-style-*` `.deb`s, published but not in the image |
 | `config/common`, `config/binary`, `config/bootstrap`, `config/chroot`, `config/source` | ❌ generated | Output of `lb config` |
 | `config/hooks/live/`, `config/hooks/normal/[1-9]NNN-*` | ❌ generated | Symlinks to live-build's standard hooks |
 | `packages/build.sh` | rarely | Builds all packages |
@@ -96,7 +97,7 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 | `SHA256SUMS`, `build.log` | ❌ generated | Build outputs |
 | `packages/flickos-desktop/debian/control` | ✏️ | Desktop package selection |
 | `packages/flickos-settings/` | ✏️ | Desktop config: session, keybindings, menu, startup programs, panel, theme, wallpaper |
-| `packages/flickos-greeter/` | ✏️ | Login screen of installed systems (greetd + gtkgreet) |
+| `packages/flickos-greeter/` | ✏️ | Login screen of installed systems (greetd + greeter-window) |
 | `packages/flickos-installer/` | ✏️ | Calamares config + branding, launcher, live menu |
 | `tools/make-placeholder-art.sh` | rarely | Regenerates wallpaper, installer, boot menu and boot splash images (Arc-Dark palette; logo rendered from flickos-branding's `flickos.svg`, needs librsvg2-bin) |
 | `tools/make-fastfetch-logo.py` | when `flickos.svg` changes | Regenerates flickos-branding's fastfetch logo (`usr/share/flickos/fastfetch/flickos.txt`) from `flickos.svg`; `--preview` prints it without writing |
@@ -139,7 +140,7 @@ git tag -a v2.0 -m "FlickOS 2.0" && git push origin v2.0
 | **dpkg-divert** | Tells dpkg to install another package's file under a different name, so a package can replace it safely |
 | **file trigger** | dpkg runs a package's postinst (`triggered`) when files it is interested in change |
 | **fingerprint** | 40-hex-character ID of a GPG key |
-| **greetd** | Display manager of installed systems. Runs the greeter (gtkgreet in cage) and starts the session after login |
+| **greetd** | Display manager of installed systems. Runs the greeter (flickos-greeter's `greeter-window` in cage, gtkgreet as its fallback) and starts the session after login |
 | **hook** | Script live-build runs during the build |
 | **hybrid ISO** | ISO that boots both from optical media and when written raw to USB |
 | **InRelease** | Signed index file at `dists/trixie/InRelease`. apt checks its signature |

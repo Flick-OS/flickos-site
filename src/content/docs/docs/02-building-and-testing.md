@@ -98,8 +98,10 @@ sudo lb build             # 4.
 2. **`packages/build.sh`** builds every `packages/*/` source package with
    `dpkg-buildpackage` in a scratch copy (`packages/.build/`), then copies the
    `.deb` files into `config/packages.chroot/`. live-build turns that folder into
-   a temporary local apt repo during the build, so `flickos-desktop` can be
-   installed by name.
+   a temporary local apt repo during the build and installs every package in
+   it. The opt-in `flickos-style-*` packages go to `config/packages.opt-in/`
+   instead, so they stay out of the image
+   ([03](/docs/03-live-build-config/#configpackageschroot-local-packages)).
 3. **`lb config`** runs `auto/config`, which calls `lb config noauto` with all
    of FlickOS's options. This writes `config/common`, `config/bootstrap`,
    `config/chroot`, `config/binary` and `config/source`.
@@ -237,6 +239,7 @@ you choose restart, the VM boots from the installed disk.
 - [ ] The graphical login screen appears (Arc-Dark, FlickOS wallpaper, clock), **no** autologin unless it was chosen in the installer
 - [ ] The keyboard layout chosen in the installer works in the password field
 - [ ] Logging in starts labwc; a wrong password shows an error and asks again
+- [ ] At the login screen, *Shut Down* and *Restart* (bottom right) work after a second click, and Super+= makes the card bigger
 - [ ] Ctrl+Alt+F1 shows a text login prompt, and logging in there also starts labwc
 - [ ] A second install with *Log in automatically* checked boots straight to the desktop (`getent group autologin` lists the user)
 - [ ] The first login opens *Desktop Layout & Style*; choosing Cupertino and Light applies right away. After logging out and in, the chooser doesn't open again and the choice is kept

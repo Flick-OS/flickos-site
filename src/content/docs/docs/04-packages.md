@@ -24,7 +24,8 @@ the FlickOS desktop. Everything is in `packages/flickos-desktop/debian/control`.
   clock from the network; `xdg-terminal-exec`, which Super+Enter and the
   menu run; and `brightness-udev`, brightnessctl's udev rule (the `video`
   group may set the backlight), without which the brightness keys and Quick
-  Settings' slider do nothing.
+  Settings' slider do nothing; and `file`, with which `xdg-open` finds a local
+  path's type on labwc (without it every folder went to the web browser).
 - **`Recommends:`** apps and tools users may reasonably remove (foot, fuzzel,
   Thunar, lxtask, nano, …).
 
@@ -66,8 +67,9 @@ Default desktop configuration:
 | `etc/xdg/flickos/` | `/etc/xdg/flickos/` | foot, fuzzel and default-app config: `mimeapps.list` (folders: Thunar, else pcmanfm), and `xdg-terminals.list` (foot, for `xdg-terminal-exec`); `Thunar/uca.xml`, Thunar's right-click actions (Open Terminal Here with `xdg-terminal-exec`, Send to Phone); `autostart/` hides the XDG autostart entries of what autostart starts itself (nm-applet, blueman, the polkit agent, xdg-user-dirs) and keeps the print queue applet off |
 | `etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar.xml` | same | Thunar's defaults (xfconf): the path as buttons, a larger window. xfconfd is started by D-Bus without the session's `XDG_CONFIG_DIRS`, so it can't live in `/etc/xdg/flickos` |
 | `usr/lib/systemd/user/thunar.service.d/flickos.conf` | same | `XDG_CONFIG_DIRS`/`XDG_DATA_DIRS` with FlickOS's folders for a Thunar started by D-Bus (another program's *Show in Folder*), which otherwise reads Debian's `uca.xml` and saves a copy in `~/.config/Thunar/` that hides FlickOS's actions |
-| `etc/firefox-esr/flickos.js` | `/etc/firefox-esr/` | Firefox default prefs (Debian's firefox-esr reads every `.js` there; a user's own choice wins): vertical tabs |
+| `etc/firefox-esr/flickos.js` | `/etc/firefox-esr/` | Firefox default prefs (Debian's firefox-esr reads every `.js` there; a user's own choice wins): vertical tabs, web apps (Taskbar Tabs, for flickos-switch's `webapp`) |
 | `usr/lib/firefox-esr/distribution/distribution.ini` | same | Firefox's distribution customization: a FlickOS bookmark on the bookmarks toolbar, added once per profile (a deleted one stays deleted); id `flickos`, shown in Help → About |
+| `usr/libexec/flickos/level` | `/usr/libexec/flickos/` | The volume, microphone and brightness keys: changes the level (`wpctl`, `brightnessctl`, 5 % steps), then runs flickos-menu's `/usr/libexec/flickos/osd` for the ring if it is installed (nothing shows while locked; the volume, microphone and media keys work then, `allowWhenLocked` in `rc.xml`, flickos-lock's ADR-020) |
 | `usr/libexec/flickos/lock` | `/usr/libexec/flickos/` | Locks the screen (Super+L, the menus): `flickos-control lock` (the background chosen in Settings), else `swaylock -f -c 383c4a` |
 | `usr/libexec/flickos/night-light` | `/usr/libexec/flickos/` | Starts wlsunset timed for the time zone's city (`zone1970.tab`), passing its own options on (`flickos-control night-light` gives `-t`) |
 | `usr/share/flickos/` | `/usr/share/flickos/` | waybar and mako config (the mako config has the `do-not-disturb` mode) |
@@ -286,7 +288,10 @@ upstream's source.
   and (+flickos7) a full-length bar asks for no length and takes the one the
   compositor gives it, its content filling it through a homogeneous grid
   (upstream asked for the monitor's length, so Footprint's left dock, below
-  the top bar, ran past the bottom of the screen).
+  the top bar, ran past the bottom of the screen), and (+flickos8) a desktop
+  file's `Icon=` that is a file's full path drawn as that file, so
+  Firefox's web apps show their own icons (upstream looked every `Icon=` up
+  in the icon theme and fell back to its default icon).
 - **Used by `flickos-layouts`** (a Depends): `flickos-layout` generates the
   layout's sfwbar config (`Dock=`) in the layout overlay and runs `sfwbar -f FILE`
   ([The generated panel](/docs/09-customizing/#the-generated-panel)).
@@ -354,6 +359,15 @@ go. Also *Settings → Keyboard Shortcuts* and the app launcher
   with flickos-menu's when both are in the tree); a zoom key (`BUSY_SIGNAL`)
   hides it at once. About 65 ms of CPU per fade. Design:
   design/flickos-fades.md.
+- **Small screens:** the sheet takes the first arrangement in `FITS`
+  (columns, and the `compact` class: smaller text, keys and margins) that fits
+  the smallest screen less `FIT_MARGIN` (`fit_sheet`, `screen_room`): three
+  roomy columns on a large screen, compact ones on a 1366x768 laptop. The
+  compositor picks the screen and doesn't say which, so it fits them all. The
+  choice is kept while the shortcuts, the screens and the GTK look stay the
+  same (`_FITTED`; measuring costs about 20 ms an arrangement). When none
+  fits, the closest is shown, and `show` scrolls. Descriptions aren't wrapped:
+  GTK measures a wrapping label's height differently from one try to the next.
 - **What it lists:** the keybinds of the rc.xml labwc uses (first of
   `$XDG_CONFIG_HOME`, then `$XDG_CONFIG_DIRS`: a user's own, the flickos-layouts
   overlay with flick-tiler's keys while tiling is on, or flickos-settings'),
@@ -622,8 +636,11 @@ design/flickos-screenshot.md.
   `/usr/libexec/flickos/screencast-chooser`, which answers the screen named
   in `$XDG_RUNTIME_DIR/flickos/screenshot/screencast-request` if that file is
   at most 2 s old, and asks as before for everyone else (slurp, else
-  fuzzel). portal-wlr reads it only when it starts: after the install, from
-  the next login. A user's own `~/.config/xdg-desktop-portal-wlr/` file wins.
+  fuzzel; fuzzel while windows are offered too). It answers with the line
+  portal-wlr gave for that screen: the bare name before 0.8,
+  `Monitor: NAME DESCRIPTION` since, which 0.8 wants back whole. portal-wlr
+  reads it only when it starts: after the install, from the next login. A
+  user's own `~/.config/xdg-desktop-portal-wlr/` file wins.
 - **Runs nothing in the background** and nothing at login: each command ends
   when the picture is saved (the notification's child waits up to 30 s for a
   click), a recording when it is stopped, and the markup window when it is
@@ -680,10 +697,15 @@ A Depends of flickos-desktop and in the sanity hook's `REQUIRED`.
   labwc centers it, always on BOTTOM (the layer setting is for the strip),
   clicks going through it; the ring and the gradient are drawn once per size
   (`ring_picture`), the bars with cairo's FAST edges. A shape change restarts
-  the strip.
+  the strip. `spectrum-colors` `rainbow` (opt-in, ADR-012) draws every hue
+  instead: round the ring from cyan at the top to red at the bottom, with a
+  white ring (a cairo mesh, `rainbow_sectors`), or along the strip from the
+  left (`strip_picture`), also drawn once per size; a change is the layer's
+  SIGUSR1 (`look_again`), no restart.
 - **Settings** (`get`/`set`/`toggle`, `state` for the Settings page):
   `controls` on|off, `spectrum` on|off (both off), `spectrum-layer`
-  behind|top (behind), `spectrum-shape` strip|radial (strip). The system default is the conffile
+  behind|top (behind), `spectrum-shape` strip|radial (strip), `spectrum-colors`
+  style|rainbow (style). The system default is the conffile
   `/etc/xdg/flickos/media.conf`, the user's choice `~/.config/flickos/media`;
   `set KEY default` puts the system's back. Every change is recorded for
   History. *Settings → Media Controls* (flickos-control's `MediaPage`) runs
@@ -734,6 +756,126 @@ the sanity hook's `REQUIRED`.
   commands.
 - **Cost:** nothing while off. While on, about 70 ms of one Python start every
   15 minutes per screen, and at most 24 requests a day of about 3 KB.
+
+### `flickos-switch`
+
+*Bring Files from Windows* and the answer to a double-click on a Windows
+program (`usr/bin/flickos-switch`, Python 3; udisks2 over D-Bus with `Gio`,
+GTK 3 only for the windows; `flickos-switch-files.desktop` in the apps menu,
+live and installed). It
+finds Windows partitions, mounts them **read only** through udisks2 (the
+kernel's ntfs3 reads NTFS; no ntfs-3g), and copies an account's Desktop,
+Documents, Downloads, Music, Pictures and Videos, and the same folders under
+`OneDrive*`, into the matching XDG folders (`xdg-user-dir`), or in the live
+session into `Files from Windows/ACCOUNT/` on a USB drive. It owns no
+settings and runs nothing in the background. Design and phase 0 facts:
+design/flickos-switch.md.
+
+- **Commands:** `find [--json]` (candidates from `GetManagedObjects`, no
+  mounting: NTFS that isn't a recovery partition, and BitLocker volumes),
+  `scan DEVICE [--json]` (mounts read only if needed, checks for
+  `Windows/System32` and `Users`, counts each account's folders), `unlock
+  DEVICE` (BitLocker, the recovery key on stdin), `copy DEVICE ACCOUNT
+  FOLDER... [--to DIR] [--bookmarks] [--json]` (a JSON line per event:
+  `plan`, `file`, `failed`, `done`), `release [DEVICE]`, `files` (the
+  window, which runs the others with `Gio.Subprocess`), `before-install`
+  (flickos-installer's *Install FlickOS* runs it first: `continue` without
+  a Windows partition, else a dialog offering to copy the files first,
+  printing `copy`, `continue` or `cancel`; `flickos-install` starts
+  Calamares only on `continue`, or when flickos-switch is missing or
+  fails).
+- **What it never does:** write to the Windows disk; open a folder with
+  NTFS's reparse bit (junctions such as *My Music*: ntfs3 can spin on one;
+  attributes from `system.ntfs_attrib`, `read_attributes`); overwrite a
+  file (the same size and date within 2 s is skipped, a different file is
+  copied as `NAME (from Windows).EXT`); unmount or lock what it didn't
+  mount or unlock (markers in `$XDG_RUNTIME_DIR/flickos/switch/`).
+- **Skipped:** hidden-and-system files and `SKIP_NAMES` (`desktop.ini`,
+  `Thumbs.db`), shortcuts (`.lnk`, `.url`), and files only in OneDrive
+  (`cloud_only`: the reparse bit with the recall-on-access or offline
+  attribute, or no blocks on disk, over 4 KiB or all zeros, since NTFS keeps
+  small files in its file table). They read as zeros under ntfs3, so they
+  are listed with where to download them.
+- **Before copying:** the free space; on FAT32 (`filesystem_type` from
+  mountinfo) files over 4 GiB are refused. A file that fails is listed and
+  the copy goes on; *Stop* (SIGTERM) ends it after the current file.
+- **Bookmarks:** Chrome's, Edge's and Brave's (each profile) become
+  `Bookmarks from Windows.html` in Documents, which Firefox imports.
+- **Welcome's card** (flickos-welcome 1.8, `WHEN`) shows only when `find`
+  lists something.
+- **Translatable** like flickos-welcome (domain `flickos-switch`, `po/`).
+- **A Depends of `flickos-desktop`** and in the sanity hook's `REQUIRED`.
+- **Unit tests** in `tests/`, on a fake C: in a temporary folder whose NTFS
+  attributes come from a dictionary; the spike's `make-fake-windows.py`
+  builds real fake disks to try the commands with (`udisksctl loop-setup`).
+
+**Windows programs** (phase 2a): `identify FILE... [--json]`, `open FILE`
+and `lookup WORDS... [--json]`, whose code is
+`/usr/share/flickos/switch/programs.py`, loaded only for them
+(`load_programs`, as flickos-menu loads `quick.py`), so the files window
+doesn't compile it.
+
+- **`identify`** reads a `.exe` (PE: bits, the version information's
+  product, maker, description and original name, whether it is signed),
+  an `.msi` (SummaryInformation: Subject and Author), an `.msix` or
+  `.msixbundle` (`AppxManifest.xml`) or a `.lnk` (its target), never
+  running anything. Files are downloads from strangers: every offset is
+  checked against the file's size through `Reader`, which stops at
+  `PE_BUDGET` (1 MB) or `MSI_BUDGET` (16 MB); a manifest with a document
+  type is refused; anything broken is `unknown`. It seeks to a version
+  block wherever it is (Discord's is 160 MB in).
+- **The Windows apps list** `/usr/share/flickos/switch/apps.json` (161
+  entries): `files` (shell patterns), `makers`, `products`, `words`, and
+  what to offer: `linux` (an app in Software), `web`, `similar` (each with
+  a `why`), `note`, `wine` (`maybe` or `no`); `group` entries are kinds of
+  software ("antivirus software"). `match` takes the name with the maker,
+  or the product with the maker for a renamed file; a name alone only when
+  the file has no maker. `tools/check-switch-list.py` checks every app
+  against Software's catalog and every address on the web; run it before
+  merging a list change (the package build has no network).
+- **`open`** is `flickos-switch-open.desktop` (`NoDisplay`), the default
+  for the Windows types in flickos-settings' `mimeapps.list`. `answer`
+  decides the rows: *Install* when the list has a Linux version, else the
+  web version, similar apps and *Try with Wine*, or *Search Software* for
+  an unknown program. *Try with Wine* runs `wine start /unix FILE` (or
+  `wine msiexec /i`) when Wine and its 32-bit part (`/usr/lib/wine/wine`)
+  are installed, else opens Software on `org.winehq.wine`. Each button
+  starts its program detached and closes the window.
+- **`lookup`** (phase 2c, for Software's search) lists the entries whose
+  name, a product or one of the `words` is the search (case, spaces and
+  dashes aside, so "photo" finds nothing and "photoshop" Photoshop), those
+  found by name first; `--json` prints them with `by` (`name` or `words`)
+  and their sentences translated.
+- **Translations:** the list's sentences go into the template through
+  `po/extract`, which `tools/update-po.sh` runs.
+
+**Web apps** (phase 3a) are Firefox's Taskbar Tabs, which flickos-settings'
+`flickos.js` turns on (`browser.taskbarTabs.enabled`). Only Firefox's own
+button at the right of the address bar makes a good one (the site's name,
+icon and start page) and only it removes one, so flickos-switch never
+writes into Firefox's profile or launchers:
+
+- **`webapp list [--json]`** reads, read only, `taskbartabs/taskbartabs.json`
+  in each profile Firefox's installs use (`profiles.ini`'s `Install…`
+  sections, else `Default=1`; under `~/.mozilla/firefox` and
+  `$XDG_CONFIG_HOME/mozilla/firefox`). A list that is broken, over 1 MB or
+  of a version past `TASKBAR_TABS_VERSION` gives none. `--json` gives each
+  web app's `id`, `name`, `start`, `hosts`, `icon`, `launcher` (its desktop
+  file ID, `null` when the file is gone), `profile` and `container`.
+  `--known` (1.4, for Software) adds the Windows apps list's web versions
+  (`https://` only, read from `apps.json` without `programs.py`): each is
+  matched to the web app Firefox has for its host (`known_webapps`), and
+  the rest follow with `id` null (`-` in the plain output). Every entry
+  then also has `entry` (the list's ID or null), `windows` and `made`.
+- **`webapp add URL [--name NAME]`** (`http`/`https` only) opens the address
+  in an ordinary Firefox window and a notification (`notify-send`, else the
+  same text on stdout) says which button keeps it as a web app. When
+  Firefox already has a web app for the host, that web app is opened
+  instead and its ID printed.
+- **`webapp remove ID`** opens the web app (the command its launcher runs,
+  `webapp_command`) and the notification says which button removes it.
+- **The Windows program window's** web version row runs `webapp add` when
+  `firefox-esr` is installed, else `xdg-open`.
 
 ### `flickos-countme`
 
@@ -848,9 +990,11 @@ flickos-recovery.md. One Python 3 file,
 - **The start counter** (ADR-005):
   - `flickos-recovery-start.service` (oneshot, before greetd) runs
     `start begin`.
-  - `flickos-recovery-good.service` runs `start good-watch`: once
-    `gtkgreet` or `labwc` has been up `GOOD_SECONDS` (5), the count is 0
-    and the start counts as good.
+  - `flickos-recovery-good.service` runs `start good-watch`: once the
+    login screen (`greeter-window`, or its fallback `gtkgreet`) or `labwc`
+    has been up `GOOD_SECONDS` (5), the count is 0 and the start counts as
+    good (`GOOD_PROCESSES`; a login screen missing from it makes every start
+    look failed).
   - Both need `/.snapshots` to be a mount point.
   - The counter is `/.snapshots/.flickos-start.json`, and `.flickos-start.cfg`
     in GRUB's words, which the stub sources. At `LIMIT` (2) failed starts,
@@ -912,10 +1056,26 @@ tiling and the phone, sliders for volume and brightness, the battery,
 Settings and the power buttons. Design, measurements and what is left (Bluetooth):
 design/flickos-quick-settings.md.
 
+**The level ring** (since 1.26) shows the new level for a moment after a
+volume, microphone or brightness key: flickos-settings' `level` script
+changes it, then runs `/usr/libexec/flickos/osd`, which hands
+`KIND PERCENT [muted]` to whoever listens on
+`$XDG_RUNTIME_DIR/flickos/menu/osd`. The daemon listens while it runs and
+loads `osd.py` at the first one (78–96 ms to show on the i3, +0.8 MB);
+without the daemon the client starts `flickos-menu osd-popup` on a socket it
+bound itself, which lingers `OSD_LINGER_SECONDS` (30) after the ring hid and
+exits (a daemon that starts meanwhile takes the socket over). On by default
+under HIG INT-9's exception for a tool that runs only when asked;
+*Settings → Notifications* turns it off (flickos-control's `osd.enabled`,
+read by the client at every press). Design:
+design/flickos-osd.md.
+
 | File in package | Installed to | Purpose |
 |---|---|---|
-| `usr/bin/flickos-menu` | `/usr/bin/` | One Python 3 file: `daemon`, `toggle`, `show`, `hide`, `super`, `quick`, `list`, `pinned`, `pin`, `unpin`, `bench` |
+| `usr/bin/flickos-menu` | `/usr/bin/` | One Python 3 file: `daemon`, `toggle`, `show`, `hide`, `super`, `quick`, `list`, `pinned`, `pin`, `unpin`, `bench`, `osd-popup` |
 | `usr/share/flickos/menu/quick.py` | same | Quick Settings' code, which the daemon loads only while it is on (`load_quick`) |
+| `usr/share/flickos/menu/osd.py` | same | The level ring (`Ring`), loaded at the first level (`load_osd`) |
+| `usr/libexec/flickos/osd` | same | The ring's client (stdlib): reads the switch and the level, sends it, starts `osd-popup` when nobody listens |
 | `usr/share/flickos/menu/style.css` | same | The look of both windows, in GTK theme colors only, so both styles recolor it (in `tools/check-palette.py`) |
 | `etc/xdg/flickos/menu.conf` | same | Default pinned apps (conffile). The live session uses flickos-installer's `/etc/xdg/flickos-live/flickos/menu.conf` |
 | `tests/` | not installed | Unit tests |
@@ -961,13 +1121,60 @@ design/flickos-quick-settings.md.
   `procps` for `pkill`, and on `python3-gi-cairo` for the empty input region
   of a window fading out.
 - **Translatable** (1.23, [12 – Translating](/docs/12-translating/)): one
-  gettext domain, `flickos-menu`, for the menu, Quick Settings and the phone
-  popup (`po/POTFILES` lists all three files). `_` loads the translation at
+  gettext domain, `flickos-menu`, for the menu, Quick Settings, the phone
+  popup and the level ring's screen reader text (`po/POTFILES` lists all four
+  files). `_` loads the translation at
   the first text shown, so a click (`toggle`, `super`) still imports
   nothing; `load_quick`/`load_phone` give those files the menu's `_`
   (loaded on their own, as in the tests, they show English). Section and
   category names stay English as keys (`list`) and are translated where
   they're shown.
+- **Unit tests** in `tests/`, run at package build.
+
+### `flickos-welcome`
+
+The window a new account sees at login on an installed system
+(`usr/bin/flickos-welcome`, one Python 3 file, GTK 3 through python3-gi, no
+CSS; *Welcome* in the apps menu through `flickos-welcome.desktop`). Its cards
+(`CARDS`) each run the program that owns the job: `flickos-switch files`,
+`flickos-layout pick`, `flickos-control`, `nm-connection-editor`,
+`flickos-shortcuts show`, `flickos-software`, and `xdg-open` for the
+addresses in the conffile `/etc/xdg/flickos/welcome.conf` (`[Links]`). A card
+whose program is missing, or whose address is empty, is left out. It owns no
+settings.
+
+- **Cards shown only when a check finds something** (1.8, `WHEN`): the
+  check is a command that must exit 0 and print a non-empty JSON list. It
+  runs in a thread after the window is shown, never before, and the card is
+  inserted where `CARDS` puts it. *Bring files from Windows* uses
+  `flickos-switch find --json`, so it shows only when a Windows partition
+  is there. `list` runs the checks before printing.
+
+- **When it opens:** flickos-settings' autostart runs `flickos-welcome
+  first-run` when it is installed and `flickos-layout first-run` only
+  otherwise, so exactly one window opens. `first-run` opens the window while
+  the marker `~/.config/flickos/welcome` exists (copied from `/etc/skel`; a
+  lintian override covers it) and deletes flickos-layouts' `choose-layout`
+  marker, so the chooser it replaces can't open too. Ticking *Do not show on
+  startup* deletes the marker and unticking writes it, both atomically
+  (`flickos-welcome startup current|set on|off|default`). With `boot=live`,
+  or `Enabled=no` in `welcome.conf` (off for the whole machine), the marker
+  is deleted and nothing opens.
+- **Donate:** `DEFAULT_LINKS` keeps `donate` empty, so no payment address is
+  ever baked into the program. **`Donate=` in `welcome.conf` must stay the
+  same address as the installer branding's `donateUrl`**; a unit test
+  compares them.
+- **Translatable** (1.7, the first package that was; HIG TXT-10,
+  [12 – Translating](/docs/12-translating/)): gettext domain `flickos-welcome`
+  from `LOCALE_DIR`, `_()` and `N_()` (`CARDS`, `TITLE`; translated in
+  `cards()`), named `.format` placeholders, `# Translators:` comments.
+  `startup current`, `list`'s ids and stderr stay English. `po/` holds
+  `POTFILES`, the `.pot`, `LINGUAS` and each `LANG.po`; `debian/rules`
+  compiles every `.po` and the desktop file's `Name[LANG]`
+  (`msgfmt --desktop`). `TranslationTest` fails while the `.pot` is stale
+  (`msgcmp` both ways, with the same xgettext options as
+  `tools/update-po.sh`).
+- **A Depends of `flickos-desktop`** and in the sanity hook's `REQUIRED`.
 - **Unit tests** in `tests/`, run at package build.
 
 ### `flickos-control`
@@ -991,7 +1198,7 @@ design/flickos-control.md.
   manager, text editor, image and document viewer, media player through
   `xdg-mime default`; the terminal through `~/.config/xdg-terminals.list`),
   *Startup Applications* (XDG autostart entries on or off, *Add App…*,
-  *Remove*), *Notifications* (Do Not Disturb), *Media Controls* (flickos-media's `controls`, `spectrum`, `spectrum-shape` and `spectrum-layer`, while it is installed), *Power & Idle* (lock and sleep times; what the power button, closing the
+  *Remove*), *Notifications* (Do Not Disturb, the level ring), *Media Controls* (flickos-media's `controls`, `spectrum`, `spectrum-shape`, `spectrum-layer` and `spectrum-colors`, while it is installed), *Power & Idle* (lock and sleep times; what the power button, closing the
   lid and closing it while plugged in do, read from logind; the lid rows only
   with a lid switch), *Memory* (how much memory the computer has and uses,
   and *Firefox: use less memory*: the helper's `firefox-memory on|off` writes
@@ -1003,7 +1210,7 @@ design/flickos-control.md.
   restarted for the new time zone), *Updates* (automatically or not, which
   updates, restarting when nobody is logged in; installed systems only),
   *Login* (log in automatically; only on
-  installed systems with flickos-greeter), *Users* (add and remove accounts,
+  installed systems with flickos-greeter), *Users* (your picture, add and remove accounts,
   administrator or not, set a password; installed systems only), *Firewall*
   (ufw on or off; shown while ufw is installed), *Tiling* (on/off, arrangement, main window width, gap, apps that
   always float), *Keyboard Shortcuts* (the list, and a button for the sheet),
@@ -1028,8 +1235,10 @@ design/flickos-control.md.
   count through `flickos-countme`, only while it is installed) and *About* (FlickOS version from `/usr/lib/flickos-release`,
   Debian, Linux, computer, processor, memory, graphics via `lspci`, disk,
   desktop; *Copy System Info* puts the same text plus the FlickOS packages'
-  versions on the clipboard with `wl-copy`, and *Report a Problem* opens the
-  GitHub issues).
+  versions on the clipboard with `wl-copy`, *Save Report…* writes that text,
+  `flickos-layout doctor` and the end of `panel.log` and `lock/lock.log` to a
+  file the user chooses, without personal names (`docs/design/flickos-control.md`,
+  Phase 4), and *Report a Problem* opens the GitHub issues).
 - **Search:** a box above the page list finds pages, the rows and headings
   the pages build (collected by `Ui.row()`/`Ui.heading()` while the window
   opens) and the tiles' apps, also by `SEARCH_KEYWORDS` ("wifi", "volume",
@@ -1108,6 +1317,11 @@ design/flickos-control.md.
   call before would have D-Bus start a plain mako); `flickos-control
   notifications` (autostart) waits for mako and adds the mode again when it
   is on. A user's own mako config without the mode is named on the page.
+- **The level ring** (`osd.enabled`, on, `~/.config/flickos/osd`, conffile
+  `osd.conf`, 1.57; *Show the level* on the Notifications page): whether
+  flickos-menu's ring shows after the volume, microphone and brightness keys.
+  `set` changes only the file: flickos-menu's client reads `[Osd] Enabled=`
+  at every press (design).
 - **Startup applications** (`flickos-control startup
   list|enable|disable|add|remove|run`): the XDG autostart entries labwc
   doesn't run, by the spec (`~/.config/autostart` first, then `autostart` in
@@ -1160,8 +1374,20 @@ design/flickos-control.md.
   `users.conf` without `sudo`; a test compares them), plus `sudo` for an
   administrator; if a step fails, the account is removed again. `user-remove
   NAME keep|delete` runs `userdel [--remove]`, not for the calling user and not
-  while the account has processes running. `user-admin NAME yes|no` changes
+  while the account has processes running, and deletes the account's picture
+  (userdel leaves it, and a new account of that name would show it).
+  `user-admin NAME yes|no` changes
   membership in `sudo` (polkit's and sudo's administrators on Debian).
+- **Your picture** (`picture current`, `picture set FILE|default`, *Choose
+  Picture…* and *Remove Picture* on *Users*): accountsservice owns it.
+  `write_picture` turns the file into a PNG, cropped to the middle square, of
+  at most `PICTURE_PIXELS` (288: flickos-greeter's 96 px at 300%), turned as its
+  EXIF says, because accountsservice refuses a file over 1 MB; `SetIconFile` on
+  the user's own object needs no password and copies it to
+  `/var/lib/AccountsService/icons/USER`. Each user sets their own, so no helper
+  verb. flickos-greeter, flickos-lock and flickos-menu read that file; the last
+  two fall back on `~/.face`. History shows the change (`picture`) but can't
+  undo it: the old picture isn't kept.
   `user-password NAME` reads the password on standard input. Only regular
   accounts (`UID_MIN`..`UID_MAX` of `/etc/login.defs`), names that match
   adduser's `NAME_REGEX`, and never away from the last administrator.
@@ -1172,6 +1398,16 @@ design/flickos-control.md.
   `ufw status` needs root. Rules stay a job for `sudo ufw` in a terminal. ufw
   is a Recommends of flickos-desktop, not a dependency of this package: without
   it the page is left out.
+- **Support for 32-bit programs** (1.58, the system setting `i386`, no page:
+  Software turns it on with Wine and off when Wine goes, through `flickos-control
+  system i386 on|off`, so History records it): the helper's `i386-on` runs
+  `dpkg --add-architecture i386`, `i386-off` refuses while an i386 package
+  someone asked for is installed (apt's manual mark), purges the i386
+  libraries left behind (apt never autoremoves the protected `libgcc-s1` or
+  what it needs) when apt would remove nothing else with them, and the ones
+  only config files are left of, then runs `dpkg --remove-architecture i386` (actions
+  `org.flickos.control.i386-on`/`-off`). Read with `dpkg
+  --print-foreign-architectures`.
 - **The power button and the lid** go through the same helper: `power
   power-key|lid|lid-external-power poweroff|suspend|lock|ignore|default`
   rewrites `/etc/systemd/logind.conf.d/60-flickos.conf` and runs `systemctl
@@ -1235,7 +1471,8 @@ design/flickos-control.md.
 - **Commands:** `flickos-control [--page ID]` opens the window (one per
   session: `$XDG_RUNTIME_DIR/flickos/control.lock`), `flickos-control list`
   prints the page ids, `flickos-control about` prints the system information
-  (the text *Copy System Info* copies), `flickos-control system KEY [VALUE]`
+  (the text *Copy System Info* copies), `flickos-control report` prints what
+  *Save Report…* saves, `flickos-control system KEY [VALUE]`
   and `default-app list|set` print and change system settings and default
   applications.
 - **Depends on** flickos-layouts (>= 1.22: 1.13 merges its fragment and
@@ -1294,6 +1531,40 @@ design/flickos-software.md.
   with their sizes) or what goes with it. A change that would remove part of
   the desktop (`flickos-*`, `flick-*`, flickos-desktop's Depends) is refused
   by the command itself.
+- **Apps with a part of another architecture** (1.10, `OTHER_ARCH`;
+  design/flickos-switch.md ADR-004): Debian's Wine
+  is installed as `wine`, `wine64` and `wine32:i386` in one transaction, after
+  `flickos-control system i386 on` (its own password prompt) and a refresh
+  that fetches i386's lists. All three are named: with `wine32` in the
+  transaction apt meets `wine`'s "wine64 | wine32" with `wine32` alone. The
+  plan shows the 32-bit part's size before i386's lists are there (a measured
+  figure). A Wine installed without its 32-bit part gets *Add 32-bit Support*.
+  Removing Wine removes all three, then turns i386 off when no i386 package
+  someone asked for is left (a second prompt).
+- **Windows programs in the search** (1.11,
+  design/flickos-switch.md phase 2c): each search
+  runs `flickos-switch lookup --json` in a `Gio.Subprocess` (the previous one
+  stopped, given up after `LOOKUP_MS`), and `windows_answer` turns its entries
+  into one answer above the results: "Adobe Photoshop is a Windows program
+  and isn't made for FlickOS." with the similar apps and the web version.
+  Matches by the list's words count only when there are at most
+  `WORD_MATCHES` ("excel", not "music"). Nothing when flickos-switch is
+  missing; Software doesn't depend on it.
+- **Web apps** (1.12, design/flickos-switch.md
+  phase 3b): the window runs `flickos-switch webapp list --json --known` in a
+  `Gio.Subprocess` at its start and each time it becomes active (no timer),
+  and `web_rows` turns the answer into rows that `Catalog.set_web` puts after
+  the index's apps, so search, *Installed* and the categories show them. Their
+  source is `WEB`, not in `SOURCES`: the index and the commands never have
+  web apps. A row is `web:ENTRY` for a list's web version (the same page
+  before and after it is made) or `web:ID` for one made from any address;
+  its icon is Firefox's file once made, `web-browser` before. Explore's *Web
+  Apps* category has *New Web App…* (an address, `https://` added when none
+  is typed). A web app's page has no plan: *Install* runs `webapp add`,
+  *Remove* `webapp remove`, both open the page in Firefox, whose address-bar
+  button does it; *Open* runs its launcher. A Windows program's answer offers
+  the web version's page. Nothing about web apps while `firefox-esr` or
+  flickos-switch is missing.
 - **Icons and screenshots:** the theme's icon by name, then the catalog's
   file, then a download kept in `~/.cache/flickos/software/images/`.
   `/etc/apt/apt.conf.d/50flickos-software` turns on Debian's 64 px icon
@@ -1411,7 +1682,8 @@ design/flickos-ricing.md; named by allusion
 **Footprint**, FlickOS's third extra style, with a layout that has a dock:
 GTK's Adwaita-dark windows with the Adwaita icons, grey title bars with the
 title in the middle and round buttons that light on hover (its own labwc
-theme `Footprint`, with SVG buttons), a black top bar, a dark grey terminal
+theme `Footprint`, with SVG buttons), a black top bar, the accent `#3584e4`
+(Adwaita-dark's own `#15539e` is only 2.8:1 on black), a dark grey terminal
 in the Tango colors, a grey launcher and notifications, and a dusk wallpaper
 of blue-grey hills with the halo. Its layout **footprint** is a black top bar
 (the desktops as dots, the current one a pill, on the left, and no apps
@@ -1596,8 +1868,9 @@ design/flickos-ricing.md; named by allusion
 
 ### `flickos-greeter`
 
-The login screen of installed systems: greetd runs gtkgreet in the cage kiosk
-compositor, in the Arc-Dark colors. Nothing replaces greetd's own
+The login screen of installed systems: greetd runs FlickOS's own login
+screen, `greeter-window`, in the cage kiosk compositor, in the Arc-Dark colors
+(design: `docs/design/flickos-greeter.md`). Nothing replaces greetd's own
 `/etc/greetd/config.toml` (it is ignored):
 
 - `usr/lib/systemd/system/greetd.service.d/flickos.conf`: a drop-in that
@@ -1608,20 +1881,91 @@ compositor, in the Arc-Dark colors. Nothing replaces greetd's own
   `initial_session` (automatic login, once per boot) for the first member of
   the group `autologin`.
 - `usr/libexec/flickos/greeter`: sets the keyboard layout from
-  `/etc/default/keyboard` and `GTK_THEME=Arc-Dark`, then runs
-  `cage -d -s -- gtkgreet --command flickos-session --style …`.
-- `usr/share/flickos/greeter/gtkgreet.css`: wallpaper (flickos-settings'
-  `default.jpg`) and login box. Checked by `tools/check-palette.py`.
-- `etc/greetd/environments` (conffile): `flickos-session-plain`, which
-  gtkgreet lists in its session box below `--command`'s `flickos-session`.
-  Every line is an entry, so the file has no comments.
+  `/etc/default/keyboard` (with two layouts and no `grp:` option it adds
+  `grp:alt_shift_toggle`: only XKB switches layouts in cage),
+  `GTK_THEME=Arc-Dark` and `NO_AT_BRIDGE=1`, then
+  runs `systemd-cat --identifier=flickos-greeter cage -d -s -- sh -c
+  'greeter-window || exec gtkgreet …'`: gtkgreet comes up whenever the window
+  ends without a login (ADR-010), and everything's output goes to the journal
+  (greetd gives the greeter tty7).
+- `usr/libexec/flickos/greeter-window`: the window (Python, GTK 3), a greetd
+  client over `$GREETD_SOCK` (greetd-ipc: a native 32-bit length, then JSON).
+  - The users (`users()`): UID from `UID_MIN` to `UID_MAX` of
+    `/etc/login.defs`, a shell other than `nologin`/`false`, by full name, read
+    in a thread; *Someone Else…* last. Pictures from
+    `/var/lib/AccountsService/icons/USER` only (homes are 0700), else the
+    initial on a circle in the theme's selected color.
+  - The sessions (`sessions()`): `SESSIONS` (*FlickOS*, *FlickOS (Plain
+    Session)*), then `/usr/share/wayland-sessions/*.desktop` but
+    `HIDDEN_SESSIONS` (bare labwc), `Hidden`, `NoDisplay` and a missing
+    `TryExec`. `start_session` gets the session's command (never anything
+    typed) and `XDG_SESSION_TYPE=wayland`, `XDG_SESSION_DESKTOP`,
+    `XDG_CURRENT_DESKTOP`.
+  - The conversation (`Conversation`): `create_session` when the password is
+    sent; the typed password answers PAM's first `secret` prompt; later
+    prompts are asked on the card, PAM's text translated through PAM's own
+    gettext domain (greetd's worker has no `LANG`); `auth_error` →
+    `cancel_session` (whose `error` reply still clears greetd's state) and
+    "Wrong password", "expired" (`NEW_AUTHTOK_REQD`: Ctrl+Alt+F1) or
+    "can't log in now".
+  - `STATE` (`/var/lib/greetd/flickos/state`, JSON, `0700` folder): the last
+    user, each user's last session and the zoom, written atomically only
+    after greetd accepted `start_session`. The last user is picked at start.
+  - The card on one screen: `builtin_sizes()` reads the EDID size of
+    connected `eDP`/`LVDS`/`DSI` connectors in `/sys/class/drm`,
+    `choose_monitor()` matches it to GTK's monitors (else the first), and
+    the card and the two bottom corners are overlay children placed by
+    their margins.
+    The wallpaper (flickos-settings' `default.jpg`) covers each screen,
+    decoded at screen size in a thread, under flickos-lock's `DIM`.
+  - The clock: flickos-lock's `CLOCK_FORMATS`, 12h when the locale's `T_FMT`
+    has `%r`, `%I` or `%l`; the date's format is translatable.
+  - Shut Down and Restart (`POWER`): a popover at the bottom right, each
+    needing a second click within `CONFIRM_SECONDS` (`TwoStep`, flickos-menu's),
+    then logind's `PowerOff`/`Reboot` over the system bus, which the greeter's
+    own session may do with no password. On a refusal `ListInhibitors` and
+    `blocked_by()` name the block inhibitor on the card. No system bus, no
+    button.
+  - The keyboard layout: with two or more in `XKB_DEFAULT_LAYOUT`, a button
+    with the short name and a popover naming the switch key (`keyboard()`,
+    both from xkb-data's `evdev.xml`, in the `xkeyboard-config` domain's
+    translations). It only shows the layout: cage changes it, and GTK sees the
+    new group at the next key (`group_after()`).
+  - Zoom (`ZOOM_STEPS`, flickos-lock's): Super+=, Super+-, Super+0 and
+    Super+scroll, one font size on the window; pictures and icons follow
+    through `zoomed`. `fit_clock()` hides the clock and date when the card
+    wouldn't fit the screen.
+  - Keys: arrows and Enter in the list, a letter jumps to a name, Escape back
+    to the list, Alt+V shows the password (hidden again after
+    `REVEAL_SECONDS`), and any key with Super stays out of the box.
+  - Exits 0 only after greetd accepted the session; any exception ends it
+    with status 1 (`sys.excepthook`), so gtkgreet takes over.
+  - `--check`: the users, sessions and (with two layouts) layouts it would
+    offer, tab-separated (the boot test's checks).
+- `po/`: translations (docs/12), the template and no language yet. PAM's and
+  xkeyboard-config's texts come from their own domains.
+- `usr/share/flickos/greeter/style.css`: the card, flickos-lock's with
+  `.flickos-greeter` (theme colors only; a test compares `CARD_ALPHA`).
+- `usr/share/flickos/greeter/gtkgreet.css` and `etc/greetd/environments`
+  (conffile, `flickos-session-plain`; every line is an entry, so no comments):
+  the fallback gtkgreet's look and session list, until one release after 2.0.
 - `debian/flickos-greeter.sysusers`: creates the group `autologin`
   (`dh-sequence-installsysusers` adds the `systemd-sysusers` call to the
   postinst).
+- `tests/test_greeter.py`: the protocol both ways and the conversation
+  against a fake greetd on a socketpair, users, sessions, state, screens,
+  clock, zoom, the power buttons, the layouts from a fake `evdev.xml`,
+  `--check`, the CSS, the translations, the copies from flickos-lock and
+  flickos-menu (compared when they are in the tree), flickos-recovery's
+  `GOOD_PROCESSES`, and the `greeter` script's fallback and switch key with
+  stand-ins for systemd-cat, cage and gtkgreet.
 
-greetd's postinst enables it as `display-manager.service` but doesn't start
-it, so an upgraded system switches to the login screen at the next boot.
-**A Depends of `flickos-desktop`** and in the sanity hook's `REQUIRED`. See
+`Breaks: flickos-recovery (<< 1.6~)`: older flickos-recovery counted only
+gtkgreet as a login screen that came up, so every start ended at this one
+looked failed and GRUB started a restore point. greetd's postinst enables it
+as `display-manager.service` but doesn't start it, so an upgraded system
+switches to the login screen at the next boot. **A Depends of
+`flickos-desktop`** and in the sanity hook's `REQUIRED`. See
 [09 – Login screen](/docs/09-customizing/#login-screen).
 
 ### `flickos-installer`
@@ -1631,6 +1975,13 @@ and the live-session menu with *Install FlickOS*. It replaces Debian's
 `calamares-settings-debian` and is only in the live image
 (`config/package-lists/installer.list.chroot`): Calamares removes it from
 installed systems. See [09 – Installer](/docs/09-customizing/#installer).
+
+`flickos-install` first runs `flickos-switch before-install` (1.34): when a
+Windows disk is found, a dialog offers to copy its files first, since
+Calamares' *Erase disk* doesn't mention Windows; the installer starts only
+on *Continue*, or when flickos-switch is missing or fails. The same list
+has `ntfs-3g`, whose `ntfsresize` Calamares (KPMcore) needs to shrink
+Windows' NTFS partition for *Install alongside*.
 
 ### `flickos-branding`
 
@@ -1705,7 +2056,9 @@ sh packages/build.sh
 ```
 
 This builds **every** folder in `packages/` that has a `debian/` directory, and
-puts the `.deb` files in `config/packages.chroot/`. It stops with an error if
+puts the `.deb` files in `config/packages.chroot/`, except the opt-in
+`flickos-style-*` packages, which go to `config/packages.opt-in/` so the image
+doesn't install them. It stops with an error if
 the repository public key doesn't exist yet.
 
 To build or inspect a single package by hand:

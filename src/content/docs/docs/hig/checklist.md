@@ -17,7 +17,7 @@ Should rules aren't listed. Read the pages for those.
 - [ ] **INT-6** Tested in Redmond, Cupertino and Traditional, in Dark and Light.
 - [ ] **INT-7** Hidden in the live session if it only makes sense installed, and the reverse.
 - [ ] **INT-8** Nothing new opens at first login besides `flickos-welcome`.
-- [ ] **INT-9** A new feature is opt-in and runs, generates and binds nothing while off. Only a record that runs nothing (History) may be on by default, with a switch that also deletes it, or a safety net that runs only inside an existing operation and briefly at start (restore points), through an ADR that states its cost; a shipped feature becomes the default only through an ADR that states its cost (the start menu); a tool that runs only when asked may bind its keys by default, through an ADR that names them (Screenshot), and anything of it that shows unasked needs its own ADR (the hidden recording button).
+- [ ] **INT-9** A new feature is opt-in and runs, generates and binds nothing while off. Only a record that runs nothing (History) may be on by default, with a switch that also deletes it, or a safety net that runs only inside an existing operation and briefly at start (restore points), through an ADR that states its cost; a shipped feature becomes the default only through an ADR that states its cost (the start menu); a tool that runs only when asked may bind its keys by default, through an ADR that names them (Screenshot, the level ring), and anything of it that shows unasked needs its own ADR (the hidden recording button).
 - [ ] **INT-10** A login program starts from FlickOS's autostart, runs once per session and doesn't hold up the others.
 
 ## Settings and files ([03](/docs/hig/03-settings-and-files/))
@@ -57,7 +57,7 @@ Should rules aren't listed. Read the pages for those.
 
 ## Visual style ([06](/docs/hig/06-visual-style/))
 
-- [ ] **VIS-1** Only palette colors, and `tools/check-palette.py` passes. The brand amber only on brand surfaces (logo, boot menus, splash, installer, artwork).
+- [ ] **VIS-1** Only palette colors, and `tools/check-palette.py` passes. The brand amber only on brand surfaces (logo, boot menus, splash, installer, artwork). Other colors only as an opt-in the user turns on (the rainbow spectrum).
 - [ ] **VIS-2** It follows the style in use: no CSS in GTK windows, named colors only in CSS. Hard-coded Arc-Dark only on boot, splash, installer, login screen and the lock and wallpaper background color.
 - [ ] **VIS-3** Never forces dark or light.
 - [ ] **VIS-6** Icons by freedesktop name, first one the theme has. `-symbolic` in rows.
@@ -91,7 +91,7 @@ Should rules aren't listed. Read the pages for those.
 
 - [ ] **PKG-1** Desktop changes ship in a package, not in `config/includes.*`.
 - [ ] **PKG-2** No file another package owns. FlickOS paths only.
-- [ ] **PKG-3** Version bumped with `dch -i -D trixie`, dependents bumped, `Breaks` when files move.
+- [ ] **PKG-3** Version bumped with `dch -i -D trixie` (`dch -v NEXT~test1` on a branch that waits), dependents bumped, `Breaks` when files move.
 - [ ] **PKG-4** Depends for needs (Recommends never reach installs), must-haves in `REQUIRED`, a comment on every dependency.
 - [ ] **PKG-5** `debian/copyright` covers every file.
 - [ ] **PKG-6** Native, `Architecture: all`, declarative debhelper files, conffiles, lintian without errors.

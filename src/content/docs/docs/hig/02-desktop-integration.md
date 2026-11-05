@@ -169,6 +169,11 @@ It costs one `cat` of a missing file when the panel starts. Screen zoom is
 the second case: labwc's own magnifier, so no program at all, with
 Super+=, Super+-, Super+0 and Super+scroll bound for everyone
 (design).
+The level ring is the third: the volume, microphone and brightness keys,
+bound already, run flickos-settings' `level` script, and a ring shows the
+new level for 1.5 s; the menu daemon draws it (0.8 MB after the first
+press, no wake-ups), or a pop-up that exits 30 s after the last press
+(design).
 
 ### INT-10 Must: Login programs start from FlickOS's autostart and stay single
 

@@ -18,7 +18,7 @@ sidebar:
 | Updates | Automatic updates (unattended-upgrades): Debian's security fixes and stable updates, and FlickOS's own packages |
 | Security | Firewall (ufw) on by default: incoming blocked, outgoing allowed |
 | Branding | The halo logo and the brand amber (boot menus, boot splash, installer, artwork; the desktop keeps Arc's blue), FlickOS boot menu on the ISO and on installed systems (GRUB theme), boot splash (Plymouth), `os-release` variant and login banner, fastfetch logo; `ID=debian` kept |
-| Login | Graphical login screen on installed systems (greetd + gtkgreet, `flickos-greeter`), optional automatic login. The live session logs in automatically on tty1 |
+| Login | Graphical login screen on installed systems (greetd + FlickOS's own login screen in cage, `flickos-greeter`), optional automatic login. The live session logs in automatically on tty1 |
 | Installer | Calamares with FlickOS branding (`flickos-installer`) |
 | Image | `FlickOS-64bit-v2.0.iso`: hybrid ISO, boots on BIOS (syslinux) and UEFI (GRUB); can be written to USB |
 | Published at | ISOs: SourceForge Files. Apt repository: https://dvbondoy.github.io/flickos-apt/. Code: GitHub `dvbondoy/FlickOS` |
@@ -76,10 +76,11 @@ flickos/
 │   ├── package-lists/            Which packages go into the image
 │   ├── hooks/normal/             Shell scripts run inside the image during build
 │   ├── bootloaders/              ISO boot menu: splash images, entry names, timeouts
-│   └── packages.chroot/          (generated, git-ignored) local .debs to install
+│   ├── packages.chroot/          (generated, git-ignored) local .debs, all installed in the image
+│   └── packages.opt-in/          (generated, git-ignored) flickos-style-* .debs, only for the apt repo
 │
 ├── packages/                     FlickOS's own Debian packages
-│   ├── build.sh                  Builds all of them into config/packages.chroot/
+│   ├── build.sh                  Builds all of them into config/packages.chroot/ (styles: packages.opt-in/)
 │   ├── flickos-desktop/          Meta-package: the whole desktop as dependencies
 │   ├── flickos-settings/         Desktop config: session, keybindings, menu, panel, theme, wallpaper
 │   ├── flickos-layouts/          Desktop layouts, wallpapers + the flickos-layout tool (and its unit tests)
@@ -88,6 +89,7 @@ flickos/
 │   ├── flickos-lock/             Lock screen: password box with show password, clock, name, style colors (swaylock as fallback)
 │   ├── flickos-control/          The Settings window (pages over flickos-layout, flick-tiler, flickos-shortcuts)
 │   ├── flickos-weather/          The weather in the panel (off by default; Open-Meteo, a place the user picks)
+│   ├── flickos-switch/           Coming from Windows: copies an account's folders from a Windows disk (read only); answers a double-click on a Windows program
 │   ├── flickos-software/         Software: install and remove Debian, FlickOS, community and Flathub apps (window + Flatpak update timer)
 │   ├── flickos-style-seven/      Seven, an opt-in extra style with its own layout (light, see-through blue title bars, a glass bottom panel with a round start button)
 │   ├── flickos-style-aye3/       Aye3wm, an opt-in extra style with its own layout (slate blue title bars, one black bar with desktop numbers)
@@ -95,7 +97,7 @@ flickos/
 │   ├── flickos-style-elemental/  Elemental, an opt-in extra style with its own layout (light windows, see-through top bar with Applications, a light dock, close left, maximize right)
 │   ├── flickos-style-experience/ Experience, an opt-in extra style with its own layout (deep blue title bars, glossy buttons, a blue bottom panel with a green Start button)
 │   ├── flickos-style-eleven/     Eleven, an opt-in extra style with its own layout (dark grey title bars with flat buttons, a dark bottom panel with the apps and windows in the middle)
-│   ├── flickos-greeter/          Login screen of installed systems (greetd + gtkgreet)
+│   ├── flickos-greeter/          Login screen of installed systems (greetd + greeter-window)
 │   ├── flickos-countme/          Anonymous weekly count (version + install age; PRIVACY.md)
 │   ├── flickos-recovery/         Restore points: a btrfs snapshot before every software change, putting one back
 │   ├── waypaper/                 Wallpaper picker (upstream waypaper, not in Debian trixie)
@@ -178,8 +180,9 @@ Details of every piece: [09 – Customizing](/docs/09-customizing/).
 
 On an **installed** system there is no getty autologin. Instead the login
 screen appears on VT 7: **greetd** (enabled as `display-manager.service`)
-runs gtkgreet in the cage kiosk compositor (`flickos-greeter`). After the
-password it starts `flickos-session`, and the flow continues from step 5.
+runs FlickOS's login screen in the cage kiosk compositor
+(`flickos-greeter`). After the password it starts the chosen session
+(`flickos-session` by default), and the flow continues from step 5.
 If the user chose *Log in automatically* in the installer, they are in the
 group `autologin` and greetd logs them in once per boot without asking. The
 login screen never runs in the live session (its systemd drop-in has
@@ -209,6 +212,7 @@ starts the same session.
 | Change the Settings window (pages, tiles for other apps, mouse/touchpad/keyboard options) | `packages/flickos-control/usr/bin/flickos-control` (`PAGES`, `TILES`, `SETTINGS`); *All Settings* in both menus | [09](/docs/09-customizing/#settings-window) |
 | Change mouse, touchpad, keyboard or idle defaults for everyone | `packages/flickos-control/etc/xdg/flickos/input.conf`, `keyboard.conf`, `idle.conf` | [09](/docs/09-customizing/#settings-window) |
 | Change the start menu (pinned apps, sections, look, on or off for everyone) | `packages/flickos-menu/` (`etc/xdg/flickos/menu.conf`, `SECTIONS`, `style.css`), live pins in `packages/flickos-installer/etc/xdg/flickos-live/flickos/menu.conf`, `Launcher=` in flickos-layouts' `layouts.conf` | [09](/docs/09-customizing/#start-menu) |
+| Change the level ring after the volume and brightness keys (look, time shown, on for everyone, the keys' steps) | `packages/flickos-menu/` (`usr/share/flickos/menu/osd.py`, `usr/libexec/flickos/osd`, `OsdServer`), the keys in `packages/flickos-settings/usr/libexec/flickos/level` and `rc.xml`, the switch in `packages/flickos-control/` (`osd.enabled`, `NotificationsPage`, conffile `etc/xdg/flickos/osd.conf`) | design |
 | Change how pop-ups fade (durations, which windows, the reverse when shown again) | `packages/flickos-menu/` (`FADE_IN_MS`, `FADE_OUT_MS`, `fade_opacity`, `Fader`, `View.fades`), the shortcut sheet's copy in `packages/flickos-shortcuts/` (`Sheets`; the same durations and curve, a test checks), VIS-5 in `docs/hig/06-visual-style.md` | design |
 | Change Quick Settings (its switches and sliders, the programs they run, the icons that open it, on for everyone) | `packages/flickos-menu/usr/share/flickos/menu/quick.py` (`QUICK_TILES`, `QUICK_READS`, `change_command`), `.flickos-quick` in its `style.css`; the panel side in `packages/flickos-layouts/` (`use_quick_settings`, `QUICK_KEY`, `Quick=` in `layout.ini`, `QuickSettings=` in `layouts.conf`) | [09](/docs/09-customizing/#quick-settings) |
 | Change what a click on the desktop does | `flickos-layout` (`CLICKS`), `packages/flickos-settings/etc/xdg/labwc/rc.xml` (`<mouse>`) | [09](/docs/09-customizing/#desktop-clicks) |
@@ -216,10 +220,12 @@ starts the same session.
 | Change Software (the app list, sources, categories, installing and removing, Flatpak updates) | `packages/flickos-software/` (`CATEGORIES`, `SOURCES`, `APT_ORIGINS`, `SAME_APPS`, `merge`, `apt_plan`/`flatpak_plan`, `PROTECTED_PREFIXES`, `usr/libexec/flickos/software-update`, `etc/apt/apt.conf.d/50flickos-software`) | design |
 | Change Software's front page shelves (Made for FlickOS, Apps to start with) | `packages/flickos-software/usr/share/flickos/software/featured.json`, then deploy `server/store/` | [store server](https://github.com/Flick-OS/flickos/blob/main/server/store/README.md) |
 | Accept, update or remove another developer's app | `repo/community/apps/NAME`, `repo/community/publish.sh`; the rules in `repo/community/check.py` | [community](https://github.com/Flick-OS/flickos/blob/main/repo/community/README.md) |
-| Change the welcome window, or stop it at a new account's logins | `packages/flickos-welcome/` (`CARDS`, `etc/xdg/flickos/welcome.conf`, `etc/skel/.config/flickos/welcome`); the chooser on its own is flickos-layouts' `choose-layout` and `flickos-layout first-run` | [09](/docs/09-customizing/#first-login) |
+| Change the welcome window, or stop it at a new account's logins | `packages/flickos-welcome/` (`CARDS`, `WHEN` for cards shown only when a check finds something, `etc/xdg/flickos/welcome.conf`, `etc/skel/.config/flickos/welcome`); the chooser on its own is flickos-layouts' `choose-layout` and `flickos-layout first-run` | [09](/docs/09-customizing/#first-login) |
 | Change the phone connection (what a phone may send, notifications, calls, browsing its files, media control, what the phone plays, named commands, ports, on for everyone, Send to Phone in the file manager) | `packages/flickos-phone/` (`INCOMING`/`OUTGOING` and `capabilities()`, `on_share`, `menu_entries`, `etc/xdg/flickos/phone.conf`), Send to Phone in Thunar in `packages/flickos-settings/etc/xdg/flickos/Thunar/uca.xml`, its panel button in `packages/flickos-layouts/` (`custom/phone` in `common/modules.jsonc` and `base.css`, `use_phone`), its autostart line in `packages/flickos-settings/usr/libexec/flickos/autostart`, the *Phone* page in `packages/flickos-control/` (`PhonePage`) | design |
 | Change screen zoom (keys, whole screen or lens, zoom steps) | `<magnifier>` and the Zoom keys and Super+scroll in `packages/flickos-settings/etc/xdg/labwc/rc.xml`, their descriptions in `packages/flickos-shortcuts/` (`ACTIONS`, `BUSY_SIGNAL`), the user's settings in `packages/flickos-control/` (`zoom.*` in `SETTINGS`, `magnifier_options`, `AccessibilityPage`, conffile `etc/xdg/flickos/zoom.conf`) | design |
 | Change the weather in the panel (what the button and its tooltip show, how often it asks, the settings, what is sent) | `packages/flickos-weather/` (`panel_json`, `tooltip_text`, `update_cache`, `REFRESH_SECONDS`, `etc/xdg/flickos/weather.conf`), the button in `packages/flickos-layouts/` (`custom/weather` in `common/modules.jsonc` and `base.css`, `use_weather`), the *Weather* page in `packages/flickos-control/` (`WeatherPage`), and `PRIVACY.md` | design |
+| Change Bring Files from Windows (which partitions count as Windows, what is copied or skipped, OneDrive-only files, where files go, the live session's USB drive, the window) | `packages/flickos-switch/` (`windows_partitions`, `FOLDERS`, `NOT_ACCOUNTS`, `SKIP_NAMES`, `classify`/`cloud_only`, `target_for`, `Copier`, `Window`), Welcome's card in `packages/flickos-welcome/` (`CARDS`, `WHEN`), its tests' fake disk and the spike's `make-fake-windows.py` | design |
+| Change what a Windows program's window offers (the Windows apps list, reading `.exe`/`.msi`/`.msix`/`.lnk`, Wine) | `packages/flickos-switch/usr/share/flickos/switch/` (`apps.json`, then `tools/check-switch-list.py`; `programs.py`: `identify`, `match`, `answer`), the defaults in `packages/flickos-settings/etc/xdg/flickos/mimeapps.list` | design |
 | Change the media controls or the sound spectrum (the panel buttons, what they show, the spectrum's look, cost and layer, the settings) | `packages/flickos-media/` (`panel_json`, `Follower`, `Strip`, `BARS`/`FRAMERATE`, `etc/xdg/flickos/media.conf`), the buttons in `packages/flickos-layouts/` (`custom/media-*` in `common/modules.jsonc` and `base.css`, `use_media`), the *Media Controls* page in `packages/flickos-control/` (`MediaPage`) | design |
 | Change screenshots and recordings (keys, the capture bar, the frozen screen, where they are saved, the recording's pipeline, the portal's screen chooser, the panel's recording button, the settings) | `packages/flickos-screenshot/` (`DELAYS`, `FOLDER`, `NOTICES`, `FrozenScreen`, `pipeline_description`, `Recorder`, `get`/`set`, `etc/xdg/flickos/screenshot.conf`, `usr/libexec/flickos/screencast-chooser`), the *Screenshots* page in `packages/flickos-control/` (`ScreenshotsPage`), `custom/recording` in `packages/flickos-layouts/usr/share/flickos/layouts/common/modules.jsonc`, the keys in `packages/flickos-settings/etc/xdg/labwc/rc.xml` and their descriptions in `packages/flickos-shortcuts/` (`COMMANDS`) | design |
 | Change installer branding or behavior | `packages/flickos-installer/` | [09](/docs/09-customizing/#installer) |

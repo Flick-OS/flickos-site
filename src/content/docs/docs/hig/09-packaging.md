@@ -45,6 +45,12 @@ maintainer scripts. Only `flickos-branding` does that today.
 - apt only upgrades to a higher version, and reprepro refuses a changed file
   at a version it already has. Before reusing a version (`dch -a`), check it
   isn't already in `repo/public/pool`.
+- On a branch that isn't merged the same day, `dch -v NEXT~test1 -D trixie`
+  instead, and the next free plain number only when it is merged: two
+  branches must never give one version to different files
+  ([06](/docs/06-ci-and-releases/#package-versions-on-branches)).
+  `packages/build.sh` warns when a built version is already in the pool with
+  other files.
 - When a change needs a newer version of another FlickOS package, bump that
   one too and make the dependency versioned (`flickos-layouts (>= 1.19)`).
 - When a file or a behavior moves from one package to another, add

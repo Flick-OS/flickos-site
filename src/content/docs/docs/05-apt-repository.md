@@ -247,7 +247,9 @@ even testers get its updates when they run `apt upgrade`.
    release on their next upgrade without doing anything. A package that only
    works with a newer version of another one says so with `Breaks:` on the
    test version (`Breaks: flickos-control (<< 1.48~)`), so installing it
-   brings that one along.
+   brings that one along. A branch that waits to be merged uses these
+   versions even when nobody tests it, so it never takes a number main
+   publishes ([06](/docs/06-ci-and-releases/#package-versions-on-branches)).
 2. **Publish only the test versions:**
 
    ```sh

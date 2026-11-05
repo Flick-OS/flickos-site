@@ -3,26 +3,27 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
 import { donate } from '../config/donate';
 import { fetchDownloadStats, formatCount } from '../data/downloads';
 
-const SHA256 = '13d5e1dff3f3834422b7a1cfa5a4fd24c0549c5238d4d029769d52d15dc9f1af';
-const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.2/';
+// Empty until the 2.3 ISO is built: paste its line from SHA256SUMS here.
+const SHA256 = '';
+const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.3/';
 const stats = await fetchDownloadStats();
 ---
 
 <MarketingLayout
 	title="Download"
-	description="Download FlickOS 2.2, verify the SHA256 checksum, write a USB stick, and install with Calamares."
+	description="Download FlickOS 2.3, verify the SHA256 checksum, write a USB stick, and install with Calamares."
 >
 	<section class="page">
 		<header class="page-head flick-anim-rise">
-			<h1 class="flick-display">Download FlickOS 2.2</h1>
+			<h1 class="flick-display">Download FlickOS 2.3</h1>
 			<p>
 				Hybrid live ISO for amd64 — boots on BIOS and UEFI. About 1.4&nbsp;GB.
 			</p>
 			<p>
-				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.2: restore points that can undo a software change that broke the system, even from the boot menu, and a Software app for apps from Debian, Flathub and FlickOS’s new community repository. FlickOS also has its own amber halo logo, boot menus and wallpapers.
+				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.3: help coming from Windows, with your files, your programs and your web apps. FlickOS also has its own login and lock screens, media controls and weather in the panel, and more styles in Software.
 			</p>
 			<p>
-				<a href="/news/flickos-2-2/">What’s new in 2.2</a> · <a href="/releases/">All releases</a>
+				<a href="/news/flickos-2-3/">What’s new in 2.3</a> · <a href="/releases/">All releases</a>
 			</p>
 			<p class="cta">
 				<a class="flick-btn primary" href={ISO_URL} rel="noopener noreferrer">Get the ISO on SourceForge</a>
@@ -43,21 +44,21 @@ const stats = await fetchDownloadStats();
 
 		<aside class="warn" role="note">
 			<strong>Coming from Windows?</strong>
-			Save your passwords and files before you install.
+			Save your passwords and files before you install.{' '}
 			<a href="/coming-from-windows/">The switching guide</a> takes you through it.
 		</aside>
 
 		<aside class="warn" role="note">
-			<strong>Coming from 2.1 or 2.0?</strong>
+			<strong>Coming from 2.2, 2.1 or 2.0?</strong>
 			You don’t need to reinstall. Run <code>sudo apt update && sudo apt upgrade</code>, then restart.
 			Use <code>apt upgrade</code>, not <code>apt-get upgrade</code>: <code>apt-get</code> keeps the FlickOS desktop back.
-			Restore points need a new install, because they work only on the btrfs disk layout the 2.2 installer sets up.
-			<a href="/news/flickos-2-2/#upgrading">More about upgrading</a>.
+			Coming from 2.1 or 2.0, restore points need a new install, because they work only on the btrfs disk layout the installer has set up since 2.2.{' '}
+			<a href="/news/flickos-2-3/#upgrading">More about upgrading</a>.
 		</aside>
 
 		<aside class="warn" role="note">
 			<strong>Coming from 1.x?</strong>
-			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.2.
+			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.3.
 			Back up your files and install fresh.
 		</aside>
 
@@ -73,17 +74,27 @@ const stats = await fetchDownloadStats();
 
 		<section class="block">
 			<h2 class="flick-display">Verify the download</h2>
-			<p>
-				After downloading <code>FlickOS-64bit-v2.2.iso</code>, check the SHA-256:
-			</p>
-			<div class="hash-row">
-				<code id="sha256">{SHA256}</code>
-				<button type="button" class="flick-btn ghost" id="copy-sha" data-hash={SHA256}>
-					Copy
-				</button>
-			</div>
-			<pre class="cmd"><code>echo "{SHA256}  FlickOS-64bit-v2.2.iso" | sha256sum -c</code></pre>
-			<p class="hint">Or download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.</p>
+			{
+				SHA256 ? (
+					<>
+						<p>
+							After downloading <code>FlickOS-64bit-v2.3.iso</code>, check the SHA-256:
+						</p>
+						<div class="hash-row">
+							<code id="sha256">{SHA256}</code>
+							<button type="button" class="flick-btn ghost" id="copy-sha" data-hash={SHA256}>
+								Copy
+							</button>
+						</div>
+						<pre class="cmd"><code>echo "{SHA256}  FlickOS-64bit-v2.3.iso" | sha256sum -c</code></pre>
+						<p class="hint">Or download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.</p>
+					</>
+				) : (
+					<p>
+						After downloading <code>FlickOS-64bit-v2.3.iso</code>, download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.
+					</p>
+				)
+			}
 		</section>
 
 		<section class="block">
@@ -92,7 +103,7 @@ const stats = await fetchDownloadStats();
 				<li>Use <a href="https://etcher.balena.io/" rel="noopener noreferrer">Balena Etcher</a>, Rufus (DD mode), or another hybrid-ISO writer.</li>
 				<li>
 					Or with <code>dd</code> (replace the device path):
-					<pre class="cmd"><code>sudo dd if=FlickOS-64bit-v2.2.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+					<pre class="cmd"><code>sudo dd if=FlickOS-64bit-v2.3.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
 				</li>
 				<li>Boot from the USB stick (disable Secure Boot if your machine requires it for unsigned media).</li>
 			</ol>
@@ -102,7 +113,8 @@ const stats = await fetchDownloadStats();
 			<h2 class="flick-display">Live session</h2>
 			<p>
 				The live session logs in automatically as <code>user</code> with password <code>live</code>.
-				Explore the desktop, then right-click the desktop and choose <strong>Install FlickOS</strong> when you are ready.
+				Explore the desktop, then choose <strong>Install FlickOS</strong> when you are ready. It is pinned first in the start menu and is also in the right-click desktop menu.
+				Coming from Windows? Plug in a USB drive and open <strong>Bring Files from Windows</strong> first.
 			</p>
 		</section>
 
@@ -114,9 +126,9 @@ const stats = await fetchDownloadStats();
 				<li>Reboot into the installed system when Calamares finishes.</li>
 			</ol>
 			<p>
-				Installed systems get a graphical login (greetd). FlickOS packages update from the
+				Installed systems get a graphical login (greetd). FlickOS packages update from the{' '}
 				<a href="https://dvbondoy.github.io/flickos-apt/">apt repository</a>.
-				Notes, Write and Phone Screen are in that repository too, free for now, and an update does not install them.
+				Notes, Write and Phone Screen are in that repository too, free for now, and an update does not install them.{' '}
 				<a href="/news/three-apps/">What they are</a>.
 			</p>
 		</section>
@@ -135,8 +147,8 @@ const stats = await fetchDownloadStats();
 		<section class="block">
 			<h2 class="flick-display">Need more detail?</h2>
 			<p>
-				<a href="/docs/02-building-and-testing/">Building and testing</a>
-				covers QEMU boots and install checks. Report problems on
+				<a href="/docs/02-building-and-testing/">Building and testing</a>{' '}
+				covers QEMU boots and install checks. Report problems on{' '}
 				<a href="https://github.com/Flick-OS/flickos/issues">GitHub</a>.
 			</p>
 		</section>

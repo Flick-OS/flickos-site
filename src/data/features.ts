@@ -28,8 +28,14 @@ export const highlights: Feature[] = [
 /** Everything else, on the Features page. */
 export const features: Feature[] = [
 	{
+		title: 'Coming from Windows',
+		body: 'Bring Files from Windows copies your files and browser bookmarks from the Windows disk, even from the live session before you install. Double-click a Windows program and a window says what to use instead, from a list of 161 programs. Websites like WhatsApp or Outlook get windows of their own, with a taskbar button.',
+		href: '/coming-from-windows/',
+		linkLabel: 'The switching guide',
+	},
+	{
 		title: 'Restore points',
-		body: 'Before every software change, FlickOS saves the system as a restore point. Put one back from Settings → Restore Points or from the boot menu, and if the computer fails to start twice after an update, it goes back to the last one that worked by itself. On new installs of 2.2 (btrfs, the installer\'s default).',
+		body: 'Before every software change, FlickOS saves the system as a restore point. Put one back from Settings → Restore Points or from the boot menu, and if the computer fails to start twice after an update, it goes back to the last one that worked by itself. On new installs since 2.2 (btrfs, the installer\'s default).',
 		href: '/#restore',
 		linkLabel: 'How restore points work',
 	},
@@ -45,11 +51,19 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'One Settings window',
-		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, privacy, login, user accounts, firewall, tiling, shortcuts, animations, and history. Type to search any setting.',
+		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, media controls, weather, privacy, login, user accounts, firewall, tiling, shortcuts, animations, and history. Type to search any setting.',
 	},
 	{
 		title: 'Start menu',
 		body: 'Tap Super or click the apps button: a classic menu in Redmond, categories in Traditional, a full-screen app grid in Cupertino. In the grid, clicking an app that is already open brings its window forward. Log Out, Restart and Shut Down take a second click, so a stray one does nothing. Prefer the plain app launcher? Switch back in Settings → Desktop Layout & Style.',
+	},
+	{
+		title: 'Login and lock screens',
+		body: 'FlickOS has its own of both, with your picture from Settings → Users. Pick your name from a list instead of typing it, and show the password as you type. When the screen locks by itself, a key or a mouse move within a few seconds unlocks it again, and the volume and media keys work while it is locked.',
+	},
+	{
+		title: 'Media controls and weather',
+		body: 'Both off by default. Previous, play or pause, next and what is playing in the panel, with a sound spectrum if you want one, and the weather for a place you choose. Turn them on in Settings → Media Controls and Settings → Weather.',
 	},
 	{
 		title: 'Screenshots and recording',
@@ -66,6 +80,12 @@ export const features: Feature[] = [
 	{
 		title: 'Hold Super for shortcuts',
 		body: 'Press and hold Super for about 0.7s to see the shortcut sheet; let go to close. Also under Settings → Keyboard Shortcuts.',
+	},
+	{
+		title: 'Make it yours',
+		body: 'Six more styles in Software → Styles, each with its own look and layout: Try one until you log out, or Use it. Or start from any FlickOS style or layout and change only what you want. FlickOS checks your files first, so a mistake can\'t leave you without a panel.',
+		href: '/learn/yours/',
+		linkLabel: 'Make FlickOS yours',
 	},
 	{
 		title: 'Arc look, FlickOS logo',
@@ -85,6 +105,6 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Install when ready',
-		body: 'Boot the live session, explore, then install with Calamares from the desktop menu. It uses btrfs by default, for restore points, and a 10 GB disk is enough. At first login a welcome window points you to layouts, Settings, Wi-Fi, and shortcuts.',
+		body: 'Boot the live session, explore, then install with Calamares from the desktop menu. It can install next to Windows or replace it, uses btrfs by default, for restore points, and a 10 GB disk is enough. At first login a welcome window points you to layouts, Settings, Wi-Fi, and shortcuts.',
 	},
 ];

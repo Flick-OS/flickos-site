@@ -97,7 +97,14 @@ out in the summer. Each freeze step is a signal for FlickOS:
 **Goal:** a `forky` branch whose ISO builds in a forky container.
 
 1. **Make the branch:** `git switch -c forky main`. Merge `main` into it
-   often, so the branch never falls far behind 2.x.
+   often, so the branch never falls far behind 2.x. Keep it checked out in
+   a worktree of its own (`git worktree add ../FlickOS-forky forky`), and
+   merge with `tools/sync-release.sh [--dry-run] [--push]` from either
+   folder. It finds the newer release's worktree from `flickos-release`,
+   stops before changing anything when that worktree has uncommitted
+   changes or the merge would conflict, and afterwards lists lines the merge
+   added outside the docs that name trixie. After the cut-over it refuses
+   to merge `main` into the trixie branch (see *After the release*).
 2. **Switch the names** on the branch, all in one commit:
    - `FLICKOS_DEBIAN="forky"` in `flickos-release`.
    - `repo/conf/distributions`: **add** three stanzas, `forky`,
@@ -114,21 +121,45 @@ out in the summer. Each freeze step is a signal for FlickOS:
      until phase 4. This is the offline-testing hack from
      [07](/docs/07-troubleshooting/). The boot test's *FlickOS apt source enabled*
      check fails while it is there; that failure is expected until phase 4.
-3. **Get a forky build host.** A privileged container is the quickest:
+3. **Get a forky build host.** A privileged container is the quickest: it is
+   what CI builds in, needs no install, and builds straight in your working
+   tree at full speed. Make an image with the build tools once, so a build
+   doesn't download them again (a `--rm` container started from plain
+   `debian:forky` loses them when it ends). `tools/build-host.Containerfile`
+   lists them:
 
    ```sh
    sudo apt install podman
-   sudo podman run --rm -it --privileged -v "$PWD":/src -w /src debian:forky bash
-   # inside the container:
-   apt update && apt install -y live-build build-essential debhelper dpkg-dev devscripts \
-       reprepro rsync wget qemu-system-x86 qemu-utils ovmf xorriso meson pkgconf gettext \
-       libgtk-3-dev libgtk-layer-shell-dev libjson-c-dev libwayland-dev wayland-protocols git
-   git config --global --add safe.directory /src
-   tools/build-iso.sh
+   sudo podman build --network host --build-arg DEBIAN=forky -t flickos-forky \
+       -f tools/build-host.Containerfile "$(mktemp -d)"
    ```
 
-   `build-iso.sh` runs without sudo as root. Build output is owned by root on
-   your side; `sudo chown -R "$USER" .` after leaving.
+   Then each build is:
+
+   ```sh
+   sudo podman run --rm -it --privileged --network host -v "$PWD":/src -w /src \
+       flickos-forky tools/build-iso.sh
+   sudo find . -mindepth 1 -maxdepth 1 ! -name cache ! -name chroot ! -name binary \
+       ! -name .build -exec chown -R "$USER" {} +
+   ```
+
+   `build-iso.sh` runs without sudo as root, so its output is owned by root
+   on your side, hence the `chown`. **Never chown live-build's own folders**
+   (`cache/`, `chroot/`, `binary/`, `.build/`): chown clears setuid and
+   setgid bits, and the next build copies `cache/bootstrap` into the image.
+   A plain `chown -R "$USER" .` did that once (2026-10-29): the ISO's base
+   system belonged to uid 1000, `su`, `passwd` and `unix_chkpwd` had lost
+   their bits, and no password worked. The fix is `sudo rm -rf cache/bootstrap
+   chroot` and a new build. live-build's `cache/` and `chroot/` are
+   in your folder and outlive the container, so only what changed in forky
+   is downloaded again. The image keeps the build tools at the day you made
+   it; the ISO's packages are always fetched fresh. Make it again with
+   `--pull --no-cache` added at each freeze step, or when a build tool's
+   newer forky version matters. `--network host` uses the host's network
+   directly: without it, the container's DNS or forwarding can break after
+   the host's network changes, and `apt update` then fetches nothing (every
+   package is "unable to locate"). For a shell in the container, put `bash`
+   in place of `tools/build-iso.sh`.
 4. **Let CI build it too.** `iso.yml` runs on `main`, tags and pull requests,
    so open a **draft pull request** from `forky` into `main`. Every push then
    builds and boot-tests the forky ISO. Don't merge it before phase 4.
@@ -283,7 +314,7 @@ hardware:
 
 - Live session; install on BIOS and UEFI; first login (Welcome).
 - Every layout with every style, and each `flickos-style-*` package
-  (install the debs from `config/packages.chroot/`).
+  (install the debs from `config/packages.opt-in/`).
 - Tiling; start menu (each style); Quick Settings; the shortcut sheet.
 - Lock with Super+L; idle lock; the swaylock fallback.
 - Screenshot, markup window, recording, text from the screen.
@@ -522,7 +553,7 @@ The traps in one place:
 ## Checklist
 
 **Phase 1: workbench**
-- [ ] `forky` branch; `main` merged in regularly
+- [ ] `forky` branch in its own worktree; `main` merged in regularly (`tools/sync-release.sh`)
 - [ ] `FLICKOS_DEBIAN="forky"`, three forky stanzas added (trixie kept), `flickos.sources` suites, workflow containers
 - [ ] `Enabled: no` added (temporarily)
 - [ ] forky container builds; draft pull request runs CI
