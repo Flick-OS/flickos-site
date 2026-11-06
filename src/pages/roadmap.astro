@@ -1,0 +1,224 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+
+// Update this page at every release (RELEASE_CHECKLIST.md): move what shipped
+// out, and change the date. No dates of our own: the only timing here is
+// Debian's. Items come from the product repo's design docs and TODO.md; leave
+// out paid and private work.
+const updated = { date: '2026-11-06', label: '6 November 2026' };
+
+const building = [
+	{
+		title: 'Translations',
+		body: 'FlickOS’s own programs in your language. The start menu is in Finnish so far. Welcome, the login screen and the Coming from Windows windows are ready to translate, and the other programs follow.',
+		link: { href: '/docs/12-translating/', label: 'How to translate' },
+	},
+	{
+		title: 'Tortuga',
+		body: 'A new dark style with its own layout: the panel as floating islands, and a dock with a small grid of your desktops.',
+	},
+];
+
+const three = [
+	{
+		title: 'Debian 14',
+		body: 'Newer versions of everything underneath. FlickOS already builds and boots on it.',
+	},
+	{
+		title: 'A new look',
+		body: 'A new logo, Papirus icons, and Light as the default style.',
+		link: { href: '/tour/', label: 'Click through it' },
+	},
+	{
+		title: 'A beta for testers',
+		body: 'An ISO to try when Debian 14 is almost final.',
+	},
+	{
+		title: 'A way up from 2.x',
+		body: 'Planned, not built yet: an upgrade you start from Settings’ Updates page, with a way back. It opens to everyone around Debian 14.1, about two months after Debian 14. Automatic updates never move you to 3.0, so nothing changes until you choose to.',
+		link: { href: '/docs/11-new-debian-release/', label: 'How the move works' },
+	},
+	{
+		title: '2.x after 3.0',
+		body: 'FlickOS 2.x keeps getting updates until Debian’s security support for Debian 13 ends, about August 2028.',
+	},
+];
+
+const ideas = [
+	{
+		title: 'A search bar',
+		body: 'One box that finds apps, settings and files. Off until you turn it on.',
+	},
+	{
+		title: 'Tweaks in Settings',
+		body: 'The panel’s look and arrangement, and how windows behave, as pages in Settings.',
+	},
+	{
+		title: 'Developer kits',
+		body: 'The tools for a kind of development, set up together. Nothing is installed unless you ask.',
+	},
+	{
+		title: 'Bluetooth in Quick Settings',
+		body: 'A switch next to Wi-Fi. It’s waiting for a test on real hardware.',
+	},
+	{
+		title: 'Drives in Quick Settings',
+		body: 'See and eject a USB drive you plugged in.',
+	},
+	{
+		title: 'A window list per desktop',
+		body: 'Traditional’s window list showing only the current desktop’s windows. This needs a change in labwc itself.',
+	},
+];
+
+const sections = [
+	{
+		id: 'building',
+		title: 'Being built',
+		intro: 'Work that has started and comes to FlickOS 2.x.',
+		items: building,
+	},
+	{
+		id: 'three',
+		title: 'FlickOS 3.0',
+		intro: 'FlickOS 3.0 moves to Debian 14. It comes out after Debian 14 does, and Debian sets that date.',
+		items: three,
+	},
+	{
+		id: 'ideas',
+		title: 'Ideas we’re weighing',
+		intro: 'Not promises. Some of these will change, and some may never ship.',
+		items: ideas,
+	},
+];
+---
+
+<MarketingLayout
+	title="Roadmap"
+	description="What is being built for FlickOS, what comes with FlickOS 3.0, and the ideas we’re weighing."
+>
+	<section class="page">
+		<header class="page-head flick-anim-rise">
+			<h1 class="flick-display">Roadmap</h1>
+			<p>
+				What’s being built for FlickOS and what might come next. One person maintains FlickOS, so there are no dates here: things ship when they’re ready, and plans change.
+			</p>
+			<p class="meta">
+				Updated <time datetime={updated.date}>{updated.label}</time> · <a href="/releases/">What’s already out</a>
+			</p>
+		</header>
+
+		{
+			sections.map((section) => (
+				<section class="group" aria-labelledby={section.id}>
+					<h2 class="flick-display" id={section.id}>
+						{section.title}
+					</h2>
+					<p class="intro">{section.intro}</p>
+					<ul class="items">
+						{section.items.map((item) => (
+							<li>
+								<h3>{item.title}</h3>
+								<p>
+									{item.body}
+									{item.link && (
+										<>
+											{' '}
+											<a href={item.link.href}>{item.link.label}</a>
+										</>
+									)}
+								</p>
+							</li>
+						))}
+					</ul>
+				</section>
+			))
+		}
+
+		<p class="ask">
+			Is something missing? Tell us on <a href="https://www.reddit.com/r/flickos/">r/flickos</a> or <a href="https://discord.gg/vFj3VxYwC">Discord</a>.
+		</p>
+	</section>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.75rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 0.75rem 0 0;
+		color: var(--flick-muted);
+		line-height: 1.5;
+	}
+	.page-head .meta {
+		font-size: 0.9rem;
+	}
+	.group {
+		margin-top: 2.5rem;
+	}
+	.group h2 {
+		margin: 0;
+		font-size: 1.5rem;
+		color: var(--flick-title);
+	}
+	.intro {
+		margin: 0.4rem 0 0;
+		color: var(--flick-muted);
+		line-height: 1.5;
+	}
+	.items {
+		list-style: none;
+		margin: 1.25rem 0 0;
+		padding: 0;
+		border-left: 2px solid var(--flick-border);
+	}
+	.items li {
+		position: relative;
+		padding: 0 0 1.25rem 1.25rem;
+	}
+	.items li:last-child {
+		padding-bottom: 0.25rem;
+	}
+	.items li::before {
+		content: '';
+		position: absolute;
+		left: -0.4rem;
+		top: 0.35rem;
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 50%;
+		background: var(--flick-accent);
+	}
+	#ideas ~ .items li::before {
+		background: var(--flick-muted);
+	}
+	.items h3 {
+		margin: 0;
+		font-size: 1.05rem;
+		font-weight: 600;
+		color: var(--flick-title);
+	}
+	.items p {
+		margin: 0.25rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.ask {
+		margin: 2.5rem 0 0;
+		color: var(--flick-muted);
+		line-height: 1.5;
+	}
+</style>
