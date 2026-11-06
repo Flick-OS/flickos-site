@@ -89,7 +89,7 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Arc look, FlickOS logo',
-		body: 'GTK, panel, terminal, launcher and notifications share the Arc palette, with a Light style too. The boot menus, splash screen, installer and wallpapers carry FlickOS\'s amber halo logo, and installed systems get a FlickOS boot menu theme. On the desktop only the start button\'s logo is amber.',
+		body: 'GTK, panel, terminal, launcher and notifications share the Arc palette, with a Light style too. Inter is the system font, and a soft shadow shows which window is in front. The boot menus, splash screen and installer carry FlickOS\'s amber halo logo, and installed systems get a FlickOS boot menu theme. On the desktop only the start button\'s logo is amber.',
 	},
 	{
 		title: 'Firefox on less memory',

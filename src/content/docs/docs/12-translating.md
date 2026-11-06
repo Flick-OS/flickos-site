@@ -28,6 +28,7 @@ translatable one package at a time:
 | `flickos-welcome` | Yes (1.7) | The welcome window and its menu entry |
 | `flickos-menu` | Yes (1.23) | The start menu (all three styles), Quick Settings and the phone popup |
 | `flickos-greeter` | Yes (2.0) | The login screen; PAM's messages and the keyboard layouts' names come from those projects' own translations |
+| `flickos-switch` | Yes (1.0) | The Bring Files from Windows and Windows programs windows, their menu entries and the sentences in the list of Windows programs |
 | Every other FlickOS package | Not yet | See the [HIG audit](/docs/hig/audit/) (TXT-10) |
 
 ## How it works

@@ -88,11 +88,24 @@ When CSS is needed (a layer-shell surface has no window frame to inherit):
 
 ### VIS-5 Should: Keep it flat and still
 
-FlickOS draws translucency without blur (panel, terminal) and no shadows.
-Its pop-ups (start menu, Quick Settings, phone popup, shortcut sheet) may
+FlickOS draws translucency without blur (panel, terminal). Windows have a
+soft shadow, which shows which one is in front: it's labwc's, about 1 ms more
+CPU per window move without a GPU, and Settings' *Window shadows* turns
+it off. Nothing inside a window or the panel has one.
+
+Corners come in two sizes: 8 px on surfaces (windows, pop-ups, notifications,
+the launcher, the floating panel) and 6 px on what's in them (buttons, rows,
+tiles). The cards of the lock and login screens (12 px) and the dock, which are
+large and stand alone, are the exceptions. labwc rounds only a window's top
+corners.
+
+FlickOS's pop-ups (start menu, Quick Settings, phone popup, shortcut sheet) may
 fade in and out, at most 100 ms, never full screen, and only while
-GSettings' `enable-animations` is on; nothing else animates beyond GTK's own
-transitions. Input never waits for a fade. Stack transitions are `NONE`,
+GSettings' `enable-animations` is on; the opt-in floating panel may slide
+between its two shapes, at most 200 ms, under the same switch
+(design/flickos-floating-panel.md).
+Nothing else animates beyond GTK's own transitions. Input never waits for a
+fade. Stack transitions are `NONE`,
 except a crossfade of at most 100 ms between a pop-up's pages (the classic
 start menu's Home and All Apps).
 

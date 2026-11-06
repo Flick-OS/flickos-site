@@ -313,6 +313,7 @@ without a tray.
 | `usr/share/flickos/layouts/ID/waybar.jsonc`, `style.css` | The layout's bars and CSS |
 | `usr/share/flickos/layouts/cupertino/dock.config`, `dock.css` | Cupertino's dock: sfwbar config (see `sfwbar(1)`) and its CSS |
 | `usr/share/flickos/layouts/traditional/windowlist.config`, `windowlist.css` | Traditional's bottom panel (window list and desktop switcher): sfwbar config and its CSS |
+| `usr/share/flickos/layouts/redmond/floating.css`, `floating-full.css` | Redmond's floating panel: its look, and what turns it into the full panel (design) |
 | `usr/share/flickos/layouts/ID/preview.png` | 240×150 image shown in the chooser (`tools/make-layout-previews.sh`) |
 | `usr/share/flickos/styles/ID/wallpaper.png` | The style's [wallpaper](#wallpaper), shown with every layout |
 | `usr/share/backgrounds/flickos/ID.jpg` | The layouts' photos, their wallpapers until flickos-layouts 1.37; now only choices in waypaper |
@@ -784,6 +785,20 @@ flickos-desktop, and gives the backlight to the `video` group). The look is in
 `FLICKOS_MENU_PREFIX=$PWD usr/bin/flickos-menu quick`. The timing log has
 *quick settings shown in* and *values in* (every owner has answered).
 
+### Floating panel
+
+Redmond's panel can be a slimmer bar that floats above the bottom of the screen
+and fills it while a window is maximized, fullscreen or tiled. It is off by
+default; the switch is in *Settings → Desktop Layout & Style*, shown for
+Redmond. A maximized window on another desktop counts too
+(design/flickos-floating-panel.md).
+
+```sh
+flickos-layout floating-panel list          # off, on
+flickos-layout floating-panel set on        # applies at once
+flickos-layout floating-panel set default   # back to the system default (off)
+```
+
 ### Adding a layout
 
 1. Copy a folder in `packages/flickos-layouts/usr/share/flickos/layouts/`, e.g.
@@ -922,7 +937,7 @@ its icon theme), notifications, **new** terminal windows and the
 | File in `packages/flickos-layouts/usr/share/flickos/styles/ID/` | Purpose |
 |---|---|
 | `style.ini` | `[Style]` `Name`, `Comment`, `Order`, `GtkTheme`, `IconTheme`, `LabwcTheme`, `ColorScheme` (`default`, `prefer-dark` or `prefer-light`), and the palette files `Waybar`, `Foot`, `Fuzzel`, `Mako` (relative to the folder, or absolute); `Wallpaper` (optional) |
-| `wallpaper.png` | The style's [wallpaper](#wallpaper): the halo (FlickOS's logo, drawn large), dark or light |
+| `wallpaper.png` | The style's [wallpaper](#wallpaper): hills at dusk and a house with one light on, the same in Dark and Light (two copies: `check` refuses a link out of the style's folder) |
 | `waybar-colors.css` | `@define-color` for the panel. Same names in every style; layout CSS uses only these names |
 | `foot.ini` | `[colors]`: `alpha`, background, foreground and the 16 ANSI colors |
 | `fuzzel.ini` | `[main] icon-theme` and `[colors]` |
@@ -1457,10 +1472,10 @@ Two windows that open in the same instant can land in the same place.
 
 ## Wallpaper
 
-Each [style](#styles-darklight) has its own wallpaper (`Wallpaper=wallpaper.png`
-in `style.ini`): the halo, FlickOS's logo drawn large in the brand amber, on
-dark for Dark, on light for Light. Switching the style switches it; switching the layout keeps it. At
-login, autostart runs `flickos-layout wallpaper`, which shows the first of
+Each [style](#styles-darklight) names its wallpaper (`Wallpaper=wallpaper.png`
+in `style.ini`). Dark and Light show the same one, hills at dusk and a house with
+one light on, no logo; the extra styles have their own. Switching to one of those switches it;
+switching the layout keeps it. At login, autostart runs `flickos-layout wallpaper`, which shows the first of
 these that exists:
 
 1. **The user's choice in waypaper** (*Settings → Wallpaper*, or the chooser's
@@ -1481,9 +1496,11 @@ in `~/.config/waypaper/config.ini` (or `~/.config/flickos/wallpaper`).
 **Older wallpapers:** until flickos-layouts 1.37 each layout showed its own
 Unsplash photo. They stay installed at `/usr/share/backgrounds/flickos/ID.jpg`
 (the paths waypaper always showed them at, so a user who picked one there keeps
-it), next to `flickos-dark.png` and `flickos-light.png` (links to the styles'
-wallpapers). Anyone can pick any of them in *Settings → Wallpaper*. A user who
-never picked one gets the new wallpaper at their next login after the upgrade.
+it). Dark's and Light's wallpapers until FlickOS 2.3, the halo (FlickOS's logo
+drawn large in the brand amber), stay the same way as `flickos-dark.png` and
+`flickos-light.png`, next to `flickos-home.png` (a link to the styles' wallpaper).
+Anyone can pick any of them in *Settings → Wallpaper*. A user who never picked
+one gets the new wallpaper at their next login after the upgrade.
 
 **Layout or style switch:** `flickos-layout set ID` and `style set ID` start
 `swaybg` with the new wallpaper, wait half a second so it is drawn, then stop
@@ -2153,14 +2170,33 @@ everyone.
 Try it without a key: `/usr/libexec/flickos/osd volume 40 muted`. Design:
 design/flickos-osd.md.
 
+### Sound: real-time priority
+
+PipeWire needs real-time priority to keep sound going while the computer is
+busy, and it gets that from `rtkit` (a Depends of flickos-desktop). One line in
+`packages/flickos-settings/usr/share/flickos/pipewire/realtime.conf` sends the
+request straight to rtkit, because Debian 13's portal refuses it:
+
+```
+module.rt.args = { rtportal.enabled = false }
+```
+
+`module.rt.args` must be a section of its own, not a key in
+`context.properties`, where PipeWire reads it without using it.
+`debian/links` puts this one file in each program's `conf.d` folder. A new
+program with its own PipeWire config needs a line there. WirePlumber reads no
+such section; it carries no sound, so it doesn't matter. Measured on a 2-core
+laptop under heavy load at a 2.7 ms buffer: 280 to 530 dropouts a minute without
+real-time priority, 0 to 6 with it.
+
 ### GTK theme, icons, cursor, fonts, dark mode
 
 GTK apps under Wayland read these from **GSettings**. FlickOS sets defaults with
 the schema override file. glib's package trigger recompiles the schemas when the
 package is installed.
 
-Current: **`Arc-Dark`** + `prefer-dark`, **`Numix-Circle`** icons, Adwaita cursor
-(size 24), DejaVu fonts at size 10, and the title bar buttons
+Current: **`Arc-Dark`** + `prefer-dark`, **`Numix-Circle`** icons, the
+`FlickOS-Bibata` cursor (size 24), the Inter font at size 10, and the title bar buttons
 `appmenu:minimize,maximize,close` (`org.gnome.desktop.wm.preferences
 button-layout`) for windows that draw their own title bar. The schema's default
 `appmenu:close` would give Firefox without *Title Bar* only a close button.

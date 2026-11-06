@@ -298,6 +298,7 @@ branch keeps it.
 | **systemd 257 → 262** | sysusers (countme, greeter), sandboxed units (countme, software-update), timers, logind `conf.d`, greetd's drop-in | `systemctl --failed`, `systemd-analyze security flickos-countme.service`, the power button setting |
 | **greetd / gtkgreet / cage** | The login screen, the plain session entry | Log in, log out, pick the plain session |
 | **gtk-session-lock** | The gir package that doesn't depend on its library (flickos-lock's explicit Depends) | If `0.2.0-3` fixed it, the extra Depends is harmless; keep it |
+| **xdg-desktop-portal 1.20 → newer** | Its Realtime interface refuses every request, so flickos-settings' `realtime.conf` turns that route off | With `realtime.conf` removed, restart PipeWire while the portal runs: its `data-loop.0` thread is `SCHED_RR`. If so, delete the file and its `debian/links` |
 | **xdg-desktop-portal-wlr 0.7 → 0.8** | The chooser config, the stuck first frame restart | Record an area and a full screen; the file plays |
 | **kanshi 1.5 → 1.9, wlr-randr 0.4 → 0.5** | Profiles from `displays save`, `wlr-randr --json` fields | Save an arrangement, unplug and plug back |
 | **foot, fuzzel, mako, swaylock** | Config keys in flickos-settings and every style's palette | `foot --check-config`, start fuzzel and mako from a terminal and read the warnings; lock with each style |

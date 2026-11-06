@@ -17,6 +17,10 @@ const fixes = [
 		body: 'was an empty box after a screen was turned on or off, or after the panel was changed.',
 	},
 	{
+		title: 'The panels',
+		body: 'ignored the font chosen in Settings → Appearance.',
+	},
+	{
 		title: 'Phone',
 		body: 'couldn’t pair with a computer running KDE Connect. A computer’s clipboard is now ignored, since KDE Connect sends it at every change; text shared from a computer still arrives.',
 	},
@@ -44,6 +48,10 @@ const fixes = [
 		title: 'History',
 		body: 'names apps better (Thunar no longer shows as Bulk Rename).',
 	},
+	{
+		title: 'Sound',
+		body: 'could crackle or break up while the computer was busy, because sound never got the real-time priority it needs.',
+	},
 ];
 
 const issues = [
@@ -55,6 +63,7 @@ const issues = [
 	'The gray descriptions under settings are hard to read, most of all in the Light style.',
 	'Tiling uses the same arrangement on all monitors.',
 	'Traditional’s window list shows the windows of all 4 desktops, not only the current one’s.',
+	'Eleven’s clock can be too wide for the panel in languages with a long date.',
 	'Quick Settings has no Bluetooth switch yet.',
 	'Phone needs the firewall to let it in. If the firewall is on, allow phones in Settings → Phone.',
 	'There is no upgrade path from FlickOS 1.x.',
@@ -63,17 +72,17 @@ const issues = [
 
 <MarketingLayout
 	title="FlickOS 2.3"
-	description="FlickOS 2.3 is made for people coming from Windows: it brings your files over, says what to use instead of a Windows program, and puts websites in windows of their own. It also has its own login and lock screens."
+	description="FlickOS 2.3 is made for people coming from Windows: it brings your files over, says what to use instead of a Windows program, and puts websites in windows of their own. It also has a more polished look and its own login and lock screens."
 >
 	<article class="page">
 		<header class="page-head flick-anim-rise">
 			<p class="date">
-				<time datetime="2026-11-05">5 November 2026</time>
+				<time datetime="2026-11-06">6 November 2026</time>
 			</p>
 			<h1 class="flick-display">FlickOS 2.3: made for people coming from Windows</h1>
 			<p>
 				FlickOS 2.3 is still based on <strong>Debian 13 “trixie”</strong>. It is made for people <strong>coming from Windows</strong>: it brings your files over from the Windows part of your disk, tells you what to use instead of a Windows program, and puts websites like WhatsApp or Outlook in windows of their own.
-				It also has its own <strong>login screen</strong> and <strong>lock screen</strong>, <strong>media controls</strong> and <strong>weather</strong> in the panel, a <strong>volume and brightness ring</strong>, and many ways to make the desktop your own.
+				It also has a <strong>more polished look</strong>, its own <strong>login screen</strong> and <strong>lock screen</strong>, <strong>media controls</strong> and <strong>weather</strong> in the panel, a <strong>volume and brightness ring</strong>, and many ways to make the desktop your own.
 			</p>
 			<p class="cta">
 				<a class="flick-btn primary" href="/download/">Download 2.3</a>
@@ -114,6 +123,13 @@ const issues = [
 		<section class="part" id="desktop">
 			<h2 class="flick-display">The desktop</h2>
 			<ul>
+				<li><strong>A new wallpaper:</strong> the Dark and Light styles and the login screen now show hills at dusk and a house with one light on. If you never chose a wallpaper, you get it at your next login after the update. A wallpaper you chose stays, and the old ones are still in <em>Settings → Wallpaper</em>.</li>
+				<li><strong>A new system font:</strong> Inter, in windows, the panels, title bars, notifications and the launcher. The terminal keeps DejaVu, and a style with a font of its own keeps it. A font you chose in <em>Settings → Appearance</em> stays in your windows and the panels.</li>
+				<li><strong>Window shadows:</strong> a soft shadow shows which window is in front, in every style. Turning it off in <em>Settings → Accessibility</em> can help on an old computer.</li>
+				<li><strong>Window borders</strong> stand out better on dark pages. In the Dark and Light styles the focused window’s border is now a soft blue.</li>
+				<li><strong>Rounder corners:</strong> windows and pop-ups share one corner size, and the start menu, Quick Settings and the phone popup now keep a small gap from the edges of the screen and the panel.</li>
+				<li><strong>New mouse cursors:</strong> Bibata, on the desktop and the login screen.</li>
+				<li><strong>Tidier panels:</strong> the buttons in Redmond, Cupertino and Traditional have one rounded shape and light up the same way. In Redmond, a short line marks the focused window, and the clock shows the date in words (<em>Fri 06 Nov</em>).</li>
 				<li><strong>FlickOS’s own login screen:</strong> pick your name from a list instead of typing it. It remembers the last user and each user’s session, can show the password as you type it, and has Shut Down and Restart, zoom (<kbd>Super+=</kbd>, <kbd>Super+-</kbd>, <kbd>Super+0</kbd>) and, with more than one keyboard layout, a button that shows the layout in use.</li>
 				<li><strong>Your picture:</strong> choose one in <em>Settings → Users</em>. It shows on the login screen, on the lock screen and in the start menu.</li>
 				<li><strong>FlickOS’s own lock screen</strong> for <kbd>Super+L</kbd>, the menus and the idle lock, in the style’s colors. When the screen locks by itself, a key or a mouse move within a few seconds unlocks it again. The volume, microphone and media keys work while the screen is locked.</li>
@@ -124,7 +140,7 @@ const issues = [
 				<li><strong>Keys for every keyboard layout:</strong> a FlickOS shortcut whose key needs Shift or AltGr on your keyboard moves to the key in the same place (on a Nordic keyboard, <kbd>Super+[</kbd> becomes <kbd>Super+Å</kbd>). The shortcut sheet shows the keys as your keyboard labels them, and now fits small screens.</li>
 				<li><strong>Tiling</strong> now tiles the windows that are already open when you turn it on.</li>
 				<li><strong>The clock’s calendar</strong> marks today. Scroll over the clock for another month, right-click for the year.</li>
-				<li><strong>The start menu</strong> is translated into <strong>Finnish</strong> (thanks, Pekka Kurki), and the start menu, Quick Settings, the login screen and the Welcome window can now be translated. Help is welcome.</li>
+				<li><strong>The start menu</strong> is translated into <strong>Finnish</strong> (thanks, Pekka Kurki), and the start menu, Quick Settings, the login screen, the Welcome window and the Coming from Windows windows can now be translated. Help is welcome.</li>
 				<li><strong>Save Report…</strong> in <em>Settings → About</em> puts what a bug report needs in one file for you to attach. Nothing is sent. Your home folder, your user and computer names and web addresses are left out; file names stay, so read it first.</li>
 			</ul>
 		</section>
@@ -133,6 +149,7 @@ const issues = [
 			<h2 class="flick-display">Make it yours</h2>
 			<ul>
 				<li><strong>More styles in Software:</strong> <em>Seven</em>, <em>Aye3wm</em>, <em>Footprint</em>, <em>Elemental</em>, <em>Experience</em> and <em>Eleven</em>, each with its own look and layout, under <strong>Software → Styles</strong>. <em>Try</em> uses one until you log out; <em>Use</em> keeps it.</li>
+				<li><strong>A floating panel for Redmond:</strong> a slimmer bar that floats above the bottom of the screen and fills it while a window is maximized, fullscreen or tiled. Off by default: <em>Settings → Desktop Layout &amp; Style</em>.</li>
 				<li><strong>Your own styles and layouts:</strong> start from any FlickOS style or layout and change only what you want. Your own panel tweaks (CSS), and your own labwc settings added on top of FlickOS’s. FlickOS checks your files first, so a mistake can’t leave you without a panel. <em>Settings → Desktop Layout &amp; Style</em> has a button for each folder, and <code>flickos-layout</code> can try a style, share it as one file and apply your changes as you save them.</li>
 				<li><strong>The plain session:</strong> if your changes break something, pick <strong>FlickOS (Plain Session)</strong> from the button at the bottom left of the login screen to get FlickOS without them.</li>
 			</ul>

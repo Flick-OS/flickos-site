@@ -388,7 +388,7 @@ the calendar to another month and back shows it again. Before
 flickos-layouts 1.75 FlickOS reloaded waybar when a screen was turned on or
 off (wdisplays, Settings' *Displays*) and when `watch`, `try` or `pinned`
 changed the panel; since 1.75 it starts waybar again
-instead. Fix it now with `flickos-layout reload-panel`; never use
+instead, and since 1.80 that holds for the panel started at login too. Fix it now with `flickos-layout reload-panel`; never use
 `pkill -USR2 waybar`.
 
 **No panel at all (no bar, but the wallpaper and the menu are there)**
@@ -594,6 +594,27 @@ type. Without it the type is empty and `xdg-open` gives the path to the web
 browser. `xdg-mime query filetype ~` should print `inode/directory`; if it
 prints nothing, `sudo apt install file` (a Depends of flickos-desktop since
 1.35, so an update brings it).
+
+**Sound crackles or breaks up while the computer is busy**
+PipeWire's audio thread should have real-time priority. Check it while logged
+in:
+
+```sh
+for t in /proc/$(pgrep -nx pipewire-pulse)/task/*; do
+    grep -qx data-loop.0 $t/comm && chrt -p ${t##*/}
+done
+```
+
+The policy should be `SCHED_RR`. `SCHED_OTHER` means one of two things, and
+nothing logs an error for either:
+
+- `rtkit` isn't installed (a Depends of flickos-desktop since 1.37).
+- PipeWire went through the portal, which refuses every request on Debian 13
+  while PipeWire logs success. `journalctl --user -u xdg-desktop-portal` shows
+  `Realtime error: Could not get pidns`. flickos-settings' `realtime.conf`
+  turns that route off; see [09 – Customizing](/docs/09-customizing/#sound-real-time-priority).
+  WirePlumber still takes it and logs this error, which does no harm: it
+  carries no sound.
 
 ## Window tiling (flick-tiler)
 

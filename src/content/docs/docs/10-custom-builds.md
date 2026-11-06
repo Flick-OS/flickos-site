@@ -160,7 +160,7 @@ Everything that carries the name:
 | Root menu | `flickos-settings` `menu.xml` and `flickos-installer`'s live copy |
 | The logo: the panel's apps button, menus, Welcome | `flickos-branding` (`flickos.svg`, `flickos-symbolic.svg` in `/usr/share/icons/hicolor/`) |
 | Installed system's boot menu | `flickos-branding` (`/usr/share/flickos/grub/`) |
-| Dark and Light wallpapers (the halo drawn large) | `flickos-layouts` (`artwork/wallpaper-*.svg` → `styles/*/wallpaper.png`) |
+| The two halo wallpapers, choices in the Wallpaper app (the halo drawn large) | `flickos-layouts` (`artwork/wallpaper-dark.svg`, `-light.svg` → `/usr/share/backgrounds/flickos/flickos-dark.png`, `-light.png`) |
 | fastfetch's logo | `flickos-branding` (`/usr/share/flickos/fastfetch/flickos.txt`) |
 
 A changed system someone else hands out must replace every row

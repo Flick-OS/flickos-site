@@ -3,8 +3,8 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
 import { donate } from '../config/donate';
 import { fetchDownloadStats, formatCount } from '../data/downloads';
 
-// Empty until the 2.3 ISO is built: paste its line from SHA256SUMS here.
-const SHA256 = '';
+// The ISO's line from SHA256SUMS. Left empty, the page shows only the SHA256SUMS steps.
+const SHA256 = '288e92e669e3b531771c9ba0d702d989cf7eaecdc9889abb69b238405dbcec31';
 const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.3/';
 const stats = await fetchDownloadStats();
 ---
@@ -20,7 +20,7 @@ const stats = await fetchDownloadStats();
 				Hybrid live ISO for amd64 — boots on BIOS and UEFI. About 1.4&nbsp;GB.
 			</p>
 			<p>
-				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.3: help coming from Windows, with your files, your programs and your web apps. FlickOS also has its own login and lock screens, media controls and weather in the panel, and more styles in Software.
+				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.3: help coming from Windows, with your files, your programs and your web apps. FlickOS also has a more polished look, its own login and lock screens, media controls and weather in the panel, and more styles in Software.
 			</p>
 			<p>
 				<a href="/news/flickos-2-3/">What’s new in 2.3</a> · <a href="/releases/">All releases</a>
