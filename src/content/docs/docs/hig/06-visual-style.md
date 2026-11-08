@@ -99,6 +99,11 @@ tiles). The cards of the lock and login screens (12 px) and the dock, which are
 large and stand alone, are the exceptions. labwc rounds only a window's top
 corners.
 
+A pop-up has no arrow to what opened it: being in the same corner says that
+already. The start menu's in Redmond and Traditional, a layout's choice
+(`MenuArrow=`), is the exception, and only a button that never moves can have
+one.
+
 FlickOS's pop-ups (start menu, Quick Settings, phone popup, shortcut sheet) may
 fade in and out, at most 100 ms, never full screen, and only while
 GSettings' `enable-animations` is on; the opt-in floating panel may slide

@@ -90,7 +90,8 @@ its own session with no input (CODE-7); new dependencies are commented
 
 What the first audit looked at and found in line:
 
-- **WIN-1:** no program uses a header bar or client-side title bar.
+- **WIN-1:** no FlickOS program uses a header bar or client-side title bar
+  (Thunar's is WIN-1's exception).
 - **WIN-3:** Settings (900×660), Welcome (760×560), the chooser (620×680) and
   Settings' dialogs fit 1366×768.
 - **WIN-13, WIN-14:** removing a user asks with a named object, a *Remove*

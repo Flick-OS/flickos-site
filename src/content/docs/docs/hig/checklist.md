@@ -34,7 +34,7 @@ Should rules aren't listed. Read the pages for those.
 
 ## Windows and layout ([04](/docs/hig/04-windows/))
 
-- [ ] **WIN-1** labwc draws the title bar: no header bar.
+- [ ] **WIN-1** labwc draws the title bar: no header bar (WIN-1's exception: Thunar, not FlickOS's code).
 - [ ] **WIN-2** A second start doesn't open a second window.
 - [ ] **WIN-3** Default size at most 1280×680, everything reachable at that size.
 - [ ] **WIN-4** The title is (or starts with) the desktop file's `Name`. Dialog titles name their job.

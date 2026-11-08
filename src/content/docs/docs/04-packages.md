@@ -69,7 +69,7 @@ Default desktop configuration:
 | `usr/libexec/flickos/autostart` | `/usr/libexec/flickos/` | Starts kept screen arrangements (`flickos-control displays start`: kanshi, only while one is kept), wallpaper (`flickos-layout wallpaper`), panel (`flickos-layout panel`), notifications (and Do Not Disturb again: `flickos-control notifications`), applets, night light (`flickos-control night-light`, else the script), idle lock (`flickos-control idle`, else a fixed swayidle), the phone connection (`flickos-phone daemon`, which exits at once while off; not in the live session), and last the startup applications (`flickos-control startup run`) |
 | `usr/libexec/flickos/open-default` | `/usr/libexec/flickos/` | `browser` or `files`: starts the user's default app (`xdg-mime query default`, then `gio launch`), else `x-www-browser`, or Thunar (pcmanfm where Thunar is missing: systems installed before it replaced pcmanfm). Super+B, Super+E and the menu |
 | `etc/xdg/flickos/` | `/etc/xdg/flickos/` | foot, fuzzel and default-app config: `mimeapps.list` (folders: Thunar, else pcmanfm), and `xdg-terminals.list` (foot, for `xdg-terminal-exec`); `Thunar/uca.xml`, Thunar's right-click actions (Open Terminal Here with `xdg-terminal-exec`, Send to Phone); `autostart/` hides the XDG autostart entries of what autostart starts itself (nm-applet, blueman, the polkit agent, xdg-user-dirs) and keeps the print queue applet off |
-| `etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar.xml` | same | Thunar's defaults (xfconf): the path as buttons, a larger window. xfconfd is started by D-Bus without the session's `XDG_CONFIG_DIRS`, so it can't live in `/etc/xdg/flickos` |
+| `etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar.xml` | same | Thunar's defaults (xfconf): the path as buttons, a larger window, one row for title and toolbar (header bar, menu bar off, HIG WIN-1's exception), no status bar, larger icons. xfconfd is started by D-Bus without the session's `XDG_CONFIG_DIRS`, so it can't live in `/etc/xdg/flickos` |
 | `usr/lib/systemd/user/thunar.service.d/flickos.conf` | same | `XDG_CONFIG_DIRS`/`XDG_DATA_DIRS` with FlickOS's folders for a Thunar started by D-Bus (another program's *Show in Folder*), which otherwise reads Debian's `uca.xml` and saves a copy in `~/.config/Thunar/` that hides FlickOS's actions |
 | `etc/firefox-esr/flickos.js` | `/etc/firefox-esr/` | Firefox default prefs (Debian's firefox-esr reads every `.js` there; a user's own choice wins): vertical tabs, web apps (Taskbar Tabs, for flickos-switch's `webapp`) |
 | `usr/lib/firefox-esr/distribution/distribution.ini` | same | Firefox's distribution customization: a FlickOS bookmark on the bookmarks toolbar, added once per profile (a deleted one stays deleted); id `flickos`, shown in Help → About |
@@ -82,6 +82,7 @@ Default desktop configuration:
 | `usr/share/glib-2.0/schemas/90_flickos-settings.gschema.override` | same | GTK theme (Arc-Dark), icons (Numix-Circle), fonts, dark mode, title bar buttons of windows that draw their own |
 | `usr/share/themes/FlickOS-Arc-Dark/labwc/themerc` | same | labwc window theme in Arc-Dark colors (arc-theme has none for labwc) |
 | `usr/share/themes/FlickOS-Arc/labwc/themerc` | same | The same in Arc (light) colors, for the Light style |
+| `usr/share/flickos/themes/{Arc-Dark,Arc}/gtk-3.0/` | same | arc-theme with FlickOS's window frame, for windows that draw their own title bar (Thunar's header bar), which labwc's theme can't reach. Found first because `/usr/share/flickos` leads `XDG_DATA_DIRS`; `gtk.gresource` is a link to arc-theme's (`debian/links`). Other GTK themes (styles on Adwaita or Greybird) keep their own line |
 | `usr/share/themes/*/labwc/*.svg`, `*.xbm` | same | Title bar buttons: Arc's round close button and round hover (SVG, `tools/make-titlebuttons.py`) and arc-openbox's glyphs (`.xbm`) |
 
 Every file is explained in [09 – Customizing](/docs/09-customizing/).
@@ -116,8 +117,8 @@ the chosen layout and style at login and live (see
 | `usr/libexec/flickos/desktop` | same | `N`, `next` or `previous`: goes to that labwc desktop (ext-workspace-v1). What a desktop button in the panel runs on a click or scroll; a small stdlib program because a click must be quick |
 | `usr/share/flickos/layouts/ID/` | same | One folder per layout (`redmond`, `cupertino`, `traditional`): `layout.ini`, `waybar.jsonc`, `style.css`, `preview.png` |
 | `usr/share/backgrounds/flickos/ID.jpg` | same | The layouts' photos (their wallpapers until 1.37), now only choices in waypaper |
-| `usr/share/backgrounds/flickos/flickos-dark.png`, `flickos-light.png` | same | The halo wallpapers (Dark's and Light's until FlickOS 2.3), now only choices in waypaper. Real files, so a user who picked one keeps it |
-| `debian/links` | `/usr/share/backgrounds/flickos/flickos-home.png` | Link to the styles' wallpaper, for waypaper |
+| `usr/share/backgrounds/flickos/flickos-dark.png`, `flickos-light.png`, `flickos-home.png` | same | Dark's and Light's earlier wallpapers (the halo until FlickOS 2.3, then the house at dusk until flickos-layouts 1.81), now only choices in waypaper. Real files, so a user who picked one keeps it |
+| `debian/links` | `/usr/share/backgrounds/flickos/flickos-shore.png` | Link to the styles' wallpaper, for waypaper |
 | `usr/share/flickos/layouts/common/` | same | `modules.jsonc` and `base.css`, shared by every layout. `custom/phone` (flickos-phone's button) is defined there, and the generated panel has it just before `custom/tiler` only while `flickos-phone get enabled` says yes (never in the live session) |
 | `usr/share/flickos/styles/ID/` | same | One folder per style (`dark`, `light`): `style.ini` (GTK, icon and labwc theme names), the palettes `waybar-colors.css`, `foot.ini`, `fuzzel.ini`, `mako.conf`, and `wallpaper.png` (shown with every layout). Users' own styles are in `~/.local/share/flickos/styles/ID/` (looked at first; `Inherits=`) |
 | `etc/xdg/flickos/layouts.conf` | same | Default layout, style, desktop clicks, apps button, start menu style, clock, Quick Settings and floating panel (conffile) |
@@ -1071,6 +1072,8 @@ categories (GNOME 2/Whisker), Cupertino's a full-screen grid of app icons
 It opens in the corner of the bar with the apps button (`Menu=`
 `bottom-left` or `top-left`), or above the middle of a bottom bar whose
 apps button is in the middle (`bottom-center`, since 1.22; Eleven's).
+In Redmond and Traditional an arrow in the gap points at the logo on the
+button (`MenuArrow=`, the third line of `menu/anchor`, since 1.30; ADR-021).
 Log Out, Restart and Shut Down run on a second click: the first turns the
 button red and says to click again. **On by default** (since flickos-layouts 1.23): a user who wants fuzzel back picks
 *App launcher* under *Apps button* in *Settings → Desktop Layout & Style*

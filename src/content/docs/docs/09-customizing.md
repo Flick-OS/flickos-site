@@ -374,6 +374,13 @@ layout without it keeps fuzzel even while the start menu is on. `MenuStyle`
 (optional) is its kind of menu: `classic` (default), `categories` or `grid`.
 `tests/test_layouts.py` checks that the corner matches the bar's position.
 
+`MenuArrow` (optional) gives the `classic` and `categories` menus an arrow
+pointing at the apps button, with `Menu=bottom-left` or `top-left`. It is how
+far the middle of the logo is from the screen's left edge, in pixels, at least
+23. A layout with `Floating=` gives a second number, for while the panel floats
+(`MenuArrow=23 32`). Leave it out if the button moves, for example next to the
+windows of a taskbar in the middle of the bar.
+
 `Quick` (optional) is `bottom-right` or `top-right`: where [Quick
 Settings](#quick-settings) opens, at the end of the bar with the volume and
 battery icons. A layout without it has no Quick Settings even while it is on.
@@ -937,7 +944,7 @@ its icon theme), notifications, **new** terminal windows and the
 | File in `packages/flickos-layouts/usr/share/flickos/styles/ID/` | Purpose |
 |---|---|
 | `style.ini` | `[Style]` `Name`, `Comment`, `Order`, `GtkTheme`, `IconTheme`, `LabwcTheme`, `ColorScheme` (`default`, `prefer-dark` or `prefer-light`), and the palette files `Waybar`, `Foot`, `Fuzzel`, `Mako` (relative to the folder, or absolute); `Wallpaper` (optional) |
-| `wallpaper.png` | The style's [wallpaper](#wallpaper): hills at dusk and a house with one light on, the same in Dark and Light (two copies: `check` refuses a link out of the style's folder) |
+| `wallpaper.png` | The style's [wallpaper](#wallpaper): a wave on a sandy shore seen from above, the same in Dark and Light (two copies: `check` refuses a link out of the style's folder) |
 | `waybar-colors.css` | `@define-color` for the panel. Same names in every style; layout CSS uses only these names |
 | `foot.ini` | `[colors]`: `alpha`, background, foreground and the 16 ANSI colors |
 | `fuzzel.ini` | `[main] icon-theme` and `[colors]` |
@@ -1473,8 +1480,8 @@ Two windows that open in the same instant can land in the same place.
 ## Wallpaper
 
 Each [style](#styles-darklight) names its wallpaper (`Wallpaper=wallpaper.png`
-in `style.ini`). Dark and Light show the same one, hills at dusk and a house with
-one light on, no logo; the extra styles have their own. Switching to one of those switches it;
+in `style.ini`). Dark and Light show the same one, a wave on a sandy shore seen
+from above, no logo; the extra styles have their own. Switching to one of those switches it;
 switching the layout keeps it. At login, autostart runs `flickos-layout wallpaper`, which shows the first of
 these that exists:
 
@@ -1498,7 +1505,9 @@ Unsplash photo. They stay installed at `/usr/share/backgrounds/flickos/ID.jpg`
 (the paths waypaper always showed them at, so a user who picked one there keeps
 it). Dark's and Light's wallpapers until FlickOS 2.3, the halo (FlickOS's logo
 drawn large in the brand amber), stay the same way as `flickos-dark.png` and
-`flickos-light.png`, next to `flickos-home.png` (a link to the styles' wallpaper).
+`flickos-light.png`, and so does the house at dusk that followed it, until
+flickos-layouts 1.81, as `flickos-home.png`. They sit next to
+`flickos-shore.png` (a link to the styles' wallpaper).
 Anyone can pick any of them in *Settings → Wallpaper*. A user who never picked
 one gets the new wallpaper at their next login after the upgrade.
 
@@ -1513,9 +1522,11 @@ the old one. They only replace a `swaybg` whose image is under
 `packages/flickos-layouts/usr/share/flickos/styles/ID/wallpaper.png`, at least
 1920×1080, at most 3840 px wide (each one adds to the ISO). Make sure you have
 the right to redistribute it, and record its author and license in
-flickos-layouts' `debian/copyright` (the current ones are FlickOS's own work,
-rendered from `packages/flickos-layouts/artwork/wallpaper-ID.svg`, which isn't
-installed). Then run `tools/make-layout-previews.sh` (the previews show
+flickos-layouts' `debian/copyright` (the current one is an Unsplash photo, a
+PNG because flickos-greeter reads Dark's `wallpaper.png` by name; the older
+ones are FlickOS's own work, rendered from
+`packages/flickos-layouts/artwork/wallpaper-ID.svg`, which isn't installed).
+Then run `tools/make-layout-previews.sh` (the previews show
 Dark's) and bump flickos-layouts. `tests/test_styles.py` checks every style
 has one, linked into `/usr/share/backgrounds/flickos/`. To scale down a large
 photo, or drop a PNG's unused alpha channel:
@@ -2067,8 +2078,16 @@ defaults are in `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar.xml`, not
 under `/etc/xdg/flickos` (no Debian package ships that file). It sets only what
 differs from Thunar's own defaults: the location bar as buttons
 (`last-location-bar` = `ThunarLocationButtons`; Thunar's default is the text
-entry, and Ctrl+L still types a path), and a larger window (960×600) with a
-wider side pane. xfconf reads the system file and then the user's
+entry, and Ctrl+L still types a path), a larger window (960×600) with a
+wider side pane, and one row for the title and the toolbar: a header bar
+(`misc-use-csd`) and no menu bar (`last-menubar-visible`), so the toolbar moves
+into the header; its first button is the menu, and Ctrl+M brings the menu bar
+back. `last-toolbar-items` picks the buttons, the status bar is off and folders
+show at 150 %. Leave `misc-symbolic-icons-in-sidepane` off while the icon theme
+is Numix-Circle: its symbolic icons come out too large for the rows. A header
+bar means Thunar draws its own frame, so labwc's border can't reach it: the
+frame's colors come from `usr/share/flickos/themes/`, which must follow the
+`window.*.border.color` keys of the labwc themes. xfconf reads the system file and then the user's
 `~/.config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml`, which Thunar writes
 when a setting changes; a property the user has is theirs from then on.
 
@@ -2118,7 +2137,8 @@ Keep them working, but they aren't what users normally see.
   `usr/share/flickos/styles/ID/waybar-colors.css` (Arc's own names, e.g.
   `@wm_bg`, `@selected_bg_color`). Bars are translucent:
   `alpha(@wm_bg, 0.85)` in `common/base.css`; raise the value towards `1.0` for
-  solid bars.
+  solid bars. Redmond's own `style.css` makes its bar solid, and only its
+  floating bar is see-through (`floating.css`).
 - **Keep `"tray"`** in exactly one bar per layout: nm-applet and blueman live
   there. The unit tests enforce it.
 - **Status icons:** volume and battery are icon-only (value in the tooltip);
@@ -2630,9 +2650,10 @@ logo's arc as an outline).
 
 The images are made by `tools/make-placeholder-art.sh` (ImageMagick, with the logo
 rendered from `flickos.svg` by `rsvg-convert`). Everything except the logo is still a
-**placeholder**. The wallpapers aren't made by it: the styles' are drawn from
-`packages/flickos-layouts/artwork/` ([Wallpaper](#wallpaper)), and flickos-settings'
-fallback `default.jpg` is an Unsplash photo (see its `debian/copyright`).
+**placeholder**. The wallpapers aren't made by it: Dark's and Light's and flickos-settings'
+fallback `default.jpg` are Unsplash photos (see each package's `debian/copyright`),
+and the older ones are drawn from `packages/flickos-layouts/artwork/`
+([Wallpaper](#wallpaper)).
 
 | File | Size | Used by |
 |---|---|---|
