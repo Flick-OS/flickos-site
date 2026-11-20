@@ -3,7 +3,7 @@ title: FlickOS Manage
 description: "Set up and keep track of many FlickOS computers from one web page: schools, offices, cafés and refurbishers."
 draft: true
 sidebar:
-  order: 2
+  order: 3
 ---
 
 :::caution[Draft]
