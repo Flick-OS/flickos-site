@@ -3,7 +3,7 @@ title: Classroom
 description: "See, lock and help a class of FlickOS computers from the teacher's computer, on the school's own network."
 draft: true
 sidebar:
-  order: 2
+  order: 3
 ---
 
 :::caution[Draft]
