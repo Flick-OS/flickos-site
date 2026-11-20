@@ -1,16 +1,9 @@
 ---
 title: Tool Kits
 description: "Install the apps and tools for one kind of work in one step: programming, studying, teaching children, or security testing."
-draft: true
 sidebar:
   order: 3
 ---
-
-:::caution[Draft]
-Written from flickos-kits 1.4 and the kits as released on 2026-11-19.
-Before publishing: check the button names on a real screen, and add
-screenshots of the Tool Kits window and an environment's row.
-:::
 
 A tool kit installs everything for one kind of work in one step: the
 apps for studying, the tools for writing Python, or the tools for testing a
