@@ -3,7 +3,7 @@ title: Hooks
 description: "Run your own programs when something happens on your desktop: when it locks, wakes, a screen comes or goes, your phone connects, a setting changes or a screenshot is saved."
 draft: true
 sidebar:
-  order: 2
+  order: 3
 ---
 
 :::caution[Draft]
