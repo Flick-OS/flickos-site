@@ -5,6 +5,18 @@ import sitemap from '@astrojs/sitemap';
 import mermaid from 'astro-mermaid';
 import tailwindcss from '@tailwindcss/vite';
 import { store } from './src/config/store';
+import fs from 'node:fs';
+
+// Guides for people using FlickOS: src/content/docs/guides/, written in this repo.
+// A guide with `draft: true` is built only by `astro dev`; the sidebar's Guides
+// group is left out while no guide is published (Starlight would show it empty).
+const GUIDES_DIR = new URL('./src/content/docs/guides/', import.meta.url);
+const showGuides =
+	process.argv.includes('dev') ||
+	fs
+		.readdirSync(GUIDES_DIR)
+		.filter((f) => /\.mdx?$/.test(f))
+		.some((f) => !/^draft:\s*true\s*$/m.test(fs.readFileSync(new URL(f, GUIDES_DIR), 'utf8')));
 
 // https://astro.build/config
 export default defineConfig({
@@ -52,6 +64,7 @@ export default defineConfig({
 				},
 			],
 			sidebar: [
+				...(showGuides ? [{ label: 'Guides', items: [{ autogenerate: { directory: 'guides' } }] }] : []),
 				{
 					label: 'Documentation',
 					items: [
