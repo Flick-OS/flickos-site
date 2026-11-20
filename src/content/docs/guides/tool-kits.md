@@ -3,7 +3,7 @@ title: Tool Kits
 description: "Install the apps and tools for one kind of work in one step: programming, studying, teaching children, or security testing."
 draft: true
 sidebar:
-  order: 2
+  order: 3
 ---
 
 :::caution[Draft]
