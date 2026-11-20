@@ -1,17 +1,9 @@
 ---
 title: Phone
 description: "Send pages, photos, files and text between your Android phone and FlickOS, ring a lost phone, and see its notifications and calls, with the KDE Connect app."
-draft: true
 sidebar:
   order: 2
 ---
-
-:::caution[Draft]
-Written from flickos-phone 1.32. Before publishing: go through it with a
-real phone (pairing, the firewall, notifications, calls and commands), and
-add screenshots of *Settings > Phone*, the pairing window and the phone
-popup.
-:::
 
 Share a page, a photo or some text on your phone, choose your computer, and
 it arrives on FlickOS. Files, pages and text go the other way too. You can

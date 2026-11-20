@@ -1,17 +1,9 @@
 ---
 title: Restore Points
 description: "Put FlickOS back to how it was before an update or an install, from Settings or from the boot menu, even when it won't start."
-draft: true
 sidebar:
   order: 1
 ---
-
-:::caution[Draft]
-Written from flickos-recovery 1.7 and flickos-control 1.84. Before
-publishing: check the boot menu's words and the notification on a real
-computer, and add screenshots of the *Restore Points* page and the boot
-menu's *Restore points* submenu.
-:::
 
 Before every software change, FlickOS saves the system as a restore point.
 If an update or a new app breaks something, you can put the system back to

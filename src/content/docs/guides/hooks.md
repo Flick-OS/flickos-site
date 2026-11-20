@@ -1,18 +1,9 @@
 ---
 title: Hooks
 description: "Run your own programs when something happens on your desktop: when it locks, wakes, a screen comes or goes, your phone connects, a setting changes or a screenshot is saved."
-draft: true
 sidebar:
   order: 4
 ---
-
-:::caution[Draft]
-Written from flickos-hooks 1.1. Before publishing: try the phone examples
-with a real phone (the phone events haven't been tried with one yet), and
-run every example on a released FlickOS. Only the event names and their
-values are promised to stay; the other FlickOS commands used in the examples
-aren't on a public list yet.
-:::
 
 A hook is a program of your own that FlickOS runs when something happens:
 pause the music when you lock the screen, copy each screenshot to your
