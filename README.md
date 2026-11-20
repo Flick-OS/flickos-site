@@ -38,6 +38,10 @@ The same variable works on Vercel, but set it **only in the Preview environment*
 
 To open the store: fill in the checkout links and set each app's status in `src/data/apps.ts`, replace the draft terms, then set `open` to `true` in `src/config/store.ts`.
 
+## Guides
+
+`src/content/docs/guides/` holds guides for people using FlickOS (Classroom, FlickOS Manage). Unlike `docs/` and `learn/`, they are written here, not synced. A guide with `draft: true` is built only by `npm run dev`, and the sidebar's *Guides* group appears once one guide is published (`astro.config.mjs`). To publish one: check its *Draft* note, delete the note and `draft: true`.
+
 ## Deploy
 
 Static output (`dist/`). Vercel detects Astro automatically — no adapter required.
