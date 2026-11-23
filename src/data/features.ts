@@ -92,6 +92,8 @@ export const features: Feature[] = [
 	{
 		title: 'Classroom',
 		body: 'For schools, installed only if you add it: a teacher sees every student\'s screen, locks the class, sends a message or a web page, helps one student or shows their own screen, on the school\'s own network with no server. Nothing is shared until sharing is turned on in Settings → Classroom.',
+		href: '/guides/classroom/',
+		linkLabel: 'The Classroom guide',
 	},
 	{
 		title: 'Hold Super for shortcuts',

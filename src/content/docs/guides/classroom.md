@@ -1,17 +1,9 @@
 ---
 title: Classroom
 description: "See, lock and help a class of FlickOS computers from the teacher's computer, on the school's own network."
-draft: true
 sidebar:
   order: 5
 ---
-
-:::caution[Draft]
-Written from flickos-classroom-view 1.0~test. Before publishing: check every
-button name against the released windows, and add screenshots. The part
-where FlickOS Manage hands out teachers to lab computers isn't built yet, so
-this guide leaves it out.
-:::
 
 Classroom lets a teacher see the screens of a class of FlickOS computers
 from their own computer. From there the teacher can lock them, send a
