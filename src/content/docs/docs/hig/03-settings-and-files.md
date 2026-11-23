@@ -23,7 +23,7 @@ included, asks that program. No two programs write the same file.
 | Mouse, touchpad, keyboard, idle, language, night light, Do Not Disturb, startup apps | `flickos-control` |
 | Time, time zone | `timedatectl` (systemd) |
 | Animations (`enable-animations`) | GSettings; `flickos-control animations` changes it and records it |
-| System language | `localectl` (systemd) |
+| System language | `flickos-control` (its helper; Debian's localed refuses changes) |
 
 A page in Settings for a setting it doesn't own is a view: it reads with the
 owner's `list`/`current`/`status`/`state` and changes things by running the
@@ -142,15 +142,21 @@ A change outside the user's account (another user, `/etc`, a system service)
 runs through polkit, never through `sudo` or a root GUI.
 
 1. Prefer a system service that already asks polkit itself: `timedatectl`,
-   `localectl`, logind.
+   logind. (Not `localectl`: Debian's localed refuses every change.)
 2. Otherwise add a verb to the package's helper, `/usr/libexec/flickos/NAME-helper`
    (today only `control-helper`), run with `pkexec`:
    - one polkit action per verb (`org.flickos.control.VERB`, matched with
      `org.freedesktop.policykit.exec.argv1`), with a `<message>` that says
      what will change in plain words,
-   - `auth_admin_keep` for the active session, `auth_admin` otherwise,
+   - `auth_admin_keep` for the active session, `auth_admin` otherwise;
+     `auth_admin` for the active session too when the verb changes who can
+     log in or be an administrator, what can reach the computer, what runs
+     as root or who can read the network (a kept password lets any program
+     in the session repeat the verb for 5 minutes without asking),
    - every argument checked against a fixed list or pattern before anything
-     changes, and the helper exits with an error on anything else,
+     changes (the whole value: `fullmatch`; numbers as ASCII digits, not
+     `isdigit()`), and the helper exits with an error on anything else;
+     values from a file go to a tool after `--`,
    - acting on the calling user only (`PKEXEC_UID`) unless the verb is about
      other users, and then never on the calling user's own account, a
      logged-in account or the last administrator.

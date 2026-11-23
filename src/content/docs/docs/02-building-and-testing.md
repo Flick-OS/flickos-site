@@ -17,8 +17,9 @@ Install the tools once:
 ```sh
 sudo apt install live-build build-essential debhelper dpkg-dev devscripts reprepro rsync wget \
                  qemu-system-x86 qemu-utils ovmf xorriso \
-                 meson pkgconf gettext libgtk-3-dev \
-                 libgtk-layer-shell-dev libjson-c-dev libwayland-dev wayland-protocols
+                 meson pkgconf gettext libgtk-3-dev sassc libglib2.0-bin \
+                 libgtk-layer-shell-dev libjson-c-dev libpulse-dev libwayland-dev wayland-protocols \
+                 libgnutls28-dev libaml-dev libdrm-dev libgbm-dev libpixman-1-dev libturbojpeg0-dev libxxhash-dev zlib1g-dev python3-pil
 ```
 
 | Tool | Used for |
@@ -30,7 +31,8 @@ sudo apt install live-build build-essential debhelper dpkg-dev devscripts reprep
 | `wget` | Required by live-build's firmware step |
 | `qemu-system-x86`, `qemu-utils`, `ovmf` | Testing in a VM (`qemu-img` for disks, OVMF for UEFI) |
 | `xorriso` | Extracting the kernel from the ISO for the headless boot test |
-| `meson`, `pkgconf`, `gettext`, `lib…-dev`, `wayland-protocols` | Compiling `sfwbar`, the only FlickOS package with C code (its `Build-Depends`) |
+| `meson`, `pkgconf`, `gettext`, `lib…-dev`, `wayland-protocols` | Compiling `sfwbar` and `neatvnc`, the FlickOS packages with C code (their `Build-Depends`) |
+| `python3-pil` | Building `flickos-classroom-view` (its `Build-Depends`) |
 
 For KVM acceleration (much faster VMs), add yourself to the `kvm` group once:
 `sudo adduser $USER kvm`, then log out and back in.
@@ -282,6 +284,7 @@ tools/package-cost.py swappy                  # packages and KB a package would 
 tools/package-cost.py config/packages.chroot/flickos-foo_1.0_all.deb
 tools/measure.py PID                          # CPU, PSS/Private memory and wakeups until it exits
 tools/measure.py --tree -- flickos-control    # start a program, count the processes it starts too
+tools/measure.py --group PID                  # and those GLib's double fork gave to PID 1 (sfwbar's programs)
 ```
 
 `package-cost.py` asks apt to simulate the install without Recommends, the way

@@ -99,6 +99,21 @@ tiles). The cards of the lock and login screens (12 px) and the dock, which are
 large and stand alone, are the exceptions. labwc rounds only a window's top
 corners.
 
+| Value | Size | Where |
+|---|---|---|
+| Corner, flush | 0 | what touches a screen edge or fills its frame |
+| Corner, inside | 6 px | buttons, rows, tiles, keycaps |
+| Corner, surface | 8 px | windows, pop-ups, menus, notifications, the launcher, the floating panel |
+| Corner, card | 12 px | the lock and login cards, the dock |
+| Window shadow | size 40 / 20, `#00000060` / `#00000030` | labwc, active / inactive window |
+| Shadow in a window | none | only `inset` (a focus ring or an underline) |
+
+`tools/check-look.py` reads the CSS and labwc themes of the default desktop and
+fails on any other radius or shadow. A real exception goes into its
+`EXCEPTIONS` with the reason (the 2 px bar under a running app, the 'new'
+badge, the hover square of a title bar button); the opt-in styles have looks
+of their own and are not checked.
+
 A pop-up has no arrow to what opened it: being in the same corner says that
 already. The start menu's in Redmond and Traditional, a layout's choice
 (`MenuArrow=`), is the exception, and only a button that never moves can have
@@ -220,7 +235,7 @@ These are frozen:
 | Shared files | `/usr/share/flickos/layouts/common/modules.jsonc`, `/usr/share/flickos/layouts/common/base.css` |
 | Modules in `modules.jsonc` | `custom/launcher`, `custom/desktop`, `custom/tiler`, `custom/phone`, `custom/recording`, `custom/media-previous`, `custom/media-play`, `custom/media-next`, `custom/media-title`, `custom/media-spectrum`, `custom/weather`, `wlr/taskbar`, `clock`, `wireplumber`, `battery`, `tray` |
 | Placeholders flickos-layout fills in | `flickos/pinned` (`custom/pin#CLASS`), `flickos/desktops` (`custom/desk#N`), `flickos/weather` (`custom/weather` while the weather is on, nothing while off) |
-| Signals (`SIGRTMIN+N`) | 8 `custom/tiler`, 9 `custom/phone`, 10 `custom/recording`, 11 the desktop buttons, 12 the media buttons, 13 `custom/weather` |
+| Signals (`SIGRTMIN+N`) | 8 `custom/tiler`, 9 `custom/phone`, 10 `custom/recording`, 11 the desktop buttons, 12 the media buttons, 13 `custom/weather`, 14 `custom/classroom` |
 | Groups | `group/quick` (`#quick` in CSS) |
 | Classes FlickOS's buttons set | `custom/tiler`: `on`, `off` and the arrangement's id; `custom/phone`: `waiting`; `custom/recording`: `recording`; desktop buttons: `active`; media buttons and title: `playing`, `paused`, `stopped`; `custom/media-title`: `scrolling`; `custom/media-spectrum`: `on`, `off` and `behind`, `top`; `custom/weather`: the sky (`clear`, `clear-night`, `few-clouds`, `few-clouds-night`, `overcast`, `fog`, `showers-scattered`, `showers`, `snow`, `storm`), `stale`, `unset` |
 

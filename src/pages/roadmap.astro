@@ -5,17 +5,13 @@ import MarketingLayout from '../layouts/MarketingLayout.astro';
 // out, and change the date. No dates of our own: the only timing here is
 // Debian's. Items come from the product repo's design docs and TODO.md; leave
 // out paid and private work.
-const updated = { date: '2026-11-06', label: '6 November 2026' };
+const updated = { date: '2026-11-23', label: '23 November 2026' };
 
 const building = [
 	{
 		title: 'Translations',
-		body: 'FlickOS’s own programs in your language. The start menu is in Finnish so far. Welcome, the login screen and the Coming from Windows windows are ready to translate, and the other programs follow.',
+		body: 'FlickOS’s own programs in your language. The start menu is in Finnish so far. Settings, Welcome, the login screen and the Coming from Windows windows are ready to translate, and the other programs follow. New translations still come to 2.x.',
 		link: { href: '/docs/12-translating/', label: 'How to translate' },
-	},
-	{
-		title: 'Tortuga',
-		body: 'A new dark style with its own layout: the panel as floating islands, and a dock with a small grid of your desktops.',
 	},
 ];
 
@@ -35,12 +31,12 @@ const three = [
 	},
 	{
 		title: 'A way up from 2.x',
-		body: 'Planned, not built yet: an upgrade you start from Settings’ Updates page, with a way back. It opens to everyone around Debian 14.1, about two months after Debian 14. Automatic updates never move you to 3.0, so nothing changes until you choose to.',
+		body: 'Built and being tested: an upgrade you start from Settings’ Updates page, with a way back through a restore point on installs that have them. It opens to everyone after Debian 14.1, about two months after Debian 14. Automatic updates never move you to 3.0, so nothing changes until you choose to.',
 		link: { href: '/docs/11-new-debian-release/', label: 'How the move works' },
 	},
 	{
 		title: '2.x after 3.0',
-		body: 'FlickOS 2.x keeps getting updates until Debian’s security support for Debian 13 ends, about August 2028.',
+		body: 'FlickOS 2.x keeps getting fixes for 12 months after 3.0’s release, and never past the end of Debian’s security support for Debian 13 (about August 2028). The 3.0 release notes will give the exact end.',
 	},
 ];
 
@@ -52,10 +48,6 @@ const ideas = [
 	{
 		title: 'Tweaks in Settings',
 		body: 'The panel’s look and arrangement, and how windows behave, as pages in Settings.',
-	},
-	{
-		title: 'Developer kits',
-		body: 'The tools for a kind of development, set up together. Nothing is installed unless you ask.',
 	},
 	{
 		title: 'Bluetooth in Quick Settings',
@@ -75,7 +67,7 @@ const sections = [
 	{
 		id: 'building',
 		title: 'Being built',
-		intro: 'Work that has started and comes to FlickOS 2.x.',
+		intro: 'FlickOS 2.4 was the last 2.x release with new features. 2.x now gets fixes and translations; new features go to 3.0.',
 		items: building,
 	},
 	{

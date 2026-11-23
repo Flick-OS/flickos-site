@@ -8,8 +8,8 @@ export interface Feature {
 /** Shown on the home page under "Built for everyday use". */
 export const highlights: Feature[] = [
 	{
-		title: 'Three live layouts',
-		body: 'Redmond, Cupertino, and Traditional — switch from Settings without logging out. Traditional has four desktops.',
+		title: 'Four live layouts',
+		body: 'Redmond, Redmond+, Cupertino, and Traditional — switch from Settings without logging out. Window buttons go on the left, the right or both sides, and Traditional has four desktops.',
 	},
 	{
 		title: 'Optional tiling',
@@ -34,6 +34,12 @@ export const features: Feature[] = [
 		linkLabel: 'The switching guide',
 	},
 	{
+		title: 'Tool Kits',
+		body: 'One switch for each kind of work: programming (Python, web, C and C++, containers), studying, apps for young learners, and security testing. Each kit installs its apps and tools through Software and removes them again, with setup steps such as your name for Git or an SSH key, and containers with a kit\'s tools inside that leave your system as it is.',
+		href: '/guides/tool-kits/',
+		linkLabel: 'The Tool Kits guide',
+	},
+	{
 		title: 'Restore points',
 		body: 'Before every software change, FlickOS saves the system as a restore point. Put one back from Settings → Restore Points or from the boot menu, and if the computer fails to start twice after an update, it goes back to the last one that worked by itself. On new installs since 2.2 (btrfs, the installer\'s default).',
 		href: '/#restore',
@@ -41,7 +47,7 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Software',
-		body: 'Find, install and remove apps, not packages: icons, descriptions, screenshots, and the space an app needs before you install it. Apps come from Debian (the default), FlickOS, the FlickOS community repository and Flathub, and the front page has a Made for FlickOS shelf. Removing anything the desktop needs is refused, and apps from Flathub update with the automatic updates.',
+		body: 'Find, install and remove apps, not packages: icons, descriptions, screenshots, and the space an app needs before you install it. Apps come from Debian (the default), FlickOS, the FlickOS community repository and Flathub, and the front page has a Made for FlickOS shelf. Removing anything the desktop needs is refused, and apps from Flathub update with the automatic updates. Double-click a .deb or Flatpak file and Software shows what it is and what it may reach before installing it.',
 	},
 	{
 		title: 'Community repository',
@@ -51,15 +57,15 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'One Settings window',
-		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, media controls, weather, privacy, login, user accounts, firewall, tiling, shortcuts, animations, and history. Type to search any setting.',
+		body: 'All Settings covers layout, displays and night light, input, language and region, default and startup apps, notifications, power and idle, memory, date and time, updates, phone, media controls, weather, privacy, the login screen, user accounts, firewall, tiling, shortcuts, animations, and history. Type to search any setting.',
 	},
 	{
 		title: 'Start menu',
-		body: 'Tap Super or click the apps button: a classic menu in Redmond, categories in Traditional, a full-screen app grid in Cupertino. In the grid, clicking an app that is already open brings its window forward. Log Out, Restart and Shut Down take a second click, so a stray one does nothing. Prefer the plain app launcher? Switch back in Settings → Desktop Layout & Style.',
+		body: 'Tap Super or click the apps button: a classic menu in Redmond, categories in Traditional, a full-screen app grid in Cupertino. In the grid, clicking an app that is already open brings its window forward. Log Out, Restart and Shut Down take a second click, so a stray one does nothing. Or choose Prompt: type to find apps, folders and files, work out sums, or run a command, with every app as a tile underneath. Prefer the plain app launcher? Switch back in Settings → Desktop Layout & Style.',
 	},
 	{
 		title: 'Login and lock screens',
-		body: 'FlickOS has its own of both, with your picture from Settings → Users. Pick your name from a list instead of typing it, and show the password as you type. When the screen locks by itself, a key or a mouse move within a few seconds unlocks it again, and the volume and media keys work while it is locked.',
+		body: 'FlickOS has its own of both, with your picture from Settings → Users, and the login screen\'s background, language and place on the screen in Settings → Login Screen. Pick your name from a list instead of typing it, and show the password as you type. When the screen locks by itself, a key or a mouse move within a few seconds unlocks it again, and the volume and media keys work while it is locked.',
 	},
 	{
 		title: 'Media controls and weather',
@@ -78,18 +84,28 @@ export const features: Feature[] = [
 		body: 'Off by default. Turn it on in Settings → Desktop Layout & Style, then click the volume or battery icon for Wi-Fi, Do Not Disturb, night light, tiling, the phone, volume, brightness, and the power buttons.',
 	},
 	{
+		title: 'Hooks',
+		body: 'Run your own programs when the screen locks or unlocks, the computer wakes, a screen comes or goes, your phone connects, a setting changes, or a screenshot is saved. Nothing runs until you add one.',
+		href: '/guides/hooks/',
+		linkLabel: 'The Hooks guide',
+	},
+	{
+		title: 'Classroom',
+		body: 'For schools, installed only if you add it: a teacher sees every student\'s screen, locks the class, sends a message or a web page, helps one student or shows their own screen, on the school\'s own network with no server. Nothing is shared until sharing is turned on in Settings → Classroom.',
+	},
+	{
 		title: 'Hold Super for shortcuts',
 		body: 'Press and hold Super for about 0.7s to see the shortcut sheet; let go to close. Also under Settings → Keyboard Shortcuts.',
 	},
 	{
 		title: 'Make it yours',
-		body: 'Six more styles in Software → Styles, each with its own look and layout: Try one until you log out, or Use it. Or start from any FlickOS style or layout and change only what you want. FlickOS checks your files first, so a mistake can\'t leave you without a panel.',
+		body: 'Seven more styles in Software → Styles, each with its own look and layout: Try one until you log out, or Use it. Or start from any FlickOS style or layout and change only what you want. FlickOS checks your files first, so a mistake can\'t leave you without a panel.',
 		href: '/learn/yours/',
 		linkLabel: 'Make FlickOS yours',
 	},
 	{
 		title: 'Arc look, FlickOS logo',
-		body: 'GTK, panel, terminal, launcher and notifications share the Arc palette, with a Light style too. Inter is the system font, and a soft shadow shows which window is in front. The boot menus, splash screen and installer carry FlickOS\'s amber halo logo, and installed systems get a FlickOS boot menu theme. On the desktop only the start button\'s logo is amber.',
+		body: 'FlickOS\'s own GTK themes give windows, title bars, panels and menus one look and the same corners, and the terminal, launcher and notifications share the Arc palette, with a Light style too. Inter is the system font, and a soft shadow shows which window is in front. The boot menus, splash screen and installer carry FlickOS\'s amber halo logo, and installed systems get a FlickOS boot menu theme. On the desktop only the start button\'s logo is amber.',
 	},
 	{
 		title: 'Firefox on less memory',
@@ -105,6 +121,6 @@ export const features: Feature[] = [
 	},
 	{
 		title: 'Install when ready',
-		body: 'Boot the live session, explore, then install with Calamares from the desktop menu. It can install next to Windows or replace it, uses btrfs by default, for restore points, and a 10 GB disk is enough. At first login a welcome window points you to layouts, Settings, Wi-Fi, and shortcuts.',
+		body: 'Boot the live session, explore, then install with Calamares from the desktop menu. It can install next to Windows or replace it, uses btrfs by default, for restore points, and a 10 GB disk is enough. Secure Boot can stay on. At first login a welcome window points you to layouts, Settings, Wi-Fi, and shortcuts.',
 	},
 ];

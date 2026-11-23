@@ -42,10 +42,12 @@ ISOs ([06](/docs/06-ci-and-releases/)).
 | `repo/conf/options` | yes | Tells reprepro to write output to `repo/public/` and its database to `repo/db/` |
 | `repo/new-key.sh` | yes | One-time key setup |
 | `repo/publish.sh` | yes | Build all packages and add them to the repo (`--testing`: only the `~test` versions, to `trixie-testing`) |
-| `repo/upload.sh` | yes | Push `repo/public/` to the `gh-pages` branch of `dvbondoy/flickos-apt` |
+| `repo/upload.sh` | yes | Push `repo/public/` and `repo/screenshots/` to the `gh-pages` branch of `dvbondoy/flickos-apt` |
+| `repo/screenshots/` | yes | The style packages' screenshots for Software, `NAME/1.png` and `2.png`, served at `https://dvbondoy.github.io/flickos-apt/screenshots/` (the addresses in their metainfo); taken by `tools/make-style-shots.sh` |
 | `repo/db/` | **no** | reprepro's database of what the repo contains |
 | `repo/public/` | **no** | The finished repository to upload |
 | `repo/.gh-pages/` | **no** | `repo/upload.sh`'s clone of the `gh-pages` branch |
+| `repo/data-dir.sh` | yes | Finds the folder holding `db/`, `public/` and `.gh-pages/`: always the main worktree's `repo/`, so a second worktree (the old release's, [11](/docs/11-new-debian-release/#after-the-release-keeping-the-old-release-alive)) publishes into the same repository |
 | `packages/flickos-archive-keyring/keyrings/flickos-archive-keyring.asc` | yes | Public key |
 | `packages/flickos-archive-keyring/etc/apt/sources.list.d/flickos.sources` | yes | The apt source installed systems use (holds the **repo URL**) |
 
@@ -132,8 +134,8 @@ repo/upload.sh       # upload to https://dvbondoy.github.io/flickos-apt/
 
 1. checks a signing key is configured,
 2. runs `packages/build.sh`,
-3. builds the apps in `EXTRAS` (Notes, Write, Phone Screen) from their
-   own repositories next to this one, in copies under `repo/.extras-build/`
+3. builds the apps in `EXTRAS` (none by default) from their own
+   repositories next to this one, in copies under `repo/.extras-build/`
    (see below),
 4. adds each `.deb` to the `trixie` distribution with `reprepro includedeb`,
    signing the index (gpg asks for your passphrase),
@@ -151,7 +153,10 @@ If the version didn't change but the file **did**, reprepro stops with
 1. clones the `gh-pages` branch to `repo/.gh-pages/` (first run only), then
    resets it to the remote branch,
 2. copies `repo/public/` over it with `rsync --delete`, so the branch is an
-   exact copy of `repo/public/` (plus `.nojekyll`),
+   exact copy of `repo/public/` (plus `.nojekyll`). It refuses first when the
+   branch has a suite (`dists/NAME`) that `repo/public/` lacks: suites are
+   never deleted, so that means the wrong `repo/public/`, and uploading it
+   would cut every system of that release off from its updates,
 3. commits and pushes. If nothing changed it stops without a commit.
 
 GitHub Pages usually serves the new files within a minute or two. Check the
@@ -163,27 +168,37 @@ If the repository grows past GitHub's ~1 GB guidance, squash the history:
 
 ### Apps from other repositories (`EXTRAS`)
 
-Notes, Write and Phone Screen are proprietary and free of charge until
-the store opens (store ADR-008).
-Trail is not in `EXTRAS`, so its newer versions aren't published; the last
-one published stays in the repo.
+`EXTRAS` lists the folders of proprietary apps that `publish.sh` builds from
+their own repositories and adds to the repo. **It is empty by default.**
+Notes, Write and Phone Screen were published free of charge until
+2026-11-11, when they were removed from the repo
+(store ADR-008,
+amended that day). Trail was never put back after 0.6.
 Their source is in their own repositories, not under `packages/`, so they are
-never in the ISO. `publish.sh` expects them next to this checkout
-(`../flickos-notes` and so on) and stops if one is missing:
+never in the ISO. To publish one again, name it; `publish.sh` expects the
+folder next to this checkout (`../flickos-notes` and so on) and stops if it
+is missing:
 
 ```sh
-EXTRAS_DIR=~/src repo/publish.sh                   # they are somewhere else
-EXTRAS="flickos-notes" repo/publish.sh             # only some of them
-EXTRAS= repo/publish.sh                            # none of them
+EXTRAS="flickos-notes" repo/publish.sh             # one of them
+EXTRAS_DIR=~/src EXTRAS="flickos-notes flickos-write" repo/publish.sh
 ```
 
 It builds what is in each folder, committed or not, and warns about
 uncommitted changes. Bump an app's version (`dch -i -D trixie`) before
-publishing a change, as for FlickOS's own packages. When an app goes on sale,
-take it out of `EXTRAS` and leave its last free version in the repo.
-Taking an app out of `EXTRAS` only stops new versions; reprepro keeps the
-last one published until it is removed by hand (`reprepro -b repo remove
-trixie NAME`), which ADR-008 says not to do for a free version.
+publishing a change, as for FlickOS's own packages.
+
+Taking an app out of the repo takes three steps, and the last two are by hand
+(gpg asks for the passphrase in a terminal):
+
+```sh
+reprepro -b repo remove trixie flickos-notes       # from the index
+reprepro -b repo deleteunreferenced                # its .deb from the pool
+repo/upload.sh                                     # rsync --delete drops it from GitHub Pages
+```
+
+Computers that have the app keep it and get no updates; a reinstall fails
+once the pool file is gone.
 
 ### AppStream data (DEP-11)
 

@@ -52,7 +52,7 @@ in, on, at, by* unless first or last):
 - desktop file `Comment`
 
 Proper names keep their capitals everywhere: FlickOS, Debian, Wi-Fi,
-Bluetooth, Do Not Disturb, the layouts (Redmond, Cupertino, Traditional) and
+Bluetooth, Do Not Disturb, the layouts (Redmond, Redmond+, Cupertino, Traditional) and
 styles (Dark, Light).
 
 ### TXT-3 Must: An ellipsis means "more is needed before this happens"
@@ -190,7 +190,8 @@ strings, not rewriting code.
   shown. The package has a `po/` folder, and its build installs the
   translations ([12 – Translating](/docs/12-translating/#making-a-package-translatable-for-developers)).
 - Values, ids, JSON and anything else another program reads stay as they are,
-  and so do stderr messages and `--help` for now.
+  and so do stderr messages and `--help` for now, except a message a window
+  shows as well (an error, a note after a change) when no program reads it.
 - Placeholders have names and are filled in after translation
   (`_("Version {version}.").format(version=v)`, never an f-string), and a
   `# Translators:` comment explains what isn't obvious.

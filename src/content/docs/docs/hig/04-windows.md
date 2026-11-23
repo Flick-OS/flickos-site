@@ -28,8 +28,8 @@ in Cupertino). Client-side title bars look different from every other window.
 **Exception: Thunar.** It isn't FlickOS's code, and its own header bar (the
 `misc-use-csd` default in flickos-settings' `thunar.xml`) puts its toolbar and
 the title bar in one row. `flickos-layout` gives it the layout's button order
-through GTK's `button-layout`, and the same frame colors through flickos-settings'
-GTK theme override (`/usr/share/flickos/themes/`), since labwc's theme doesn't
+through GTK's `button-layout`, and the same frame colors through flickos-theme's
+frame rules (`FlickOS-Arc-Dark` and `FlickOS-Arc`), since labwc's theme doesn't
 reach a window that draws its own frame. FlickOS's own programs never use a
 header bar.
 

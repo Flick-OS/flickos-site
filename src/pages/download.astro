@@ -4,26 +4,26 @@ import { donate } from '../config/donate';
 import { fetchDownloadStats, formatCount } from '../data/downloads';
 
 // The ISO's line from SHA256SUMS. Left empty, the page shows only the SHA256SUMS steps.
-const SHA256 = 'd40e61d36ddd48dc71b552b41a64f043de12facb40eb74fe9dc536a55d162879';
-const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.3/';
+const SHA256 = 'dfb8eab17cd2cc0fd3ccad64fdde1c8e61b3f3defed5b1aca2ba7e6e78f9694c';
+const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.4/';
 const stats = await fetchDownloadStats();
 ---
 
 <MarketingLayout
 	title="Download"
-	description="Download FlickOS 2.3, verify the SHA256 checksum, write a USB stick, and install with Calamares."
+	description="Download FlickOS 2.4, verify the SHA256 checksum, write a USB stick, and install with Calamares."
 >
 	<section class="page">
 		<header class="page-head flick-anim-rise">
-			<h1 class="flick-display">Download FlickOS 2.3</h1>
+			<h1 class="flick-display">Download FlickOS 2.4</h1>
 			<p>
 				Hybrid live ISO for amd64 — boots on BIOS and UEFI. About 1.4&nbsp;GB.
 			</p>
 			<p>
-				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.3: help coming from Windows, with your files, your programs and your web apps. FlickOS also has a more polished look, its own login and lock screens, media controls and weather in the panel, and more styles in Software.
+				Debian 13 with a graphical login, the start menu, and a welcome window. New in 2.4: Tool Kits that set up a computer for programming, studying, teaching children or security testing in one step, Classroom for teachers, a start menu you drive by typing, the Redmond+ layout, and FlickOS’s own GTK themes, so the whole desktop looks like one thing. It also helps people coming from Windows with their files, their programs and their web apps.
 			</p>
 			<p>
-				<a href="/news/flickos-2-3/">What’s new in 2.3</a> · <a href="/releases/">All releases</a>
+				<a href="/news/flickos-2-4/">What’s new in 2.4</a> · <a href="/releases/">All releases</a>
 			</p>
 			<p class="cta">
 				<a class="flick-btn primary" href={ISO_URL} rel="noopener noreferrer">Get the ISO on SourceForge</a>
@@ -49,16 +49,16 @@ const stats = await fetchDownloadStats();
 		</aside>
 
 		<aside class="warn" role="note">
-			<strong>Coming from 2.2, 2.1 or 2.0?</strong>
+			<strong>Coming from 2.3 or older?</strong>
 			You don’t need to reinstall. Run <code>sudo apt update && sudo apt upgrade</code>, then restart.
 			Use <code>apt upgrade</code>, not <code>apt-get upgrade</code>: <code>apt-get</code> keeps the FlickOS desktop back.
 			Coming from 2.1 or 2.0, restore points need a new install, because they work only on the btrfs disk layout the installer has set up since 2.2.{' '}
-			<a href="/news/flickos-2-3/#upgrading">More about upgrading</a>.
+			<a href="/news/flickos-2-4/#upgrading">More about upgrading</a>.
 		</aside>
 
 		<aside class="warn" role="note">
 			<strong>Coming from 1.x?</strong>
-			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.3.
+			FlickOS 1.x was Ubuntu 20.04 / LXLE. There is <em>no in-place upgrade</em> to 2.4.
 			Back up your files and install fresh.
 		</aside>
 
@@ -78,7 +78,7 @@ const stats = await fetchDownloadStats();
 				SHA256 ? (
 					<>
 						<p>
-							After downloading <code>FlickOS-64bit-v2.3.iso</code>, check the SHA-256:
+							After downloading <code>FlickOS-64bit-v2.4.iso</code>, check the SHA-256:
 						</p>
 						<div class="hash-row">
 							<code id="sha256">{SHA256}</code>
@@ -86,12 +86,12 @@ const stats = await fetchDownloadStats();
 								Copy
 							</button>
 						</div>
-						<pre class="cmd"><code>echo "{SHA256}  FlickOS-64bit-v2.3.iso" | sha256sum -c</code></pre>
+						<pre class="cmd"><code>echo "{SHA256}  FlickOS-64bit-v2.4.iso" | sha256sum -c</code></pre>
 						<p class="hint">Or download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.</p>
 					</>
 				) : (
 					<p>
-						After downloading <code>FlickOS-64bit-v2.3.iso</code>, download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.
+						After downloading <code>FlickOS-64bit-v2.4.iso</code>, download <code>SHA256SUMS</code> from the same SourceForge folder and run <code>sha256sum -c SHA256SUMS</code>.
 					</p>
 				)
 			}
@@ -103,9 +103,9 @@ const stats = await fetchDownloadStats();
 				<li>Use <a href="https://etcher.balena.io/" rel="noopener noreferrer">Balena Etcher</a>, Rufus (DD mode), or another hybrid-ISO writer.</li>
 				<li>
 					Or with <code>dd</code> (replace the device path):
-					<pre class="cmd"><code>sudo dd if=FlickOS-64bit-v2.3.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
+					<pre class="cmd"><code>sudo dd if=FlickOS-64bit-v2.4.iso of=/dev/sdX bs=4M status=progress oflag=sync</code></pre>
 				</li>
-				<li>Boot from the USB stick (disable Secure Boot if your machine requires it for unsigned media).</li>
+				<li>Boot from the USB stick. Secure Boot can stay on: the USB stick and, since 2.4, the installed system both start with it.</li>
 			</ol>
 		</section>
 
@@ -128,8 +128,6 @@ const stats = await fetchDownloadStats();
 			<p>
 				Installed systems get a graphical login (greetd). FlickOS packages update from the{' '}
 				<a href="https://dvbondoy.github.io/flickos-apt/">apt repository</a>.
-				Notes, Write and Phone Screen are in that repository too, free for now, and an update does not install them.{' '}
-				<a href="/news/three-apps/">What they are</a>.
 			</p>
 		</section>
 
@@ -140,7 +138,7 @@ const stats = await fetchDownloadStats();
 				The counts are <a href="https://flickos-countme.dvbondoy.workers.dev/v1/stats">public</a>.
 			</p>
 			<p>
-				FlickOS’s own work is free software under the GPL-3.0. Like Debian’s own install images, the ISO also includes some non-free parts from Debian, mainly firmware so Wi-Fi and graphics work on more computers. Notes, Write and Phone Screen are not free software: they are free of charge for now, are not on the ISO, and are installed only if you choose them.
+				FlickOS’s own work is free software under the GPL-3.0. Like Debian’s own install images, the ISO also includes some non-free parts from Debian, mainly firmware so Wi-Fi and graphics work on more computers.
 			</p>
 		</section>
 

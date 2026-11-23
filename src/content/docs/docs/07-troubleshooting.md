@@ -26,9 +26,9 @@ the key already exists in your `~/.gnupg`, re-export it instead:
 Recommends, so it's missing after `apt-get install --no-install-recommends`
 (as in CI).
 
-**`dpkg-checkbuilddeps: error: unmet build dependencies: meson … libgtk-layer-shell-dev …`** (while building `sfwbar`)
-The build host lacks `sfwbar`'s compilers and headers, the only FlickOS
-package with C code. Install the last group of the tool list in
+**`dpkg-checkbuilddeps: error: unmet build dependencies: meson … libgtk-layer-shell-dev …`** (while building `sfwbar`, or `libaml-dev …` while building `neatvnc`)
+The build host lacks the compilers and headers of `sfwbar` or `neatvnc`, the
+FlickOS packages with C code. Install the last group of the tool list in
 [02](/docs/02-building-and-testing/), or `sudo apt install` exactly what the error
 names.
 
@@ -313,6 +313,14 @@ traceback, or a missing package: `python3-gi`, `python3-gi-cairo`,
 lists the users and sessions it would offer. Please report it: gtkgreet stays
 only until no one needs it.
 
+**Installed system: the login screen shows the Dark wallpaper, not the chosen picture**
+`journalctl -b -t flickos-greeter` says why: the file in `Background=` of
+`/etc/flickos/greeter` is gone, can't be read by `_greetd`, or isn't a PNG or
+JPEG. `sudo -u _greetd /usr/libexec/flickos/greeter-window --check` prints the
+background and box position it would use. Choose the picture again on
+*Settings → Login Screen*, or `flickos-control system login.background
+default` for the Dark wallpaper.
+
 **Installed system: "Your password has expired" at the login screen**
 greetd can't ask for a new password. Press Ctrl+Alt+F1 and log in on the text
 screen: it asks for the current password and a new one twice, then starts the
@@ -561,6 +569,22 @@ the splash PNG isn't 8-bit RGB (`identify config/bootloaders/grub-pc/splash.png`
 A bare placeholder word (e.g. `KERNEL_LIVE`, `MEMTEST`, `LINUX_LIVE`) appears in
 `config/bootloaders/grub-pc/grub.cfg` outside `@…@`, even in a comment. See
 [09 – Boot menu](/docs/09-customizing/#boot-menu).
+
+**Installed system doesn't start with Secure Boot on (the live USB does)**
+The firmware says "Access Denied" or skips to the next boot entry. Installs
+made before flickos-installer 1.36.2 have unsigned GRUB only, until they
+update to flickos-branding 1.16.2, which brings shim. Turn Secure Boot off in
+the firmware settings, start FlickOS and update (or run `sudo apt install
+shim-signed grub-efi-amd64-signed`). Their install runs `grub-install`, which
+puts shim and the signed GRUB in `EFI/FlickOS/` and adds a boot entry `flickos`
+that starts shim (`efibootmgr` lists it first). Then turn Secure Boot on again. `mokutil --sb-state` says
+whether it is on. With Secure Boot on:
+- The kernel locks itself down: no hibernation (logind's `CanHibernate` says
+  `na`).
+- Drivers built by DKMS (NVIDIA's, some Wi-Fi) load only after their signing
+  key is enrolled with `mokutil --import` and MokManager at the next start.
+- Putting back a restore point from before shim was installed leaves unsigned
+  GRUB again.
 
 **`dpkg-divert: error: 'diversion of /usr/lib/os-release …' clashes`**
 Another package diverts the same file. List diversions with `dpkg-divert --list`.
@@ -950,6 +974,12 @@ flickos-layout doctor                                # user files that hide the 
   agent (mate-polkit, started by autostart) to ask for the password. Try
   `pkexec /usr/libexec/flickos/control-helper keyboard pc105 us "" ""` in a
   terminal to see its message.
+- *Use for the Whole System…* (Language & Region, or *Language* on Login
+  Screen) says "Failed to issue method call: Access denied" without asking
+  for a password: flickos-control before 1.76 used `localectl set-locale`,
+  which Debian's D-Bus policy refuses to everyone (the journal shows
+  `Rejected send message … member="SetLocale"`). Upgrade flickos-control;
+  1.76 writes `/etc/locale.conf` through its helper.
 
 Other pages:
 
@@ -967,8 +997,12 @@ Other pages:
 - **"Set the time automatically" is greyed out:** `timedatectl show -p
   CanNTP` is `no` without `systemd-timesyncd` (a Depends of flickos-desktop
   since 1.16).
-- **Login page missing:** it shows only on installed systems with
+- **Login Screen page missing:** it shows only on installed systems with
   flickos-greeter (group `autologin`), never with `boot=live`.
+- **Login Screen: *Choose Picture…* says the file can't be used:** it is
+  read as you (GdkPixbuf) and sent to the helper as a JPEG; a file GdkPixbuf
+  can't open, or one whose JPEG is over 10 MB, is refused before the
+  password is asked.
 
 ## Getting more information
 

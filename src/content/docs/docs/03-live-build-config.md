@@ -84,7 +84,8 @@ on the ISO, an apt repository that Calamares's `sources-media` job adds to the
 target system during the install. `grub-pc.list.binary` and
 `grub-efi.list.binary` hold the bootloaders, which `bootloader-config`
 installs for the firmware it finds (they conflict, so they can't both be in the
-image), and `cryptsetup.list.binary` holds `cryptsetup-initramfs` for encrypted
+image; the UEFI list includes `shim-signed` and `grub-efi-amd64-signed` for
+Secure Boot), and `cryptsetup.list.binary` holds `cryptsetup-initramfs` for encrypted
 installs. Keep the GRUB lists separate: live-build downloads each list in one apt
 transaction. Without the pool the install fails offline with *Package grub-pc
 has no installation candidate*.

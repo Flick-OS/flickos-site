@@ -1,0 +1,302 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+
+const ISO_URL = 'https://sourceforge.net/projects/flickos/files/v2.4/';
+
+const fixes = [
+	{
+		title: 'Secure Boot:',
+		body: 'an installed FlickOS didn’t start with Secure Boot on (the firmware said “Access Denied”), though the live USB did. New installs now start with it, and an installed 2.x gets the signed boot loader at its next update.',
+	},
+	{
+		title: '.zip and .7z files',
+		body: 'couldn’t be opened or made in the file manager and Xarchiver.',
+	},
+	{
+		title: 'Thunar’s Set as Wallpaper',
+		body: 'did nothing.',
+	},
+	{
+		title: 'Settings → Wallpaper',
+		body: 'stopped listing pictures after a removed style’s wallpaper.',
+	},
+	{
+		title: 'Use for the Whole System',
+		body: '(Language & Region) didn’t change the system language.',
+	},
+	{
+		title: 'Check for Updates Now',
+		body: 'could miss updates published since the last check.',
+	},
+	{
+		title: 'Undo of a kernel install',
+		body: 'in History left the kernel installed.',
+	},
+	{
+		title: 'Background tasks',
+		body: '(the daily app update, the weekly count) stopped after each update until the next restart.',
+	},
+	{
+		title: 'Ejecting a USB drive',
+		body: 'from the start menu or Thunar failed for some drives.',
+	},
+	{
+		title: 'Add Phone',
+		body: 'could hang when the phone asked to pair straight away.',
+	},
+	{
+		title: 'Displays',
+		body: 'opened too small to show the map of the screens.',
+	},
+	{
+		title: 'File dialogs in the Light style',
+		body: 'had blank buttons at the bottom, and buttons with text in a header bar (Displays’ Cancel and Apply) touched its edges.',
+	},
+	{
+		title: 'The lines',
+		body: 'in the start menu, Quick Settings and the phone popup hardly showed.',
+	},
+	{
+		title: 'Security:',
+		body: 'adding a user account in Settings now refuses a full name that could have passed options to the system’s account tool.',
+	},
+	{
+		title: 'Security:',
+		body: 'Settings now asks for your password every time you change who can log in or be an administrator, turn on automatic login, turn the firewall off, change automatic updates or undo a software change, and so does putting back a restore point. Before, the password was remembered for a few minutes.',
+	},
+];
+
+const issues = [
+	'Redmond+ is new and drawn by a different panel program than the other layouts. If something in it misbehaves, tell us, and switch back to Redmond in Settings → Desktop Layout & Style.',
+	'Bring Files from Windows has been tested on test disks, not yet on many real Windows computers. After copying, open a few files from your OneDrive folders: if one opens empty, download it from OneDrive instead, and please tell us.',
+	'The login screen can’t change an expired password. Press Ctrl+Alt+F1 and log in on the text screen, which asks for a new one.',
+	'Web apps use a Firefox feature that Mozilla hasn’t turned on for Linux yet. A site that moves you to another address when you sign in (Teams does) may show in Software as not installed after you made its web app.',
+	'Wine runs some Windows programs, not most, and takes about 3 GB.',
+	'Restore points work only on new installs with btrfs. They cover the system, not your home folder: keep backing up your files.',
+	'Opening Settings or the Welcome window a second time doesn’t bring the open window to the front. Find the window in the taskbar.',
+	'The gray descriptions under settings are hard to read, most of all in the Light style.',
+	'Tiling uses the same arrangement on all monitors.',
+	'Traditional’s window list shows the windows of all 4 desktops, not only the current one’s.',
+	'Eleven’s clock can be too wide for the panel in languages with a long date.',
+	'Quick Settings has no Bluetooth switch yet.',
+	'Phone needs the firewall to let it in. If the firewall is on, allow phones in Settings → Phone.',
+	'There is no upgrade path from FlickOS 1.x.',
+];
+---
+
+<MarketingLayout
+	title="FlickOS 2.4"
+	description="FlickOS 2.4 is the last 2.x release with new features: Tool Kits for programming, studying, teaching children or security testing, Classroom for teachers, a start menu you drive by typing, Redmond+, FlickOS’s own GTK themes, and hooks."
+>
+	<article class="page">
+		<header class="page-head flick-anim-rise">
+			<p class="date">
+				<time datetime="2026-11-23">23 November 2026</time>
+			</p>
+			<h1 class="flick-display">FlickOS 2.4: Tool Kits, Classroom, and one look</h1>
+			<p>
+				FlickOS 2.4 is still based on <strong>Debian 13 “trixie”</strong>, and it is the <strong>last 2.x release with new features</strong>.
+				It brings <strong>Tool Kits</strong>, which set up a computer for programming, studying, teaching children or security testing in one step;
+				<strong>Classroom</strong>, a teacher’s view of a room of FlickOS computers;
+				a <strong>new start menu style</strong> you drive by typing; <strong>Redmond+</strong>, a panel that groups each app’s windows;
+				FlickOS’s <strong>own GTK themes</strong>, so windows, title bars and the desktop finally look like one thing;
+				and <strong>hooks</strong> that run your own programs when something happens on the desktop.
+			</p>
+			<p class="cta">
+				<a class="flick-btn primary" href="/download/">Download 2.4</a>
+			</p>
+		</header>
+
+		<section class="part" id="kits">
+			<h2 class="flick-display">Tool Kits</h2>
+			<p>
+				One switch for each kind of work, in the new <strong>Tool Kits</strong> window (in the start menu, on a Welcome card and in <em>Settings → More Settings</em>).
+				Each kit installs a set of apps and tools through Software, and removes them again.
+			</p>
+			<ul>
+				<li><strong>Programming:</strong> a base kit (Git, a C compiler, everyday command-line tools), Python, web (Node.js and npm), C and C++, and containers (Podman and Distrobox).</li>
+				<li><strong>Study</strong>, for students, and <strong>Young Learners</strong>, apps for children’s learning.</li>
+				<li><strong>Security testing:</strong> network, web testing, passwords, forensics, reverse engineering and wireless. Only test computers and networks you are allowed to test; the window and Software say so.</li>
+				<li><strong>Setup steps</strong> after a kit is on: your name for Git, an SSH key, Rust, capturing network packets without administrator rights, choosing a Wi-Fi adapter for testing, and the ports devices on your network may reach.</li>
+				<li><strong>Newer versions:</strong> a tool’s latest version for your account only (through mise), and Metasploit from its maker’s repository, both off until you turn them on.</li>
+				<li><strong>Environments:</strong> a Debian testing or Kali Linux container with a kit’s tools inside, whose apps show in your start menu, without changing your system.</li>
+				<li>In <strong>Software</strong>, kits are under <em>Developer Tools</em>, <em>Education</em> and <em>Security Tools</em>.</li>
+			</ul>
+			<p><a href="/guides/tool-kits/">The Tool Kits guide</a></p>
+		</section>
+
+		<section class="part" id="classroom">
+			<h2 class="flick-display">Classroom</h2>
+			<p>
+				A teacher’s view of a classroom, on the school’s own network and with no server: thumbnails of every student’s screen, <strong>lock the class</strong> with a message, send a message or a web page, <strong>view or control</strong> one student’s screen to help, and <strong>show your own screen</strong> on theirs.
+			</p>
+			<p>
+				Neither part comes with FlickOS. Install it in a terminal: on the teacher’s computer
+			</p>
+			<pre class="cmd"><code>sudo apt install flickos-classroom-teacher</code></pre>
+			<p>and on each student’s</p>
+			<pre class="cmd"><code>sudo apt install flickos-classroom-view</code></pre>
+			<p>
+				Nothing is shared until the student, or the school on a lab computer, turns sharing on in <em>Settings → Classroom</em> and pairs with the teacher’s six-digit code.
+				While sharing is on, a button in the panel shows it, and it turns red while a teacher is looking.
+			</p>
+		</section>
+
+		<section class="part" id="desktop">
+			<h2 class="flick-display">The desktop</h2>
+			<ul>
+				<li><strong>One look from edge to edge:</strong> FlickOS’s own GTK themes, <em>FlickOS-Arc-Dark</em> and <em>FlickOS-Arc</em>, give windows the same corners as the panels and menus, and the title bars of other windows now match the apps’ own header bars. The previous themes are still in <em>Settings → Appearance</em>.</li>
+				<li><strong>A new start menu style, Prompt:</strong> type to find apps and folders, work out sums (<kbd>Enter</kbd> copies the answer), or run desktop tasks such as <em>Restart Panel</em> or <em>Shut Down</em>; start with <kbd>/</kbd> to find files and <kbd>&gt;</kbd> to run a command. Every app is a tile underneath, the first six pins open with <kbd>Ctrl+1</kbd> to <kbd>Ctrl+6</kbd>, a plugged-in drive gets a button with an eject, and a newly installed app is marked <em>New</em>. Right-click an app to pin it, hide it or open it in Software. Choose it in <em>Settings → Desktop Layout &amp; Style</em>, and press <kbd>F1</kbd> in it for its keys.</li>
+				<li><strong>The classic start menu</strong> now has <em>Recent</em> and <em>Trash</em>, with Settings and Software beside the power buttons.</li>
+				<li><strong>A new layout, Redmond+:</strong> Redmond’s panel with one taskbar button per app, its windows listed when you point at it, a right-click menu to minimize, maximize, close, pin or unpin, and a <em>more</em> button for apps that don’t fit, so the tray is never pushed off the screen. Choose it in <em>Settings → Desktop Layout &amp; Style</em>.</li>
+				<li><strong>The docks</strong> of Cupertino and Footprint have the same right-click menu, with <em>Pin to Dock</em> and <em>Unpin from Dock</em>.</li>
+				<li><strong>Window buttons on the left, the right or split</strong>, for every layout: <em>Settings → Desktop Layout &amp; Style → Window buttons</em>.</li>
+				<li><strong>Switching desktops</strong> (<kbd>Super+Ctrl+Left</kbd>/<kbd>Right</kbd>, <kbd>Super+1</kbd>…) shows them as circles on a card in the middle of the screen.</li>
+				<li><strong>A new style, Tortuga</strong>, in <em>Software → Styles</em>: floating islands for a panel and a dock that shows your desktops as a 2×2 grid. Every style in Software now has screenshots.</li>
+				<li><strong>The login screen’s own page</strong>, <em>Settings → Login Screen</em>: logging in automatically, its language and keyboard layout, a background picture (yours too), and where the login box goes (left, middle or right).</li>
+				<li><strong>Startup Applications</strong> can start any command or script, not only apps: <em>Add Command…</em>.</li>
+				<li><strong>Hooks:</strong> run your own programs when the screen locks or unlocks, the computer wakes, a screen comes or goes, your phone connects, a setting changes, or a screenshot or recording is saved. Nothing runs until you add one. <a href="/guides/hooks/">The Hooks guide</a>.</li>
+				<li><strong>Packages and Flatpaks:</strong> double-click a <code>.deb</code>, <code>.flatpak</code> or <code>.flatpakref</code> file and Software shows what it is, what it needs and what a Flatpak may reach, then installs it.</li>
+				<li><strong>Weather</strong> can show wind in km/h, m/s, mph or knots: <em>Settings → Weather</em>.</li>
+				<li><strong>Tiling</strong> no longer rearranges the windows that are already open when you turn it on. <em>Settings → Tiling → Tile open windows</em> brings that back.</li>
+				<li><strong>Settings can now be translated</strong>, like the start menu and the Welcome window. <a href="/docs/12-translating/">Help is welcome</a>.</li>
+			</ul>
+		</section>
+
+		<section class="part" id="fixes">
+			<h2 class="flick-display">Fixes</h2>
+			<ul>
+				{fixes.map((f) => <li><strong>{f.title}</strong> {f.body}</li>)}
+			</ul>
+		</section>
+
+		<section class="part" id="upgrading">
+			<h2 class="flick-display">Coming from 2.3 or older</h2>
+			<p>
+				You don’t need to reinstall. Everything in 2.4 comes through FlickOS’s apt repository, and a system with automatic updates on already has most of it:
+			</p>
+			<pre class="cmd"><code>sudo apt update && sudo apt upgrade</code></pre>
+			<p>
+				Use <code>apt upgrade</code>, not <code>apt-get upgrade</code>: <code>apt-get</code> keeps the FlickOS desktop back because it needs new packages. Then restart.
+				At your next login, the Dark and Light styles switch your windows to FlickOS’s new GTK themes, unless you picked another GTK theme yourself.
+			</p>
+			<p>
+				Coming from <strong>2.2, 2.1 or 2.0</strong>, read <a href="/news/flickos-2-3/#upgrading">the 2.3 notes</a> too, and <a href="/news/flickos-2-2/#upgrading">the 2.2 ones</a> from 2.1 or 2.0: restore points need a new install, and a few apps only arrive if you add them yourself.
+			</p>
+			<p>
+				Coming from FlickOS 1.x (Ubuntu/LXLE based), there is still <strong>no in-place upgrade</strong>. Back up your files and install 2.4 fresh.
+			</p>
+		</section>
+
+		<section class="part" id="next">
+			<h2 class="flick-display">What comes next</h2>
+			<p>
+				Work now moves to <strong>FlickOS 3.0</strong>, on Debian 14 “forky”, once Debian releases it (expected in 2027).
+				2.x keeps getting fixes until then and for <strong>12 months after 3.0’s release</strong>, and 3.0 will come with a tested way to upgrade, so you won’t need to reinstall.
+				The 3.0 release notes will give the exact end date. <a href="/roadmap/">The roadmap</a> has the rest, and <a href="/tour/">the 3.0 tour</a> a first look.
+			</p>
+		</section>
+
+		<section class="part" id="known-issues">
+			<h2 class="flick-display">Known issues</h2>
+			<ul>
+				<li>
+					<strong>Classroom</strong> needs the teacher’s and the students’ computers on a network that lets computers see each other. Many school and guest Wi-Fi networks don’t; a wired network or the school’s own staff network usually does.
+				</li>
+				<li>
+					<strong>With Secure Boot on</strong>, drivers your computer builds itself (NVIDIA’s own driver, some Wi-Fi drivers) load only after you enroll their key with <code>mokutil --import</code>, and putting back a restore point from before 2.4’s Secure Boot update leaves a boot loader Secure Boot refuses: turn Secure Boot off, start, and update again.
+				</li>
+				{issues.map((i) => <li>{i}</li>)}
+			</ul>
+		</section>
+
+		<section class="part closing">
+			<p>
+				Get the ISO on <a href={ISO_URL} rel="noopener noreferrer">SourceForge</a>, and see the{' '}
+				<a href="/download/">download page</a> for checking it, writing a USB stick and installing.
+				Please <a href="https://github.com/Flick-OS/flickos/issues">report anything that goes wrong</a>,
+				or talk about it on <a href="https://www.reddit.com/r/flickos/">r/flickos</a>.
+			</p>
+		</section>
+	</article>
+</MarketingLayout>
+
+<style>
+	.page {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: 1.75rem 1.25rem 0;
+	}
+	@media (min-width: 48rem) {
+		.page {
+			padding-top: 2.5rem;
+		}
+	}
+	.date {
+		margin: 0 0 0.6rem;
+		color: var(--flick-muted);
+		font-size: 0.95rem;
+	}
+	.page-head h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 7vw, 2.6rem);
+		color: var(--flick-title);
+		line-height: 1.15;
+	}
+	.page-head p {
+		margin: 1rem 0 0;
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.cta {
+		margin-top: 1.25rem !important;
+	}
+	.part {
+		margin-top: 2.75rem;
+	}
+	.part h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.45rem;
+		color: var(--flick-title);
+	}
+	.part h3 {
+		margin: 1.5rem 0 0;
+		font-size: 1.1rem;
+		color: var(--flick-title);
+	}
+	.part p,
+	.part li {
+		line-height: 1.55;
+		color: var(--flick-fg);
+	}
+	.part p {
+		margin: 0.85rem 0 0;
+	}
+	.part ul {
+		margin: 0.85rem 0 0;
+		padding-left: 1.2rem;
+		list-style: disc;
+	}
+	.part li + li {
+		margin-top: 0.6rem;
+	}
+	.cmd {
+		margin: 0.85rem 0 0;
+		padding: 0.75rem 0.9rem;
+		overflow-x: auto;
+		border-radius: 0.35rem;
+		background: var(--flick-panel);
+		border: 1px solid var(--flick-border);
+		font-size: 0.92rem;
+		line-height: 1.45;
+	}
+	.cmd code {
+		white-space: pre;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	}
+	code,
+	kbd {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.9em;
+	}
+</style>

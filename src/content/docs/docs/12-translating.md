@@ -29,6 +29,7 @@ translatable one package at a time:
 | `flickos-menu` | Yes (1.23) | The start menu (all three styles), Quick Settings and the phone popup |
 | `flickos-greeter` | Yes (2.0) | The login screen; PAM's messages and the keyboard layouts' names come from those projects' own translations |
 | `flickos-switch` | Yes (1.0) | The Bring Files from Windows and Windows programs windows, their menu entries and the sentences in the list of Windows programs |
+| `flickos-control` | Yes (1.65) | The Settings window, History's descriptions of changes, the messages the window shows, its menu entry and the Displays entry; names of languages and keyboard layouts come from iso-codes' and xkeyboard-config's translations. Names and comments that other programs give (layouts, styles, the shortcut sheet) stay as those programs give them |
 | Every other FlickOS package | Not yet | See the [HIG audit](/docs/hig/audit/) (TXT-10) |
 
 ## How it works
@@ -191,6 +192,9 @@ program:
    ```
 
    `fallback=True` means English when there's no translation, never an error.
+   A broken `.mo` still raises one, so a program that runs at login
+   (flickos-control's `prepare`) catches any exception there and uses
+   `gettext.NullTranslations()`: English, never a login that stops.
 
    A program that must start fast for a click (flickos-menu's `toggle`)
    loads it at the first `_()` instead: `import gettext` costs about 12 ms
@@ -201,13 +205,23 @@ program:
 2. **Mark the text people read:** `_("…")` where the text is used, and
    `N_("…")` in tables at module level (such as `CARDS`), with `_()` where the
    table's text is shown. A table translated at import time would keep the
-   language the module was loaded in. When the English text is also a key
+   language the module was loaded in. A program none of whose processes shows
+   text for longer than a language lasts (flickos-control: the window and each
+   command start afresh) may translate its tables where they are defined, with
+   `_()`, so no place that shows them can forget to; a table whose English
+   text also goes somewhere English (About's labels, which go into bug
+   reports) keeps `N_()`. When the English text is also a key
    (flickos-menu's sections), keep it as the key and translate only where
    it's shown; never compare a label with English text (`label == "Home"`),
    compare what it stands for (the path).
 3. **Leave out text that programs read:** values (`on`/`off`), ids, JSON,
    tab-separated output, the words the boot test looks for (HIG TXT-7), log
-   lines and stderr messages. `--help` stays English for now.
+   lines, bug reports and stderr messages. `--help` stays English for now. A
+   message a window also shows is translated even when the command line
+   prints it (flickos-control's errors and `set`'s notes, which its pages
+   run), but not a confirmation the boot test looks for (`Applied.`,
+   `Kept: `), and not a line another program filters (Software leaves out
+   `Waiting for ` lines of `purchases claim`).
 4. **Placeholders by name, filled after translation:**
    `_("Version {version}. Everything here can be changed later.").format(version=release)`.
    xgettext can't read an f-string, and a translator must be able to move
@@ -230,12 +244,16 @@ program:
    that `LINGUAS` matches the `.po` files and that they compile, and that a
    translation is shown while values stay as they are. flickos-menu's also
    checks that no function binds `_` (`for _ in`, `_ok, _ = …`) and calls
-   `_()`, which fails only when that window is drawn.
+   `_()`, which fails only when that window is drawn. flickos-control's
+   (`tests/test_translation.py`) is the one for a program that translates
+   its tables at import: it loads a second copy with a made-up language, and
+   allows no `_` binding at all (`prefix, _skip, rest = …`).
 9. **Look at it:** a pseudo-translation shows any text that isn't marked.
    Every text becomes ⟦text⟧:
 
    ```sh
    msgen -o /tmp/en.po po/NAME.pot
+   sed -i 's/nplurals=INTEGER; plural=EXPRESSION;/nplurals=2; plural=(n != 1);/' /tmp/en.po
    msgfilter --keep-header -i /tmp/en.po -o /tmp/xx.po sed -e 's/^/⟦/' -e 's/$/⟧/'
    mkdir -p /tmp/try/usr/share/locale/xx/LC_MESSAGES
    msgfmt -o /tmp/try/usr/share/locale/xx/LC_MESSAGES/NAME.mo /tmp/xx.po
@@ -265,5 +283,10 @@ packages that have them:
   folder, built with Qt's `lrelease`.
 - **Shell scripts** (`/usr/libexec/flickos/*`): `gettext.sh`, when one shows
   text.
+- **Polkit messages** (flickos-control's `org.flickos.control.policy`, the
+  password prompt's "Authentication is required to …"): polkit translates
+  `<message xml:lang="…">`, which `msgfmt --xml` writes with polkit's ITS
+  rules (`polkit.its` in `/usr/share/gettext/its/`, which the build host
+  doesn't have yet: polkitd doesn't ship it).
 - **Panel text that flickos-layout generates** (tooltips): marked like any
   Python text, but the panel only picks up a new language at the next login.

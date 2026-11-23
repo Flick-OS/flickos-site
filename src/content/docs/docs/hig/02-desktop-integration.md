@@ -1,10 +1,10 @@
 ---
 title: Fitting into the desktop
-description: "A FlickOS program is one part of a desktop that has three layouts, two styles, a live session and an installed system. These rules keep it working, and…"
+description: "A FlickOS program is one part of a desktop that has four layouts, two styles, a live session and an installed system. These rules keep it working, and…"
 sidebar:
   order: 2
 ---
-A FlickOS program is one part of a desktop that has three layouts, two styles,
+A FlickOS program is one part of a desktop that has four layouts, two styles,
 a live session and an installed system. These rules keep it working, and
 findable, in all of them.
 
@@ -70,9 +70,10 @@ German keyboards without landing on a key FlickOS already binds.
 
 ## Every layout, every style, every session
 
-### INT-6 Must: It works in all three layouts and both styles
+### INT-6 Must: It works in all four layouts and both styles
 
-Test a change in Redmond (bottom panel), Cupertino (top bar and a dock that
+Test a change in Redmond (bottom panel), Redmond+ (the same panel drawn by
+sfwbar, one taskbar button per app), Cupertino (top bar and a dock that
 auto-hides over windows) and Traditional (top panel, and window list with 4
 desktops), in the Dark and the Light style. Things that break:
 
@@ -82,6 +83,9 @@ desktops), in the Dark and the Light style. Things that break:
 - Colors that are right in Dark and unreadable in Light
   ([VIS-2](/docs/hig/06-visual-style/#vis-2-must-follow-the-style-that-is-in-use)).
 - Window buttons: Cupertino puts them on the left.
+- A panel button that refreshes on a signal (`SIGRTMIN+N`): Redmond+'s panel
+  is sfwbar, not waybar. Send it to both, only to one that already catches it
+  (`catches_signal` in flick-tiler, flickos-phone and the others).
 
 ### INT-7 Must: The live session and the installed system each get what fits them
 
